@@ -10,7 +10,8 @@ export default defineConfig({
   },
   datasource: {
     url: env("DIRECT_URL"),
-    // shadowDatabaseUrl: env("DIRECT_URL"),
-    // TODO: 수정! 마이그레이션 불가. (이유 다시 정리해봐야함. prisma v7 출시된지 한달되어서 자료 못찾겠음.)
+    shadowDatabaseUrl: undefined,
+    // shadowDatabaseUrl: env("DATABASE_URL"),
+    // TODO: 수정! 마이그레이션 불가. (이유 다시 정리해봐야함. prisma v7 출시된지 한달되어서 자료 못찾겠음. 아마 버그일듯. 버전업 주시)
   },
 });
