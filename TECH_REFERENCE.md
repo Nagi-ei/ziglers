@@ -1,6 +1,6 @@
-# Mandalart Web – TECH_REFERENCE (v1.0)
+# Mandalart Web – TECH_REFERENCE (v1.1)
 
-_Last updated: 2025-11-08 (KST)_
+_Last updated: 2025-12-18 (KST)_
 
 ---
 
@@ -20,6 +20,7 @@ and is the top-level technical specification referenced during code generation a
 | **Language**        | TypeScript (v5.x)                                         |
 | **Package Manager** | pnpm (v10.18.2)                                           |
 | **Database**        | Supabase (PostgreSQL 15)                                  |
+| **ORM**             | Prisma (v5.x)                                             |
 | **Styling/UI**      | TailwindCSS (v4), shadcn/ui                               |
 | **State/Data**      | TanStack Query (v5.90.8), Zustand (v5.0.8), Zod (v4.1.12) |
 | **Form**            | react-hook-form (v7.66.0) + zodResolver (v5.2.2)          |
@@ -116,13 +117,10 @@ create index if not exists idx_events_type on events(type);
 ```
 
 > ✅ **Notes:**
-> 
+>
 > - `owner_id`, `board_id`, and `cell_id` are essential filter keys for all queries — indexing required.
->     
 > - `updated_at`, `done_at`, and `created_at` indexes improve sorting performance.
->     
 > - `events` may later include a composite index `(user_id, created_at)` for monthly aggregation queries.
->     
 
 ---
 
@@ -143,7 +141,7 @@ create policy profiles_self on profiles
 create policy boards_owner_rw on boards
 	for all using (owner_id = auth.uid())
 	with check (owner_id = auth.uid());
-	
+
 create policy boards_public_r on boards
 	for select using (is_public = true);
 
@@ -155,7 +153,7 @@ create policy cells_owner on cells
 	with check (
 		exists (select 1 from boards b where b.id = board_id and b.owner_id = auth.uid())
 	);
-	
+
 create policy tasks_owner on tasks
 	for all using (
 		exists (
@@ -211,131 +209,159 @@ order by b.updated_at desc;
 
 ---
 
-## 6) Repository Layer (Example)
+## 6) Prisma Setup & Usage Policy
 
-```ts
-// repositories/boardRepository.ts
-import { sb } from '@/lib/supabase/client'
+- Prisma Client is initialized in `shared/lib/prisma/client.ts`
+- Prisma is used for **all server-side database access**
+- Client-side direct DB access is prohibited
+- Supabase is responsible for:
+  - Auth
+  - Storage
+  - RLS enforcement
 
-export const boardRepository = {
-	async listBoards() {
-		const { data, error } = await sb
-			.from('boards')
-			.select('id, title, description, updated_at')
-			.order('updated_at', { ascending: false })
-		if (error) throw error
-		return data
-	},
-
-	async createBoard(input) {
-		const { data, error } = await sb
-			.from('boards')
-			.insert(input)
-			.select('id, title, description')
-			.single()
-		if (error) throw error
-		return data
-	},
-	
-	async getBoard(id: string) {
-		const { data, error } = await sb
-			.from('boards')
-			.select('*, cells(*, tasks(*))')
-			.eq('id', id)
-			.single()
-		if (error) throw error
-		return data
-	}
-}
-```
-
-> ✅ **Reference:**
-> 
-> - This layer enables migration to NestJS with minimal code changes.
->     
-> - Separate repositories are maintained per domain (`board`, `task`, `event`).
->     
+> Prisma is used as the primary server-side data access layer.
+> Supabase RLS is enforced at the database level.
 
 ---
 
-## 7) TanStack Query Keys
+## 7) Repository Layer (Example)
+
+```ts
+// repositories/boardRepository.ts
+import { prisma } from "@/lib/prisma";
+
+export const boardRepository = {
+  async listBoards(userId: string) {
+    return prisma.board.findMany({
+      where: { ownerId: userId },
+      orderBy: { updatedAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        updatedAt: true,
+      },
+    });
+  },
+
+  async createBoard(userId: string, input: { title: string; description?: string }) {
+    return prisma.board.create({
+      data: {
+        ownerId: userId,
+        ...input,
+      },
+      select: { id: true, title: true, description: true },
+    });
+  },
+
+  async getBoard(userId: string, id: string) {
+    return prisma.board.findFirst({
+      where: { id, ownerId: userId },
+      include: {
+        cells: {
+          include: { tasks: true },
+        },
+      },
+    });
+  },
+};
+```
+
+> ✅ Reference:
+>
+> - Prisma is the primary data access layer.
+> - Supabase RLS is still enforced at the database level.
+> - This repository structure can be reused when migrating to NestJS.
+
+---
+
+## 8) TanStack Query Keys
 
 ```ts
 export const queryKeys = {
-	boards: ['boards'] as const,
-	board: (id: string) => ['board', id] as const,
-	cells: (boardId: string) => ['board', boardId, 'cells'] as const,
-	tasks: (cellId: string) => ['cell', cellId, 'tasks'] as const,
-}
+  boards: ["boards"] as const,
+  board: (id: string) => ["board", id] as const,
+  cells: (boardId: string) => ["board", boardId, "cells"] as const,
+  tasks: (cellId: string) => ["cell", cellId, "tasks"] as const,
+};
 ```
 
 > The hierarchical array structure allows for unified cache invalidation using `invalidateQueries(['board', id])`.
 
 ---
 
-## 8) API Example (Client Action)
+## 9) API Example (Server Action)
 
 ```ts
-'use server'
-import { sb } from '@/lib/supabase/server'
+"use server";
 
-export async function toggleTaskDone(id: string, next: boolean, userId: string) {
-	const { error } = await sb
-		.from('tasks')
-		.update({
-			is_done: next,
-			done_at: next ? new Date().toISOString() : null
-		})
-		.eq('id', id)
-		
-	if (error) throw error
-	
-	await sb.from('events').insert({
-		user_id: userId,
-		task_id: id,
-		type: next ? 'task_done' : 'task_undone'
-	})
+import { prisma } from "@/lib/prisma";
+import { getUser } from "@/lib/auth";
+
+export async function toggleTaskDone(id: string, next: boolean) {
+  const user = await getUser();
+
+  await prisma.$transaction([
+    prisma.task.update({
+      where: { id },
+      data: {
+        isDone: next,
+        doneAt: next ? new Date() : null,
+      },
+    }),
+    prisma.event.create({
+      data: {
+        userId: user.id,
+        taskId: id,
+        type: next ? "task_done" : "task_undone",
+      },
+    }),
+  ]);
 }
 ```
 
+> - All mutations run server-side only.
+> - Authorization is enforced by Supabase RLS.
+> - Prisma handles relations and transactional integrity.
+
 ---
 
-## 9) Validation (Zod Schemas)
+## 10) Validation (Zod Schemas)
 
 ```ts
 export const BoardSchema = z.object({
-	title: z.string().min(1).max(50),
-	description: z.string().max(200).optional()
-})
+  title: z.string().min(1).max(50),
+  description: z.string().max(200).optional(),
+});
 
 export const CellSchema = z.object({
-	title: z.string().min(1).max(40),
-	note: z.string().max(200).optional()
-})
+  title: z.string().min(1).max(40),
+  note: z.string().max(200).optional(),
+});
 
 export const TaskSchema = z.object({
-	content: z.string().min(1).max(80)
-})
+  content: z.string().min(1).max(80),
+});
 ```
 
 ---
 
-## 10) Testing Reference
+## 11) Testing Reference
 
-### 10.1 Jest Config (package.json)
+### 11.1 Jest Config (package.json)
 
 ```json
 {
-	"jest": {
-		"preset": "ts-jest",
-		"testEnvironment": "jsdom",
-		"setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
-		"coveragePathIgnorePatterns": ["/node_modules/", "/.next/"]
-	}
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+    "coveragePathIgnorePatterns": ["/node_modules/", "/.next/"]
+  }
 }
 ```
 
-### 10.2 E2E (Playwright)
+### 11.2 E2E (Playwright)
 
 ```bash
 pnpm exec playwright install --with-deps
@@ -347,23 +373,23 @@ pnpm exec playwright test --reporter=line
 
 ---
 
-## 11) Lint & Format
+## 12) Lint & Format
 
-### 11.1 Biome Config (`biome.json`)
+### 12.1 Biome Config (`biome.json`)
 
 ```json
 {
-	"formatter": { "indentStyle": "space", "lineWidth": 100 },
-	"linter": {
-		"rules": {
-			"style/noUnusedVars": "error",
-			"performance/noUnnecessaryAwait": "warn"
-		}
-	}
+  "formatter": { "indentStyle": "space", "lineWidth": 100 },
+  "linter": {
+    "rules": {
+      "style/noUnusedVars": "error",
+      "performance/noUnnecessaryAwait": "warn"
+    }
+  }
 }
 ```
 
-### 11.2 ESLint Extension
+### 12.2 ESLint Extension
 
 ```js
 extends: [
@@ -374,8 +400,7 @@ extends: [
 
 ---
 
-## 12) CI / CD (GitHub Actions)
-
+## 13) CI / CD (GitHub Actions)
 
 ```yaml
 name: CI
@@ -402,23 +427,24 @@ jobs:
 
 ---
 
-## 13) Version Matrix
+## 14) Version Matrix
 
-| Item           | Version | Note                            |
-| -------------- | ------- | ------------------------------- |
-| Node.js        | 22.14.0 | Default Vercel environment      |
-| Next.js        | 16.0.1  | App Router                      |
-| TypeScript     | 5.x     | Strict Mode                     |
-| Supabase-js    | 2.x     | Supports RLS and Edge Functions |
-| TailwindCSS    | 4       | JIT                             |
-| shadcn/ui      | Latest  | CLI installation                |
-| TanStack Query | 5.90.8  | Supports Suspense               |
-| Zustand        | 5.0.8   | Includes Middleware             |
-| Zod            | 4.1.12  | Integrated with react-hook-form |
-| Biome          | 2.2.0   | ESLint replacement              |
-| Jest           | 30.2.0  | SWC-based                       |
-| Playwright     | 1.56.1  | Chromium/Firefox/WebKit         |
-| pnpm           | 10.18.2 | Monorepo support                |
+| Item           | Version | Note                                |
+| -------------- | ------- | ----------------------------------- |
+| Node.js        | 22.14.0 | Default Vercel environment          |
+| Next.js        | 16.0.10 | App Router                          |
+| TypeScript     | 5.x     | Strict Mode                         |
+| Supabase-js    | 2.88.0  | Supports RLS and Edge Functions     |
+| Prisma         | 5.x     | Server-side ORM, schema & migration |
+| TailwindCSS    | 4       | JIT                                 |
+| shadcn/ui      | Latest  | CLI installation                    |
+| TanStack Query | 5.90.12 | Supports Suspense                   |
+| Zustand        | 5.0.9   | Includes Middleware                 |
+| Zod            | 4.2.1   | Integrated with react-hook-form     |
+| Biome          | 2.3.9   | ESLint replacement                  |
+| Jest           | 30.2.0  | SWC-based                           |
+| Playwright     | 1.57.0  | Chromium/Firefox/WebKit             |
+| pnpm           | 10.18.2 | Monorepo support                    |
 
 ---
 

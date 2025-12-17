@@ -1,4 +1,5 @@
 # Mandalart Web – PRD (v1.0)
+
 _Last updated: 2025-11-08 (KST)_
 
 ---
@@ -14,7 +15,7 @@ _Last updated: 2025-11-08 (KST)_
 
 **Main Goals (from Nagi)**
 
-1. 주제별 여러 만다라트 보드 생성 및 항목 달성 체크  
+1. 주제별 여러 만다라트 보드 생성 및 항목 달성 체크
 2. 계정별 대시보드(달성도, 월별 달성 개수 등) + 보드 완성본 이미지/PDF 다운로드
 
 ---
@@ -56,27 +57,30 @@ _Last updated: 2025-11-08 (KST)_
 
 ### 3.2 사용자 플로우 요약
 
-1. 가입/로그인  
-2. 새 보드 생성 (주제 입력/템플릿 선택)  
-3. 셀 내용 및 태스크 입력  
-4. 태스크 체크  
-5. 대시보드에서 진행 상황 확인  
+1. 가입/로그인
+2. 새 보드 생성 (주제 입력/템플릿 선택)
+3. 셀 내용 및 태스크 입력
+4. 태스크 체크
+5. 대시보드에서 진행 상황 확인
 6. 완료 시 PNG/PDF로 내보내기
 
 ---
 
 ## 4) 기술 스택 (요약)
 
-- **Framework:** Next.js (App Router) + TypeScript  
-- **DB/Backend:** Supabase (Postgres, Auth, Storage, RLS)  
-- **Styling/UI:** TailwindCSS, shadcn/ui  
-- **State/Data:** TanStack Query, Zustand, Zod  
-- **차트:** Recharts  
-- **내보내기:** html-to-image, jsPDF  
-- **테스트:** Jest, Playwright, MSW  
-- **CI:** GitHub Actions  
-- **패키지 매니저:** pnpm  
-- **Lint/Format:** Biome + ESLint(next) + Prettier  
+- **Framework:** Next.js (App Router) + TypeScript
+- **DB/Backend:** Supabase (Postgres, Auth, Storage, RLS) + Prisma ORM
+- **Styling/UI:** TailwindCSS, shadcn/ui
+- **State/Data:** TanStack Query, Zustand, Zod
+- **차트:** Recharts
+- **내보내기:** html-to-image, jsPDF
+- **테스트:** Jest, Playwright, MSW
+- **CI:** GitHub Actions
+- **패키지 매니저:** pnpm
+- **Lint/Format:** Biome + ESLint(next) + Prettier
+
+> Prisma는 **서버 사이드의 주요 데이터 접근 레이어**로 사용한다.
+> Supabase는 Auth, Storage, 그리고 RLS 기반 인가(Authorization)를 담당한다.
 
 > 세부 버전, 설정, 인덱스, 라이브러리 선택 근거는 **TECH_REFERENCE.md** 참조
 
@@ -84,27 +88,34 @@ _Last updated: 2025-11-08 (KST)_
 
 ## 5) 데이터 모델 (요약)
 
-만다라트는 3×3 셀 구조(중앙 목표 + 8개 하위 목표)로 구성되며, MVP에서는 **1단계 확장(1-depth)**까지만 지원한다.
+Mandalart는 3×3 셀 구조(중앙 목표 + 8개의 하위 목표)로 구성된다.  
+MVP에서는 **1단계 확장(1-depth)**만 지원한다.
 
-### 5.1 엔터티 개요
+### 5.1 엔티티 개요
 
-- **profiles:** 사용자 프로필 (Auth 연동)
+- **profiles:** 사용자 프로필 (Supabase Auth와 연결)
 - **boards:** 만다라트 보드 (주제, 설명, 소유자)
-- **cells:** 각 보드의 3×3 셀 (제목, 메모, 계층 연결)
-- **tasks:** 셀별 체크 항목 (내용, 완료 여부)
+- **cells:** 각 보드의 3×3 셀 (제목, 메모, 계층 구조)
+- **tasks:** 셀 단위 체크리스트 아이템 (내용, 완료 여부)
 - **events:** 사용자 활동 로그 (태스크 완료 등)
 
-### 5.2 데이터베이스 정의
-- 모든 테이블은 RLS 활성화
-- 외래키는 `on delete cascade` 정책 사용
-- board_id, cell_id, owner_id 기준 인덱스 설정
-- 실제 SQL 정의 및 인덱스는 **TECH_REFERENCE.md** 참조
+### 5.2 데이터베이스 & ORM 정책
+
+- Prisma 스키마는 **애플리케이션 레벨 데이터 모델의 단일 기준(Single Source of Truth)**이다.
+- Supabase Postgres를 실제 데이터베이스로 사용한다.
+- 모든 테이블은 Supabase RLS가 활성화되어 있다.
+- Prisma 모델은 데이터베이스 테이블 및 관계를 **정확히 1:1로 반영**한다.
+- 모든 외래 키는 `on delete cascade` 정책을 따른다.
+- `board_id`, `cell_id`, `owner_id`에 인덱스를 둔다.
+
+> Prisma 스키마, 마이그레이션, 생성된 클라이언트 사용 방식은 **TECH_REFERENCE.md**에 정의한다.
 
 ---
 
 ## 6) 기능 요구사항
 
 ### 6.1 보드
+
 - 3×3 그리드 기반 셀 구조
 - 셀 클릭 시 Drawer 상세 보기
 - 셀 편집은 600ms 디바운스 자동 저장
@@ -112,15 +123,18 @@ _Last updated: 2025-11-08 (KST)_
 - 충돌 감지(`updated_at`) 시 새 버전 알림 표시
 
 ### 6.2 태스크 체크
+
 - 체크/해제 시 `events` 로그 기록
 - 낙관적 업데이트 후 실패 시 롤백 및 토스트 표시
 
 ### 6.3 대시보드
+
 - 전체 완료율 = 완료 태스크 수 / 전체 태스크 수
 - 월별 완료 수, 최근 10건 로그 표시
 - 모든 시간은 `Asia/Seoul` 기준
 
 ### 6.4 내보내기
+
 - PNG (2x, 투명 배경 off)
 - PDF (A4, 여백 12mm, Pretendard 폰트)
 - 2.5초 초과 시 로딩 인디케이터 표시
@@ -128,26 +142,44 @@ _Last updated: 2025-11-08 (KST)_
 
 ---
 
-## 7) 데이터 접근 및 API
+## 7) 데이터 접근 & API
 
-- Supabase SDK (`supabase-js`) 직접 호출
-- TanStack Query로 캐시 관리 및 동기화
-- Server Actions로 민감한 작업(PDF 렌더 등) 처리
-- 공개 보드는 비로그인 접근 허용 + RLS 일관 유지
-- 캐시 정책: `revalidateTag('board:{id}')` + `invalidateQueries(['board', id])`
+- **주요 데이터 접근 방식:** Prisma Client (서버 전용)
+- **Supabase SDK 사용 범위:**
+  - Auth (세션, 사용자 정보)
+  - Storage (내보내기 파일, 에셋)
+- 클라이언트에서 데이터베이스에 직접 접근하지 않는다.
+- 모든 DB 조회 및 변경은 Server Actions 또는 Route Handlers를 통해 수행한다.
+- Prisma는 다음을 담당한다:
+  - CRUD 연산
+  - 관계 처리
+  - 트랜잭션 관리
+- Supabase RLS는 **최종 인가(authorization) 계층**으로 유지된다.
 
-> SQL 쿼리, API 호출 예시, 구현 코드는 **TECH_REFERENCE.md** 참조
+> 이 섹션은 **서버 사이드 데이터 접근 책임만을 정의**한다.  
+> 클라이언트 측 캐싱, 동기화, UI 상태 관리는 TanStack Query가 담당한다 (8번 섹션 참고).
+
+- 캐시 정책: `revalidateTag('board:{id}')`
+
+> Prisma 쿼리, Supabase 연동 패턴, API 예시는 **TECH_REFERENCE.md**에 정의한다.
 
 ---
 
 ## 8) 상태 관리 & 검증
 
-- **Zustand:** UI 로컬 상태(모달, 셀 선택 등)
-- **TanStack Query:** 보드/셀/태스크 데이터 관리
-- **Zod:** 폼 입력 검증
-- **react-hook-form:** 폼 관리
+- **Zustand:** 로컬 UI 상태 관리 (모달, 선택된 셀 등)
+- **TanStack Query:** 클라이언트 사이드 서버 상태 관리
+  - 캐싱 및 요청 중복 제거
+  - 백그라운드 리패치 및 동기화
+  - 낙관적 업데이트 (예: 태스크 체크/해제)
+  - 서버 변경에 따른 캐시 무효화
+- **Zod:** 폼 및 API payload 검증
+- **react-hook-form:** 폼 상태 관리
 
-> 실제 스키마 코드 및 검증 로직은 **TECH_REFERENCE.md** 참조
+> TanStack Query는 **서버 데이터 레이어 위에서 동작**한다.  
+> Prisma는 클라이언트에 노출되지 않으며, 클라이언트 캐싱이나 동기화를 대체하지 않는다.
+
+> 실제 스키마 코드와 검증 로직은 **TECH_REFERENCE.md**에 정의한다.
 
 ---
 
@@ -164,17 +196,19 @@ _Last updated: 2025-11-08 (KST)_
 
 ## 10) 성능 · 접근성 · 국제화
 
-- Lighthouse 목표: Performance ≥ 90 / Accessibility ≥ 95  
-- A11y: 키보드 탐색, 포커스 표시, 레이블 명확화  
-- Lazy loading, Next `<Image>` 사용  
-- font-display=swap, Critical CSS 최소화  
+- Lighthouse 목표: Performance ≥ 90 / Accessibility ≥ 95
+- A11y: 키보드 탐색, 포커스 표시, 레이블 명확화
+- Lazy loading, Next `<Image>` 사용
+- font-display=swap, Critical CSS 최소화
 
 ### 10.1 다크 모드
+
 - Tailwind `dark:` + `next-themes`
 - 시스템 감지(auto) + 사용자 토글 지원
 - `theme: "light" | "dark" | "system"` 로컬스토리지 저장
 
 ### 10.2 다국어 (한국어/영어)
+
 - `next-intl` 기반
 - 기본: `ko` / 보조: `en`
 - 경로: `/dashboard`, `/en/dashboard`
@@ -201,43 +235,45 @@ _Last updated: 2025-11-08 (KST)_
 
 ## 12) 리스크 & 대응
 
-| 리스크 | 대응 전략 |
-|--------|-----------|
+| 리스크                | 대응 전략                           |
+| --------------------- | ----------------------------------- |
 | 캔버스 캡처 품질 문제 | 프린트 전용 레이아웃 + 폰트 preload |
-| 모바일 편집 UX 복잡도 | Drawer 중심 편집으로 단순화 |
-| RLS 정책 누락 | e2e 테스트 + 정책 점검 스크립트 |
-| Supabase 비용 증가 | Edge Function 호출 제한 + 캐싱 강화 |
+| 모바일 편집 UX 복잡도 | Drawer 중심 편집으로 단순화         |
+| RLS 정책 누락         | e2e 테스트 + 정책 점검 스크립트     |
+| Supabase 비용 증가    | Edge Function 호출 제한 + 캐싱 강화 |
 
 ---
 
 ## 13) 성능 & 품질 목표
 
-- LCP ≤ 2.5s / FID ≤ 100ms / CLS ≤ 0.1  
-- Lazy loading 적용  
-- RSC 캐시 유지율 ≥ 80%  
+- LCP ≤ 2.5s / FID ≤ 100ms / CLS ≤ 0.1
+- Lazy loading 적용
+- RSC 캐시 유지율 ≥ 80%
 
 ---
 
 ## 14) 테스트 & CI
 
 ### 구성 개요
-- **Unit/Integration:** Jest + Testing Library + jest-dom + MSW  
-- **E2E:** Playwright  
-- **Coverage:** Jest(V8)  
-- **CI:** GitHub Actions + pnpm  
+
+- **Unit/Integration:** Jest + Testing Library + jest-dom + MSW
+- **E2E:** Playwright
+- **Coverage:** Jest(V8)
+- **CI:** GitHub Actions + pnpm
 
 ### 파이프라인
+
 1. **Lint/Format:** `pnpm biome check`, `pnpm next lint`
 2. **Unit/Integration:** `pnpm test --runInBand --coverage`
 3. **E2E:** `pnpm exec playwright install --with-deps` → `pnpm exec playwright test --reporter=line`
 
 ### 테스트 피라미드
 
-| 레벨 | 도구 | 목적 | 비율 |
-|------|------|------|------|
-| Unit | Jest | 함수·컴포넌트 단위 | 60% |
-| Integration | Jest + MSW | 데이터·상태 통합 | 25% |
-| E2E | Playwright | 실제 사용자 플로우 | 15% |
+| 레벨        | 도구       | 목적               | 비율 |
+| ----------- | ---------- | ------------------ | ---- |
+| Unit        | Jest       | 함수·컴포넌트 단위 | 60%  |
+| Integration | Jest + MSW | 데이터·상태 통합   | 25%  |
+| E2E         | Playwright | 실제 사용자 플로우 | 15%  |
 
 > 각 테스트의 세부 시나리오와 API 모킹 예시는 **TECH_REFERENCE.md** 참조
 
@@ -245,10 +281,10 @@ _Last updated: 2025-11-08 (KST)_
 
 ## 15) 문서 연결 구조
 
-- **PRD.md** – 제품 정의 및 요구사항  
-- **TECH_REFERENCE.md** – 기술 명세, SQL, 코드 예시, 버전 정보  
-- **SCAFFOLD_STRUCTURE.md** – 폴더 및 컴포넌트 구조(FSD-Lite)  
-- **AGENTS.md** – Codex 에이전트 지침 및 문맥 연결 설정  
+- **PRD.md** – 제품 정의 및 요구사항
+- **TECH_REFERENCE.md** – 기술 명세, SQL, 코드 예시, 버전 정보
+- **SCAFFOLD_STRUCTURE.md** – 폴더 및 컴포넌트 구조(FSD-Lite)
+- **AGENTS.md** – Codex 에이전트 지침 및 문맥 연결 설정
 
 ---
 
