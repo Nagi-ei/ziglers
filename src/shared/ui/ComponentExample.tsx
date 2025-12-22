@@ -32,7 +32,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import * as React from "react";
-import { Example, ExampleWrapper } from "@/components/example";
+import { Example, ExampleWrapper } from "@/shared/ui/Example";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,9 +44,9 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "@/shared/ui/shadcn/AlertDialog";
+import { Badge } from "@/shared/ui/shadcn/Badge";
+import { Button } from "@/shared/ui/shadcn/Button";
 import {
   Card,
   CardAction,
@@ -55,7 +55,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/shared/ui/shadcn/Card";
 import {
   Combobox,
   ComboboxContent,
@@ -63,7 +63,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox";
+} from "@/shared/ui/shadcn/Combobox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -80,9 +80,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from "@/shared/ui/shadcn/DropdownMenu";
+import { Field, FieldGroup, FieldLabel } from "@/shared/ui/shadcn/Field";
+import { Input } from "@/shared/ui/shadcn/Input";
 import {
   Select,
   SelectContent,
@@ -90,8 +90,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/shared/ui/shadcn/Select";
+import { Textarea } from "@/shared/ui/shadcn/Textarea";
 
 export function ComponentExample() {
   return (
