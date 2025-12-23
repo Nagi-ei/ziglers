@@ -22,14 +22,14 @@ jobs:
       # - name: Set env for build
       #   run: echo "NEXT_PUBLIC_API_URL=http://example.com" >> $GITHUB_ENV
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.2
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22.14.0
           cache: "pnpm"
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.18.2
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
