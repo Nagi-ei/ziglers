@@ -92,6 +92,9 @@ import {
   SelectValue,
 } from "@/shared/ui/shadcn/Select";
 import { Textarea } from "@/shared/ui/shadcn/Textarea";
+import { useThemeStore } from "../lib/theme/useThemeStore";
+import { Label } from "./shadcn/Label";
+import { Switch } from "./shadcn/Switch";
 
 export function ComponentExample() {
   return (
@@ -168,7 +171,7 @@ function FormExample() {
     sms: false,
     push: true,
   });
-  const [theme, setTheme] = React.useState("light");
+  const { theme, setTheme } = useThemeStore();
 
   return (
     <Example title="Form">
@@ -469,6 +472,14 @@ function FormExample() {
           </form>
         </CardContent>
       </Card>
+      <div className="flex items-center gap-2">
+        <Switch
+          id="dark-mode"
+          checked={theme === "dark"}
+          onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+        />
+        <Label htmlFor="dark-mode">Dark Mode</Label>
+      </div>
     </Example>
   );
 }
