@@ -32,6 +32,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import * as React from "react";
+import { toast } from "sonner";
 import { Example, ExampleWrapper } from "@/shared/ui/Example";
 import {
   AlertDialog,
@@ -152,6 +153,9 @@ function CardExample() {
           </Badge>
         </CardFooter>
       </Card>
+      <Button variant="outline" onClick={() => toast("Toast has been created")}>
+        Toast
+      </Button>
     </Example>
   );
 }
