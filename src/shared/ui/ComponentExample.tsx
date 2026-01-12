@@ -2,6 +2,7 @@
 
 import {
   BluetoothIcon,
+  Bookmark02Icon,
   CodeIcon,
   ComputerIcon,
   CreditCardIcon,
@@ -94,8 +95,46 @@ import {
 } from "@/shared/ui/shadcn/Select";
 import { Textarea } from "@/shared/ui/shadcn/Textarea";
 import { useThemeStore } from "../lib/theme/useThemeStore";
+import { Avatar, AvatarFallback, AvatarImage } from "./shadcn/Avatar";
+import { Calendar } from "./shadcn/Calendar";
+import { Checkbox } from "./shadcn/Checkbox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./shadcn/Dialog";
 import { Label } from "./shadcn/Label";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./shadcn/Pagination";
+import { Popover, PopoverContent, PopoverTrigger } from "./shadcn/Popover";
+import { Separator } from "./shadcn/Separator";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./shadcn/Sheet";
+import { Skeleton } from "./shadcn/Skeleton";
+import { Spinner } from "./shadcn/Spinner";
 import { Switch } from "./shadcn/Switch";
+import { Toggle } from "./shadcn/Toggle";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./shadcn/Tooltip";
 
 export function ComponentExample() {
   return (
@@ -156,6 +195,136 @@ function CardExample() {
       <Button variant="outline" onClick={() => toast("Toast has been created")}>
         Toast
       </Button>
+      <div className="flex flex-wrap items-center justify-center gap-4">
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <Checkbox />
+        <Dialog>
+          <DialogTrigger render={<Button />}>Open</DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete your account and remove
+                your data from our servers.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Popover>
+          <PopoverTrigger render={<Button variant="outline" />}>Open popover</PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none">Dimensions</h4>
+                <p className="text-muted-foreground text-sm">Set the dimensions for the layer.</p>
+              </div>
+              <div className="grid gap-2">
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <Label htmlFor="width">Width</Label>
+                  <Input id="width" defaultValue="100%" className="col-span-2 h-8" />
+                </div>
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <Label htmlFor="maxWidth">Max. width</Label>
+                  <Input id="maxWidth" defaultValue="300px" className="col-span-2 h-8" />
+                </div>
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <Label htmlFor="height">Height</Label>
+                  <Input id="height" defaultValue="25px" className="col-span-2 h-8" />
+                </div>
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <Label htmlFor="maxHeight">Max. height</Label>
+                  <Input id="maxHeight" defaultValue="none" className="col-span-2 h-8" />
+                </div>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+        <Sheet>
+          <SheetTrigger render={<Button variant="outline" />}>Open</SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Edit profile</SheetTitle>
+              <SheetDescription>
+                Make changes to your profile here. Click save when you&apos;re done.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="grid flex-1 auto-rows-min gap-6 px-4">
+              <div className="grid gap-3">
+                <Label htmlFor="sheet-demo-name">Name</Label>
+                <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="sheet-demo-username">Username</Label>
+                <Input id="sheet-demo-username" defaultValue="@peduarte" />
+              </div>
+            </div>
+            <SheetFooter>
+              <Button type="submit">Save changes</Button>
+              <SheetClose render={<Button variant="outline" />}>Close</SheetClose>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+        <Separator />
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive>
+                2
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">3</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+        <div className="flex items-center space-x-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+        </div>
+        <Spinner />
+        <Toggle
+          aria-label="Toggle bookmark"
+          size="sm"
+          variant="outline"
+          className="data-pressed:bg-transparent"
+        >
+          <HugeiconsIcon
+            icon={Bookmark02Icon}
+            className="transition-colors group-data-pressed/toggle:fill-blue-500 group-data-pressed/toggle:text-blue-500"
+          />
+          Bookmark
+        </Toggle>
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="outline" className="cursor-default" />}>
+            Hover
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Add to library</p>
+          </TooltipContent>
+        </Tooltip>
+        <Calendar />
+      </div>
     </Example>
   );
 }

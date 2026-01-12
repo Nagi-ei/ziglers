@@ -129,4 +129,25 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button,
+  [role="button"],
+  [role="menuitem"],
+  [role="option"],
+  [role="tab"],
+  [role="switch"],
+  [role="checkbox"],
+  [role="radio"],
+  label,
+  select,
+  input[type="checkbox"],
+  input[type="radio"] {
+    @apply cursor-pointer;
+  }
+
+  :disabled,
+  [data-disabled],
+  [aria-disabled="true"] {
+    @apply cursor-not-allowed!;
+  }
 }
