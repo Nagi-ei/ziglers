@@ -1,7 +1,9 @@
 "use client";
 
 import {
+  ArrowDown01Icon,
   BluetoothIcon,
+  Bookmark02Icon,
   CodeIcon,
   ComputerIcon,
   CreditCardIcon,
@@ -31,7 +33,9 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useTheme } from "next-themes";
 import * as React from "react";
+import { toast } from "sonner";
 import { Example, ExampleWrapper } from "@/shared/ui/Example";
 import {
   AlertDialog,
@@ -92,9 +96,46 @@ import {
   SelectValue,
 } from "@/shared/ui/shadcn/Select";
 import { Textarea } from "@/shared/ui/shadcn/Textarea";
-import { useThemeStore } from "../lib/theme/useThemeStore";
+import { Avatar, AvatarFallback, AvatarImage } from "./shadcn/Avatar";
+import { Calendar } from "./shadcn/Calendar";
+import { Checkbox } from "./shadcn/Checkbox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./shadcn/Dialog";
 import { Label } from "./shadcn/Label";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./shadcn/Pagination";
+import { Popover, PopoverContent, PopoverTrigger } from "./shadcn/Popover";
+import { Separator } from "./shadcn/Separator";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./shadcn/Sheet";
+import { Skeleton } from "./shadcn/Skeleton";
+import { Spinner } from "./shadcn/Spinner";
 import { Switch } from "./shadcn/Switch";
+import { Toggle } from "./shadcn/Toggle";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./shadcn/Tooltip";
 
 export function ComponentExample() {
   return (
@@ -106,6 +147,9 @@ export function ComponentExample() {
 }
 
 function CardExample() {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+
   return (
     <Example title="Card" className="items-center justify-center">
       <Card className="relative w-full max-w-sm overflow-hidden pt-0">
@@ -152,6 +196,133 @@ function CardExample() {
           </Badge>
         </CardFooter>
       </Card>
+      <Button onClick={() => toast("Toast has been created")}>Toast</Button>
+      <div className="flex flex-wrap items-center justify-center gap-4">
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <Checkbox />
+        <Dialog>
+          <DialogTrigger render={<Button />}>Modal Open</DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete your account and remove
+                your data from our servers.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose render={<Button />}>Close</DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Sheet>
+          <SheetTrigger render={<Button />}>Sheet Open</SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Edit profile</SheetTitle>
+              <SheetDescription>
+                Make changes to your profile here. Click save when you&apos;re done.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="grid flex-1 auto-rows-min gap-6 px-4">
+              <div className="grid gap-3">
+                <Label htmlFor="sheet-demo-name">Name</Label>
+                <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="sheet-demo-username">Username</Label>
+                <Input id="sheet-demo-username" defaultValue="@peduarte" />
+              </div>
+            </div>
+            <SheetFooter>
+              <Button variant="accent" type="submit">
+                Save changes
+              </Button>
+              <SheetClose render={<Button />}>Close</SheetClose>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+        <Separator />
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive>
+                2
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">3</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+        <div className="flex items-center space-x-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+        </div>
+        <Spinner />
+        <Toggle
+          aria-label="Toggle bookmark"
+          size="sm"
+          variant="outline"
+          className="data-pressed:bg-transparent"
+        >
+          <HugeiconsIcon
+            icon={Bookmark02Icon}
+            className="transition-colors group-data-pressed/toggle:fill-blue-500 group-data-pressed/toggle:text-blue-500"
+          />
+          Bookmark
+        </Toggle>
+        <Tooltip>
+          <TooltipTrigger render={<Button className="cursor-default" />}>Hover</TooltipTrigger>
+          <TooltipContent>
+            <p>Add to library</p>
+          </TooltipContent>
+        </Tooltip>
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="date" className="px-1">
+            Date of birth
+          </Label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger
+              render={
+                <Button id="date" className="w-48 justify-between font-normal">
+                  {date ? date.toLocaleDateString() : "Select date"}
+                  <HugeiconsIcon icon={ArrowDown01Icon} />
+                </Button>
+              }
+            />
+            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  setDate(date);
+                  setOpen(false);
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
     </Example>
   );
 }
@@ -171,7 +342,13 @@ function FormExample() {
     sms: false,
     push: true,
   });
-  const { theme, setTheme } = useThemeStore();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Example title="Form">
@@ -463,19 +640,35 @@ function FormExample() {
                 <Textarea id="small-form-comments" placeholder="Add any additional comments" />
               </Field>
               <Field orientation="horizontal">
-                <Button type="submit">Submit</Button>
-                <Button variant="outline" type="button">
-                  Cancel
+                <Button variant="accent" type="submit">
+                  Submit
                 </Button>
+                <Button type="button">Cancel</Button>
               </Field>
             </FieldGroup>
           </form>
         </CardContent>
       </Card>
       <div className="flex items-center gap-2">
+        <Button>Default</Button>
+        <Button variant="accent">Accent</Button>
+        <Button variant="secondary">Second</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="destructive">Destruc</Button>
+        <Button variant="link">Link</Button>
+      </div>
+      <div className="flex items-center gap-2">
+        <Badge>Default</Badge>
+        <Badge variant="secondary">Secon</Badge>
+        <Badge variant="destructive">Destruc</Badge>
+        <Badge variant="outline">Outline</Badge>
+        <Badge variant="ghost">Ghost</Badge>
+        <Badge variant="link">Link</Badge>
+      </div>
+      <div className="flex items-center gap-2">
         <Switch
           id="dark-mode"
-          checked={theme === "dark"}
+          checked={mounted && resolvedTheme === "dark"}
           onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
         />
         <Label htmlFor="dark-mode">Dark Mode</Label>
