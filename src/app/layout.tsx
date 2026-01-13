@@ -30,27 +30,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${figtree.variable}`} suppressHydrationWarning>
-      <head>
-        <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: This script is necessary to prevent FOUC (Flash of Unstyled Content) when detecting the user's theme preference before the page renders.
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const storage = localStorage.getItem('theme-storage');
-                  let theme = 'system';
-                  if (storage) {
-                    theme = JSON.parse(storage).state.theme;
-                  }
-                  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                  if (isDark) document.documentElement.classList.add('dark');
-                  else document.documentElement.classList.remove('dark');
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
           <SidebarProvider>

@@ -33,6 +33,7 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useTheme } from "next-themes";
 import * as React from "react";
 import { toast } from "sonner";
 import { Example, ExampleWrapper } from "@/shared/ui/Example";
@@ -95,7 +96,6 @@ import {
   SelectValue,
 } from "@/shared/ui/shadcn/Select";
 import { Textarea } from "@/shared/ui/shadcn/Textarea";
-import { useThemeStore } from "../lib/theme/useThemeStore";
 import { Avatar, AvatarFallback, AvatarImage } from "./shadcn/Avatar";
 import { Calendar } from "./shadcn/Calendar";
 import { Checkbox } from "./shadcn/Checkbox";
@@ -344,7 +344,13 @@ function FormExample() {
     sms: false,
     push: true,
   });
-  const { theme, setTheme } = useThemeStore();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Example title="Form">
@@ -648,7 +654,7 @@ function FormExample() {
       <div className="flex items-center gap-2">
         <Switch
           id="dark-mode"
-          checked={theme === "dark"}
+          checked={mounted && resolvedTheme === "dark"}
           onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
         />
         <Label htmlFor="dark-mode">Dark Mode</Label>

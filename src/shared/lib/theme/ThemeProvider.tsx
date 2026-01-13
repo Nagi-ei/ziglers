@@ -1,33 +1,18 @@
 "use client";
 
-import { type ReactNode, useEffect } from "react";
-import { useThemeStore } from "./useThemeStore";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import type { ComponentProps } from "react";
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const { theme } = useThemeStore();
-
-  useEffect(() => {
-    // 1. 초기 로드 시 및 테마 변경 시 클래스 적용
-    const root = window.document.documentElement;
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-    const applyTheme = () => {
-      const isDark = theme === "dark" || (theme === "system" && mediaQuery.matches);
-      root.classList.toggle("dark", isDark);
-    };
-
-    applyTheme();
-
-    // 2. 'system' 모드일 때 OS 테마 변경 감지
-    const handleChange = () => {
-      if (theme === "system") applyTheme();
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme]);
-
-  // 이 컴포넌트는 UI를 그리지 않고 로직만 실행하거나,
-  // 필요하다면 Context.Provider 역할을 할 수도 있습니다.
-  return <>{children}</>;
+export function ThemeProvider({ children, ...props }: ComponentProps<typeof NextThemesProvider>) {
+  return (
+    <NextThemesProvider
+      attribute="class" // html 태그에 'dark' 클래스 추가.
+      defaultTheme="system"
+      enableSystem={true} // 시스템 테마 감지 활성화.
+      disableTransitionOnChange // 테마 변경 시 CSS 애니메이션이 튀는 것을 방지.
+      {...props}
+    >
+      {children}
+    </NextThemesProvider>
+  );
 }
