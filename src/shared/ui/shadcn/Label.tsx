@@ -1,11 +1,11 @@
 "use client";
 
 import type * as React from "react";
-
 import { cn } from "@/shared/lib/utils";
 
 function Label({ className, ...props }: React.ComponentProps<"label">) {
   return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: This is a shared component that will be associated with an input when used.
     <label
       data-slot="label"
       className={cn(

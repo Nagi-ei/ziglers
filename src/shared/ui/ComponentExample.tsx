@@ -196,9 +196,7 @@ function CardExample() {
           </Badge>
         </CardFooter>
       </Card>
-      <Button variant="outline" onClick={() => toast("Toast has been created")}>
-        Toast
-      </Button>
+      <Button onClick={() => toast("Toast has been created")}>Toast</Button>
       <div className="flex flex-wrap items-center justify-center gap-4">
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
@@ -216,12 +214,12 @@ function CardExample() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
+              <DialogClose render={<Button />}>Close</DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>
         <Sheet>
-          <SheetTrigger render={<Button variant="outline" />}>Sheet Open</SheetTrigger>
+          <SheetTrigger render={<Button />}>Sheet Open</SheetTrigger>
           <SheetContent>
             <SheetHeader>
               <SheetTitle>Edit profile</SheetTitle>
@@ -240,8 +238,10 @@ function CardExample() {
               </div>
             </div>
             <SheetFooter>
-              <Button type="submit">Save changes</Button>
-              <SheetClose render={<Button variant="outline" />}>Close</SheetClose>
+              <Button variant="accent" type="submit">
+                Save changes
+              </Button>
+              <SheetClose render={<Button />}>Close</SheetClose>
             </SheetFooter>
           </SheetContent>
         </Sheet>
@@ -291,9 +291,7 @@ function CardExample() {
           Bookmark
         </Toggle>
         <Tooltip>
-          <TooltipTrigger render={<Button variant="outline" className="cursor-default" />}>
-            Hover
-          </TooltipTrigger>
+          <TooltipTrigger render={<Button className="cursor-default" />}>Hover</TooltipTrigger>
           <TooltipContent>
             <p>Add to library</p>
           </TooltipContent>
@@ -305,7 +303,7 @@ function CardExample() {
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger
               render={
-                <Button variant="outline" id="date" className="w-48 justify-between font-normal">
+                <Button id="date" className="w-48 justify-between font-normal">
                   {date ? date.toLocaleDateString() : "Select date"}
                   <HugeiconsIcon icon={ArrowDown01Icon} />
                 </Button>
@@ -642,15 +640,31 @@ function FormExample() {
                 <Textarea id="small-form-comments" placeholder="Add any additional comments" />
               </Field>
               <Field orientation="horizontal">
-                <Button type="submit">Submit</Button>
-                <Button variant="outline" type="button">
-                  Cancel
+                <Button variant="accent" type="submit">
+                  Submit
                 </Button>
+                <Button type="button">Cancel</Button>
               </Field>
             </FieldGroup>
           </form>
         </CardContent>
       </Card>
+      <div className="flex items-center gap-2">
+        <Button>Default</Button>
+        <Button variant="accent">Accent</Button>
+        <Button variant="secondary">Second</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="destructive">Destruc</Button>
+        <Button variant="link">Link</Button>
+      </div>
+      <div className="flex items-center gap-2">
+        <Badge>Default</Badge>
+        <Badge variant="secondary">Secon</Badge>
+        <Badge variant="destructive">Destruc</Badge>
+        <Badge variant="outline">Outline</Badge>
+        <Badge variant="ghost">Ghost</Badge>
+        <Badge variant="link">Link</Badge>
+      </div>
       <div className="flex items-center gap-2">
         <Switch
           id="dark-mode"
