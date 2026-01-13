@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowDown01Icon,
   BluetoothIcon,
   Bookmark02Icon,
   CodeIcon,
@@ -146,6 +147,9 @@ export function ComponentExample() {
 }
 
 function CardExample() {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+
   return (
     <Example title="Card" className="items-center justify-center">
       <Card className="relative w-full max-w-sm overflow-hidden pt-0">
@@ -202,7 +206,7 @@ function CardExample() {
         </Avatar>
         <Checkbox />
         <Dialog>
-          <DialogTrigger render={<Button />}>Open</DialogTrigger>
+          <DialogTrigger render={<Button />}>Modal Open</DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Are you absolutely sure?</DialogTitle>
@@ -216,37 +220,8 @@ function CardExample() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Popover>
-          <PopoverTrigger render={<Button variant="outline" />}>Open popover</PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <h4 className="font-medium leading-none">Dimensions</h4>
-                <p className="text-muted-foreground text-sm">Set the dimensions for the layer.</p>
-              </div>
-              <div className="grid gap-2">
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Label htmlFor="width">Width</Label>
-                  <Input id="width" defaultValue="100%" className="col-span-2 h-8" />
-                </div>
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Label htmlFor="maxWidth">Max. width</Label>
-                  <Input id="maxWidth" defaultValue="300px" className="col-span-2 h-8" />
-                </div>
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Label htmlFor="height">Height</Label>
-                  <Input id="height" defaultValue="25px" className="col-span-2 h-8" />
-                </div>
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Label htmlFor="maxHeight">Max. height</Label>
-                  <Input id="maxHeight" defaultValue="none" className="col-span-2 h-8" />
-                </div>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
         <Sheet>
-          <SheetTrigger render={<Button variant="outline" />}>Open</SheetTrigger>
+          <SheetTrigger render={<Button variant="outline" />}>Sheet Open</SheetTrigger>
           <SheetContent>
             <SheetHeader>
               <SheetTitle>Edit profile</SheetTitle>
@@ -323,7 +298,32 @@ function CardExample() {
             <p>Add to library</p>
           </TooltipContent>
         </Tooltip>
-        <Calendar />
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="date" className="px-1">
+            Date of birth
+          </Label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger
+              render={
+                <Button variant="outline" id="date" className="w-48 justify-between font-normal">
+                  {date ? date.toLocaleDateString() : "Select date"}
+                  <HugeiconsIcon icon={ArrowDown01Icon} />
+                </Button>
+              }
+            />
+            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  setDate(date);
+                  setOpen(false);
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </Example>
   );

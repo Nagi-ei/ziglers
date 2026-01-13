@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/shared/lib/theme/ThemeProvider";
+import SidebarExample from "@/shared/ui/SidebarExample";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/shared/ui/shadcn/Sidebar";
 import { Toaster } from "@/shared/ui/shadcn/Sonner";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
@@ -50,7 +52,15 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SidebarProvider>
+            <SidebarExample variant="inset" />
+            <SidebarInset>
+              <SidebarTrigger />
+              {children}
+            </SidebarInset>
+          </SidebarProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
