@@ -17,6 +17,13 @@ import { HeroSection as HeroGemini2 } from "@/widgets/landing-gemini2/HeroSectio
 import { MethodSection as MethodGemini2 } from "@/widgets/landing-gemini2/MethodSection";
 import { TemplateSection as TemplateGemini2 } from "@/widgets/landing-gemini2/TemplateSection";
 
+import { CtaSection as CtaGemini3 } from "@/widgets/landing-gemini3/CtaSection";
+import { Footer as FooterGemini3 } from "@/widgets/landing-gemini3/Footer";
+import { Header as HeaderGemini3 } from "@/widgets/landing-gemini3/Header";
+import { HeroSection as HeroGemini3 } from "@/widgets/landing-gemini3/HeroSection";
+import { MethodSection as MethodGemini3 } from "@/widgets/landing-gemini3/MethodSection";
+import { TemplateSection as TemplateGemini3 } from "@/widgets/landing-gemini3/TemplateSection";
+
 import { CtaSection as CtaOpus } from "@/widgets/landing-opus/CtaSection";
 import { Footer as FooterOpus } from "@/widgets/landing-opus/Footer";
 import { Header as HeaderOpus } from "@/widgets/landing-opus/Header";
@@ -40,6 +47,14 @@ const VARIANT_COMPONENTS = {
     TemplateSection: TemplateGemini2,
     CtaSection: CtaGemini2,
     Footer: FooterGemini2,
+  },
+  gemini3: {
+    Header: HeaderGemini3,
+    HeroSection: HeroGemini3,
+    MethodSection: MethodGemini3,
+    TemplateSection: TemplateGemini3,
+    CtaSection: CtaGemini3,
+    Footer: FooterGemini3,
   },
   opus: {
     Header: HeaderOpus,
