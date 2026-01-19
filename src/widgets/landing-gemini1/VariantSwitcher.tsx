@@ -10,6 +10,7 @@ const VARIANTS = [
   { id: "gemini1", name: "Gemini v1" },
   { id: "gemini2", name: "Gemini v2" },
   { id: "gemini3", name: "Gemini v3" },
+  { id: "gemini4", name: "Gemini v4" },
   { id: "opus", name: "Opus" },
 ] as const;
 
