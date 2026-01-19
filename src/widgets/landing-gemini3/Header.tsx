@@ -23,7 +23,7 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden items-stretch lg:flex">
-          {["Method", "Templates", "Pricing"].map((item) => (
+          {["Method", "Templates", "Mobile"].map((item) => (
             <Link
               key={item}
               href={`#${item.toLowerCase()}`}

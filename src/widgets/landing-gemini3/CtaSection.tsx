@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/shadcn/Button";
 
 export function CtaSection() {
   return (
-    <section className="border-primary border-y-2 bg-primary text-primary-foreground">
+    <section id="mobile" className="border-primary border-y-2 bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
         <div className="flex flex-col justify-center border-primary-foreground/20 border-b-2 px-6 py-20 lg:border-r-2 lg:border-b-0 lg:p-24">
           <h2 className="mb-6 font-black font-mono text-4xl uppercase leading-none tracking-tighter md:text-6xl">

@@ -27,7 +27,7 @@ export function Header() {
           {["Method", "Templates", "Mobile"].map((item) => (
             <Link
               key={item}
-              href={`/#${item.toLowerCase()}`}
+              href={`#${item.toLowerCase()}`}
               className="relative font-medium text-foreground/80 text-sm transition-colors hover:text-primary"
             >
               <span className="relative z-10">{item}</span>

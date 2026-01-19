@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/shadcn/Button";
 
 export function CtaSection() {
   return (
-    <section className="relative overflow-hidden bg-card px-4 py-24 sm:px-6 lg:px-8">
+    <section id="mobile" className="relative overflow-hidden bg-card px-4 py-24 sm:px-6 lg:px-8">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
