@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-primary/20 border-b-2 bg-[#f2ede4]/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-primary/20 border-b-2 bg-background/95 backdrop-blur-sm">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-3">
           <div className="relative rotate-[-2deg] transition-transform duration-300 group-hover:rotate-0">

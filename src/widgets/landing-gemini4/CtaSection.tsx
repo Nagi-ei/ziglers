@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/shadcn/Button";
 
 export function CtaSection() {
   return (
-    <section className="relative overflow-hidden bg-[#f7f5f2] px-4 py-24 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-card px-4 py-24 sm:px-6 lg:px-8">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
@@ -15,7 +15,7 @@ export function CtaSection() {
       />
 
       <div className="relative mx-auto max-w-4xl">
-        <div className="rotate-1 border-2 border-primary/10 bg-[#f2ede4] p-8 text-center shadow-[8px_8px_0px_0px_rgba(45,45,45,0.1)] sm:p-12">
+        <div className="rotate-1 border-2 border-primary/10 bg-background p-8 text-center shadow-[8px_8px_0px_0px_rgba(45,45,45,0.1)] sm:p-12">
           <div className="absolute -top-4 left-1/2 h-8 w-32 -translate-x-1/2 rotate-[-2deg] bg-primary/20 opacity-60 backdrop-blur-[1px]" />
 
           <h2 className="mb-6 font-bold text-3xl text-foreground tracking-tight sm:text-4xl">

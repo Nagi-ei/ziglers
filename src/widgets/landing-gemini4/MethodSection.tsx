@@ -32,10 +32,7 @@ export function MethodSection() {
   ];
 
   return (
-    <section
-      id="method"
-      className="relative overflow-hidden bg-[#f7f5f2] px-4 py-20 sm:px-6 lg:px-8"
-    >
+    <section id="method" className="relative overflow-hidden bg-card px-4 py-20 sm:px-6 lg:px-8">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
@@ -66,11 +63,11 @@ export function MethodSection() {
               )}
 
               <div
-                className={`relative h-full border-2 border-primary/10 bg-[#f2ede4] p-6 transition-transform duration-300 hover:z-10 hover:-translate-y-2 ${step.rotate} shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]`}
+                className={`relative h-full border-2 border-primary/10 bg-background p-6 transition-transform duration-300 hover:z-10 hover:-translate-y-2 ${step.rotate} shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]`}
               >
                 <div className="absolute -top-3 left-1/2 h-6 w-24 -translate-x-1/2 rotate-1 bg-primary/10 opacity-80 backdrop-blur-[1px]" />
 
-                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-none border-2 border-primary/20 bg-white shadow-[2px_2px_0px_0px_rgba(45,45,45,0.1)]">
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-none border-2 border-primary/20 bg-card shadow-[2px_2px_0px_0px_rgba(45,45,45,0.1)]">
                   <HugeiconsIcon icon={step.icon} className="size-6 text-primary" />
                 </div>
 

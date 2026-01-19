@@ -74,7 +74,7 @@ export function HeroSection() {
 
         {/* Visual Representation */}
         <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-          <div className="relative aspect-square rotate-1 border-2 border-primary/10 bg-[#f7f5f2] p-4 shadow-[8px_8px_0px_0px_rgba(140,48,39,0.15)]">
+          <div className="relative aspect-square rotate-1 border-2 border-primary/10 bg-card p-4 shadow-[8px_8px_0px_0px_rgba(140,48,39,0.15)]">
             {/* Decorative tape */}
             <div className="absolute -top-3 left-1/2 h-8 w-32 -translate-x-1/2 rotate-[-2deg] bg-primary/20 opacity-60 backdrop-blur-[1px]" />
 
@@ -85,7 +85,7 @@ export function HeroSection() {
                   className={`flex items-center justify-center border text-center text-[10px] transition-colors hover:bg-primary/5 sm:text-xs ${
                     i === 4
                       ? "border-primary bg-primary/10 font-bold text-primary shadow-[inset_0_0_10px_rgba(140,48,39,0.1)]"
-                      : "border-primary/20 bg-white text-muted-foreground"
+                      : "border-primary/20 bg-card text-muted-foreground"
                   }`}
                 >
                   {i === 4 ? "CORE GOAL" : `Sub-goal ${i + 1}`}

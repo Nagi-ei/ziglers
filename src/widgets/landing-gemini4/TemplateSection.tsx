@@ -41,7 +41,7 @@ export function TemplateSection() {
   ];
 
   return (
-    <section id="templates" className="bg-[#f2ede4] px-4 py-20 sm:px-6 lg:px-8">
+    <section id="templates" className="bg-background px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col items-center justify-between gap-4 md:flex-row">
           <div>
@@ -64,9 +64,9 @@ export function TemplateSection() {
           {templates.map((template) => (
             <div
               key={template.title}
-              className={`group relative flex h-full flex-col justify-between border-2 border-primary/10 bg-white p-6 transition-transform duration-300 hover:z-10 hover:-translate-y-2 ${template.rotate} shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]`}
+              className={`group relative flex h-full flex-col justify-between border-2 border-primary/10 bg-card p-6 transition-transform duration-300 hover:z-10 hover:-translate-y-2 ${template.rotate} shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]`}
             >
-              <div className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-[#f2ede4] shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]" />
+              <div className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-background shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]" />
 
               <div>
                 <div
