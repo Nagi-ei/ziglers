@@ -6,6 +6,8 @@ import {
   Settings01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
@@ -50,8 +52,13 @@ export default function SidebarExample({ ...props }) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroup className="gap-4">
+          <SidebarGroupLabel>
+            <Link href="/" className="flex items-center gap-2">
+              <Image src="/logo.png" alt="Logo" width={24} height={24} draggable={false} />
+              Zieglers
+            </Link>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
