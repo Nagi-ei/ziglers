@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/shared/lib/theme/ThemeProvider";
+import { cn } from "@/shared/lib/utils";
 import { Toaster } from "@/shared/ui/shadcn/Sonner";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
@@ -27,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${figtree.variable}`} suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" className={cn(figtree.variable, "scroll-smooth")} suppressHydrationWarning>
+      <body className={cn(`${geistSans.variable} ${geistMono.variable} antialiased`)}>
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster />
       </body>
