@@ -10,6 +10,13 @@ import { MethodSection as MethodGemini1 } from "@/widgets/landing-gemini1/Method
 import { TemplateSection as TemplateGemini1 } from "@/widgets/landing-gemini1/TemplateSection";
 import { VariantSwitcher } from "@/widgets/landing-gemini1/VariantSwitcher";
 
+import { CtaSection as CtaGemini2 } from "@/widgets/landing-gemini2/CtaSection";
+import { Footer as FooterGemini2 } from "@/widgets/landing-gemini2/Footer";
+import { Header as HeaderGemini2 } from "@/widgets/landing-gemini2/Header";
+import { HeroSection as HeroGemini2 } from "@/widgets/landing-gemini2/HeroSection";
+import { MethodSection as MethodGemini2 } from "@/widgets/landing-gemini2/MethodSection";
+import { TemplateSection as TemplateGemini2 } from "@/widgets/landing-gemini2/TemplateSection";
+
 import { CtaSection as CtaOpus } from "@/widgets/landing-opus/CtaSection";
 import { Footer as FooterOpus } from "@/widgets/landing-opus/Footer";
 import { Header as HeaderOpus } from "@/widgets/landing-opus/Header";
@@ -17,19 +24,43 @@ import { HeroSection as HeroOpus } from "@/widgets/landing-opus/HeroSection";
 import { MethodSection as MethodOpus } from "@/widgets/landing-opus/MethodSection";
 import { TemplateSection as TemplateOpus } from "@/widgets/landing-opus/TemplateSection";
 
+const VARIANT_COMPONENTS = {
+  gemini1: {
+    Header: HeaderGemini1,
+    HeroSection: HeroGemini1,
+    MethodSection: MethodGemini1,
+    TemplateSection: TemplateGemini1,
+    CtaSection: CtaGemini1,
+    Footer: FooterGemini1,
+  },
+  gemini2: {
+    Header: HeaderGemini2,
+    HeroSection: HeroGemini2,
+    MethodSection: MethodGemini2,
+    TemplateSection: TemplateGemini2,
+    CtaSection: CtaGemini2,
+    Footer: FooterGemini2,
+  },
+  opus: {
+    Header: HeaderOpus,
+    HeroSection: HeroOpus,
+    MethodSection: MethodOpus,
+    TemplateSection: TemplateOpus,
+    CtaSection: CtaOpus,
+    Footer: FooterOpus,
+  },
+} as const;
+
+type VariantKey = keyof typeof VARIANT_COMPONENTS;
+
 function LandingPageContent() {
   const searchParams = useSearchParams();
-  const variant = searchParams.get("variant") || "gemini1";
-  const isOpus = variant === "opus";
+  const variantParam = searchParams.get("variant") || "gemini1";
+  const variant: VariantKey = (
+    variantParam in VARIANT_COMPONENTS ? variantParam : "gemini1"
+  ) as VariantKey;
 
-  const Components = {
-    Header: isOpus ? HeaderOpus : HeaderGemini1,
-    HeroSection: isOpus ? HeroOpus : HeroGemini1,
-    MethodSection: isOpus ? MethodOpus : MethodGemini1,
-    TemplateSection: isOpus ? TemplateOpus : TemplateGemini1,
-    CtaSection: isOpus ? CtaOpus : CtaGemini1,
-    Footer: isOpus ? FooterOpus : FooterGemini1,
-  };
+  const Components = VARIANT_COMPONENTS[variant];
 
   return (
     <div className="flex min-h-screen flex-col">
