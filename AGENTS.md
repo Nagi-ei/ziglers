@@ -43,7 +43,6 @@ based on `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md`.
 - **Reference:** `SCAFFOLD_STRUCTURE.md`
 - **Main functions:**
   - Detect violations of import direction (`app → widgets → features → entities → shared`)
-  - Identify missing barrel files (`index.ts`)
   - Warn if Supabase is accessed directly outside of `entities/lib/`
   - Detect disallowed relative imports (`../..`)
 - **Trigger:** On PR creation or AI refactor execution
@@ -51,7 +50,6 @@ based on `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md`.
   ```json
   {
     "status": "pass",
-    "missing_barrels": [],
     "invalid_imports": []
   }
   ```

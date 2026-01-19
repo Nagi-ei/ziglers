@@ -49,17 +49,14 @@ src/
 │  │  │  ├─ repository.ts                # 포트(인터페이스)
 │  │  │  ├─ supabase.adapter.ts          # 어댑터(구현) → M2에서 http.adapter.ts로 교체
 │  │  │  └─ mapper.ts
-│  │  ├─ ui/
-│  │  │  └─ card.tsx
-│  │  └─ index.ts
+│  │  └─ ui/
+│  │     └─ card.tsx
 │  ├─ cell/
 │  │  ├─ model/{types.ts, keys.ts, queries.ts}
 │  │  └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│  │  └─ index.ts
 │  └─ task/
 │     ├─ model/{types.ts, keys.ts, queries.ts}
 │     └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│  │  └─ index.ts
 │
 ├─ shared/
 │  ├─ ui/                                # shadcn 확장(버튼/모달/토스트 등)
@@ -109,16 +106,6 @@ prisma/
 
 - **의존 방향 강제**: `app → widgets → features → entities → shared`  
    (상위가 하위만 import, 반대 금지. 예: entities가 widgets를 import ❌)
-- **Public API**: 각 슬라이스 루트 `index.ts`에서 외부로 노출할 최소만 export
--     - 예시:
-
-```ts
-// src/entities/board/index.ts
-export * from "./model/types";
-export * from "./model/queries";
-export * from "./lib/repository";
-```
-
 - Data Access 규칙
   - 모든 데이터베이스 접근은 **서버 사이드 코드에서만** 수행한다.
   - Prisma Client는 아래 위치에서만 사용 가능하다.
