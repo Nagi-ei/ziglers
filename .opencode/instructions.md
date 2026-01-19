@@ -16,7 +16,7 @@
 ## 3. 코딩 및 Git 규칙
 
 - **파일당 1컴포넌트:** 하나의 파일에는 오직 하나의 React 컴포넌트만 작성한다.
-- **shadcn/ui 사용:** UI 컴포넌트는 `src/shared/ui/shadcn` 경로에 있는 shadcn/ui 컴포넌트를 최대한 활용하고, 적용된 스타일을 준수하여 구현한다.
+- **shadcn/ui 사용:** UI 컴포넌트는 `src/shared/ui/shadcn` 경로에 있는 shadcn/ui 컴포넌트를 최대한 활용하고, 적용된 스타일을 준수하여 구현한다. 이 컴포넌트 파일은 절대 수정하지 않는다.
 - **색상 사용:** UI 컴포넌트 색상은 `src/app/globals.css`에 정의된 색상만 사용한다.
 - **의존성 관리:** 반드시 `pnpm`을 사용하여 패키지를 관리한다.
 - **단위 커밋:** 논리적 작업 단위(예: Architect 단계 완료, Logic 구현 완료)가 끝날 때마다 Conventional Commits 규격에 맞춰 커밋한다.
