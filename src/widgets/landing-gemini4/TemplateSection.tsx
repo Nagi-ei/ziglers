@@ -14,28 +14,24 @@ export function TemplateSection() {
       title: "Career Growth",
       description: "Map out your professional journey, skills, and networking goals.",
       icon: Briefcase01Icon,
-      color: "bg-blue-50",
       rotate: "rotate-1",
     },
     {
       title: "Health & Fitness",
       description: "Balance diet, exercise, sleep, and mental well-being.",
       icon: Activity01Icon,
-      color: "bg-green-50",
       rotate: "rotate-[-1deg]",
     },
     {
       title: "Learning & Skills",
       description: "Structure your study path for languages, coding, or arts.",
       icon: BookOpen01Icon,
-      color: "bg-amber-50",
       rotate: "rotate-2",
     },
     {
       title: "Relationships",
       description: "Strengthen bonds with family, friends, and community.",
       icon: UserGroupIcon,
-      color: "bg-rose-50",
       rotate: "rotate-[-2deg]",
     },
   ];
@@ -69,9 +65,7 @@ export function TemplateSection() {
               <div className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-background shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]" />
 
               <div>
-                <div
-                  className={`mb-4 inline-flex size-10 items-center justify-center rounded-none border border-primary/10 ${template.color}`}
-                >
+                <div className="mb-4 inline-flex size-10 items-center justify-center rounded-none border border-primary/10 bg-card">
                   <HugeiconsIcon icon={template.icon} className="size-5 text-primary" />
                 </div>
                 <h3 className="mb-2 font-bold text-foreground text-lg">{template.title}</h3>

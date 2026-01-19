@@ -85,7 +85,7 @@ export function HeroSection() {
                   className={`flex items-center justify-center border text-center text-[10px] transition-colors hover:bg-primary/5 sm:text-xs ${
                     i === 4
                       ? "border-primary bg-primary/10 font-bold text-primary shadow-[inset_0_0_10px_rgba(140,48,39,0.1)]"
-                      : "border-primary/20 bg-card text-muted-foreground"
+                      : "border-primary/40 bg-card text-muted-foreground"
                   }`}
                 >
                   {i === 4 ? "CORE GOAL" : `Sub-goal ${i + 1}`}
