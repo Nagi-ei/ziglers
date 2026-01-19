@@ -38,3 +38,15 @@
 
 - 코드를 대량으로 생성하기 전, 모호한 요구사항은 반드시 사용자에게 질문한다.
 - "왜 이 방식을 선택했는지"에 대해 `note.md`나 대화를 통해 설명한다.
+
+## 6. 에이전트 위임 규칙 (필수)
+
+- **모든 작업은 해당 전문 에이전트에게 위임한다.** 직접 처리하지 않는다.
+- 위임 대상:
+  - **UI/UX 시각적 작업** (스타일, 레이아웃, 애니메이션, 색상 등) → `frontend-ui-ux-engineer`
+  - **문서 작성** (README, API 문서, 가이드 등) → `document-writer`
+  - **아키텍처 결정, 복잡한 디버깅** → `oracle`
+  - **외부 라이브러리 조사, 문서 검색** → `librarian`
+  - **코드베이스 탐색** → `explore`
+- 위임 시 반드시 **7가지 섹션**(TASK, EXPECTED OUTCOME, REQUIRED SKILLS, REQUIRED TOOLS, MUST DO, MUST NOT DO, CONTEXT)을 포함한 상세 프롬프트를 작성한다.
+- 위임 결과는 반드시 **검증**한다: 예상대로 동작하는지, 코드베이스 패턴을 따르는지, MUST DO/MUST NOT DO를 준수했는지 확인한다.
