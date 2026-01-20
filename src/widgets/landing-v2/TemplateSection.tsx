@@ -18,7 +18,7 @@ export function TemplateSection() {
     <section id="templates" className="bg-background py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-black font-mono text-3xl text-foreground uppercase tracking-tight md:text-5xl">
+          <h2 className="font-bold font-mono text-3xl text-foreground uppercase tracking-tight md:text-5xl">
             Ready-Made Blueprints
           </h2>
           <p className="mx-auto mt-4 max-w-2xl font-mono text-muted-foreground text-sm">

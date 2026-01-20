@@ -11,9 +11,7 @@ export function Footer() {
         <div className="flex flex-col gap-12 md:flex-row md:justify-between">
           <div className="flex flex-col gap-6">
             <Link href="/" className="group flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center border-2 border-foreground bg-primary text-primary-foreground transition-transform group-hover:translate-x-[2px] group-hover:translate-y-[2px]">
-                <span className="font-bold text-lg">Z</span>
-              </div>
+              <Image src="/logo.png" alt="Zieglers" width={24} height={24} />
               <span className="font-bold text-foreground text-xl tracking-tight">Zieglers</span>
             </Link>
             <p className="max-w-xs text-muted-foreground text-sm leading-relaxed">

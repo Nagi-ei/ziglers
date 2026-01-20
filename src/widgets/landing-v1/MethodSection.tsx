@@ -30,7 +30,7 @@ export function MethodSection() {
     <section id="method" className="w-full border-border border-y bg-muted py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-16 text-center">
-          <h2 className="mb-6 font-black text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
+          <h2 className="mb-6 font-semibold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
             The Construction Method
           </h2>
           <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg">

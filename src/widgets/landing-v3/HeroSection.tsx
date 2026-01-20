@@ -1,7 +1,30 @@
-import { ArrowRight01Icon, GridIcon } from "@hugeicons/core-free-icons";
+import {
+  Activity01Icon,
+  ArrowRight01Icon,
+  BookOpen01Icon,
+  Brain01Icon,
+  Briefcase01Icon,
+  CheckListIcon,
+  Coins01Icon,
+  GridIcon,
+  PaintBoardIcon,
+  Target02Icon,
+  UserGroupIcon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
 import { Button } from "@/shared/ui/shadcn/Button";
+
+const GRID_ITEMS = [
+  { label: "Career", icon: Briefcase01Icon },
+  { label: "Health", icon: Activity01Icon },
+  { label: "Learning", icon: BookOpen01Icon },
+  { label: "Finance", icon: Coins01Icon },
+  { label: "Your Goals", icon: Target02Icon, isCenter: true },
+  { label: "Habits", icon: CheckListIcon },
+  { label: "Relations", icon: UserGroupIcon },
+  { label: "Creative", icon: PaintBoardIcon },
+  { label: "Mindset", icon: Brain01Icon },
+];
 
 export function HeroSection() {
   return (
@@ -79,16 +102,28 @@ export function HeroSection() {
             <div className="absolute -top-3 left-1/2 h-8 w-32 -translate-x-1/2 rotate-[-2deg] bg-primary/20 opacity-60 backdrop-blur-[1px]" />
 
             <div className="grid h-full w-full grid-cols-3 gap-2 p-2">
-              {Array.from({ length: 9 }).map((_, i) => (
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <div
-                  key={i}
+                  key={n}
                   className={`flex items-center justify-center border text-center text-[10px] transition-colors hover:bg-primary/5 sm:text-xs ${
-                    i === 4
+                    n === 4
                       ? "border-primary bg-primary/10 font-bold text-primary shadow-[inset_0_0_10px_rgba(140,48,39,0.1)]"
                       : "border-primary/40 bg-card text-muted-foreground"
                   }`}
                 >
-                  {i === 4 ? "CORE GOAL" : `Sub-goal ${i + 1}`}
+                  {n === 4 ? (
+                    "CORE GOAL"
+                  ) : (
+                    <>
+                      <HugeiconsIcon
+                        icon={GRID_ITEMS[n].icon}
+                        className="mb-3 size-5 transition-transform duration-300 group-hover:scale-110 sm:size-6 lg:size-7"
+                      />
+                      {/* <span className="text-xs uppercase tracking-tight sm:text-sm">
+                        {GRID_ITEMS[n].label}
+                      </span> */}
+                    </>
+                  )}
                 </div>
               ))}
             </div>

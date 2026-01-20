@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
@@ -6,9 +7,10 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-12 grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           <div className="col-span-2 lg:col-span-2">
-            <span className="mb-6 block font-black font-mono text-foreground text-lg uppercase">
-              ZIEGLERS_V3
-            </span>
+            <div className="mb-6 flex items-center gap-2">
+              <Image src="/logo.png" alt="Zieglers" width={24} height={24} />
+              <span className="font-semibold text-foreground text-lg">Zieglers</span>
+            </div>
             <p className="max-w-xs font-mono text-muted-foreground text-xs">
               Systematic planning tool for non-linear thinkers.
               <br />

@@ -15,7 +15,7 @@ export function CtaSection() {
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 text-center">
-        <h2 className="mb-6 font-black text-3xl text-primary-foreground tracking-tight sm:text-4xl lg:text-6xl">
+        <h2 className="mb-6 font-semibold text-3xl text-primary-foreground tracking-tight sm:text-4xl lg:text-6xl">
           Lay Your First Brick Today
         </h2>
         <p className="mx-auto mb-10 max-w-xl font-medium text-lg text-primary-foreground/90 sm:text-xl">

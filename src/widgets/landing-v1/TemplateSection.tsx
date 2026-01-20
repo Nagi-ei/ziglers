@@ -37,7 +37,7 @@ export function TemplateSection() {
     <section id="templates" className="w-full bg-background py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 font-black text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
+          <h2 className="mb-4 font-semibold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
             Ready-to-Build Blueprints
           </h2>
           <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg">

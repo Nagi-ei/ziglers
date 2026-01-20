@@ -2,50 +2,50 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { CtaSection as CtaGemini3 } from "@/widgets/landing-gemini3/CtaSection";
-import { Footer as FooterGemini3 } from "@/widgets/landing-gemini3/Footer";
-import { Header as HeaderGemini3 } from "@/widgets/landing-gemini3/Header";
-import { HeroSection as HeroGemini3 } from "@/widgets/landing-gemini3/HeroSection";
-import { MethodSection as MethodGemini3 } from "@/widgets/landing-gemini3/MethodSection";
-import { TemplateSection as TemplateGemini3 } from "@/widgets/landing-gemini3/TemplateSection";
-import { CtaSection as CtaGemini4 } from "@/widgets/landing-gemini4/CtaSection";
-import { Footer as FooterGemini4 } from "@/widgets/landing-gemini4/Footer";
-import { Header as HeaderGemini4 } from "@/widgets/landing-gemini4/Header";
-import { HeroSection as HeroGemini4 } from "@/widgets/landing-gemini4/HeroSection";
-import { MethodSection as MethodGemini4 } from "@/widgets/landing-gemini4/MethodSection";
-import { TemplateSection as TemplateGemini4 } from "@/widgets/landing-gemini4/TemplateSection";
-import { CtaSection as CtaOpus } from "@/widgets/landing-opus/CtaSection";
-import { Footer as FooterOpus } from "@/widgets/landing-opus/Footer";
-import { Header as HeaderOpus } from "@/widgets/landing-opus/Header";
-import { HeroSection as HeroOpus } from "@/widgets/landing-opus/HeroSection";
-import { MethodSection as MethodOpus } from "@/widgets/landing-opus/MethodSection";
-import { TemplateSection as TemplateOpus } from "@/widgets/landing-opus/TemplateSection";
+import { CtaSection as CtaV1 } from "@/widgets/landing-v1/CtaSection";
+import { Footer as FooterV1 } from "@/widgets/landing-v1/Footer";
+import { Header as HeaderV1 } from "@/widgets/landing-v1/Header";
+import { HeroSection as HeroV1 } from "@/widgets/landing-v1/HeroSection";
+import { MethodSection as MethodV1 } from "@/widgets/landing-v1/MethodSection";
+import { TemplateSection as TemplateV1 } from "@/widgets/landing-v1/TemplateSection";
+import { CtaSection as CtaV2 } from "@/widgets/landing-v2/CtaSection";
+import { Footer as FooterV2 } from "@/widgets/landing-v2/Footer";
+import { Header as HeaderV2 } from "@/widgets/landing-v2/Header";
+import { HeroSection as HeroV2 } from "@/widgets/landing-v2/HeroSection";
+import { MethodSection as MethodV2 } from "@/widgets/landing-v2/MethodSection";
+import { TemplateSection as TemplateV2 } from "@/widgets/landing-v2/TemplateSection";
+import { CtaSection as CtaV3 } from "@/widgets/landing-v3/CtaSection";
+import { Footer as FooterV3 } from "@/widgets/landing-v3/Footer";
+import { Header as HeaderV3 } from "@/widgets/landing-v3/Header";
+import { HeroSection as HeroV3 } from "@/widgets/landing-v3/HeroSection";
+import { MethodSection as MethodV3 } from "@/widgets/landing-v3/MethodSection";
+import { TemplateSection as TemplateV3 } from "@/widgets/landing-v3/TemplateSection";
 import { VariantSwitcher } from "@/widgets/VariantSwitcher";
 
 const VARIANT_COMPONENTS = {
   v1: {
-    Header: HeaderOpus,
-    HeroSection: HeroOpus,
-    MethodSection: MethodOpus,
-    TemplateSection: TemplateOpus,
-    CtaSection: CtaOpus,
-    Footer: FooterOpus,
+    Header: HeaderV1,
+    HeroSection: HeroV1,
+    MethodSection: MethodV1,
+    TemplateSection: TemplateV1,
+    CtaSection: CtaV1,
+    Footer: FooterV1,
   },
   v2: {
-    Header: HeaderGemini3,
-    HeroSection: HeroGemini3,
-    MethodSection: MethodGemini3,
-    TemplateSection: TemplateGemini3,
-    CtaSection: CtaGemini3,
-    Footer: FooterGemini3,
+    Header: HeaderV2,
+    HeroSection: HeroV2,
+    MethodSection: MethodV2,
+    TemplateSection: TemplateV2,
+    CtaSection: CtaV2,
+    Footer: FooterV2,
   },
   v3: {
-    Header: HeaderGemini4,
-    HeroSection: HeroGemini4,
-    MethodSection: MethodGemini4,
-    TemplateSection: TemplateGemini4,
-    CtaSection: CtaGemini4,
-    Footer: FooterGemini4,
+    Header: HeaderV3,
+    HeroSection: HeroV3,
+    MethodSection: MethodV3,
+    TemplateSection: TemplateV3,
+    CtaSection: CtaV3,
+    Footer: FooterV3,
   },
 } as const;
 

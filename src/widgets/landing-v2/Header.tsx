@@ -15,7 +15,7 @@ export function Header() {
             <div className="relative size-8 border border-background">
               <Image src="/logo.png" alt="Zieglers Logo" fill className="object-contain" />
             </div>
-            <span className="font-bold font-mono text-background text-xl tracking-tighter lg:text-2xl">
+            <span className="font-mono font-semibold text-background text-xl tracking-tighter lg:text-2xl">
               Zieglers
             </span>
           </Link>

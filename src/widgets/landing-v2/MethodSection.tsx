@@ -36,7 +36,7 @@ export function MethodSection() {
             <h2 className="mb-2 font-bold font-mono text-primary text-sm uppercase tracking-widest">
               {"// Blueprint"}
             </h2>
-            <h3 className="font-black font-mono text-3xl text-foreground uppercase md:text-4xl">
+            <h3 className="font-bold font-mono text-3xl text-foreground uppercase md:text-4xl">
               Construction Method
             </h3>
           </div>

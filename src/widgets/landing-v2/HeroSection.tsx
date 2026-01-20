@@ -1,8 +1,16 @@
 import {
+  Activity01Icon,
   ArrowRight01Icon,
+  BookOpen01Icon,
+  Brain01Icon,
+  Briefcase01Icon,
   Building01Icon,
+  CheckListIcon,
+  Coins01Icon,
   Layers01Icon,
+  PaintBoardIcon,
   Settings01Icon,
+  UserGroupIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/shared/ui/shadcn/Button";
@@ -34,9 +42,9 @@ export function HeroSection() {
             <div className="h-px flex-1 bg-primary/20"></div>
           </div>
 
-          <h1 className="mb-6 font-black font-mono text-5xl text-foreground uppercase leading-none tracking-tighter sm:text-6xl xl:text-7xl">
+          <h1 className="mb-6 font-mono font-semibold text-5xl text-foreground uppercase leading-tight tracking-tighter sm:text-6xl xl:text-7xl">
             Architect <br />
-            Your <span className="bg-primary px-2 text-background">Ambition</span>
+            Your<span className="ml-6 bg-primary px-2 text-background">Ambition</span>
           </h1>
 
           <p className="mb-10 max-w-md border-primary border-l-4 pl-6 font-medium text-lg text-muted-foreground leading-relaxed">
@@ -89,17 +97,17 @@ export function HeroSection() {
 
             <div className="relative z-10 grid h-full w-full grid-cols-3 grid-rows-3 gap-4 p-4 sm:p-8">
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                08
+                <HugeiconsIcon icon={Briefcase01Icon} className="size-5" />
               </div>
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                01
+                <HugeiconsIcon icon={Activity01Icon} className="size-5" />
               </div>
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                02
+                <HugeiconsIcon icon={BookOpen01Icon} className="size-5" />
               </div>
 
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                07
+                <HugeiconsIcon icon={Coins01Icon} className="size-5" />
               </div>
               <div className="relative flex items-center justify-center border-4 border-primary bg-background shadow-[4px_4px_0px_0px_var(--color-primary)] sm:shadow-[8px_8px_0px_0px_var(--color-primary)]">
                 <span className="text-center font-black font-mono text-primary text-sm uppercase leading-tight sm:text-lg">
@@ -109,24 +117,24 @@ export function HeroSection() {
                 </span>
               </div>
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                03
+                <HugeiconsIcon icon={Brain01Icon} className="size-5" />
               </div>
 
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                06
+                <HugeiconsIcon icon={CheckListIcon} className="size-5" />
               </div>
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                05
+                <HugeiconsIcon icon={UserGroupIcon} className="size-5" />
               </div>
               <div className="flex items-center justify-center border-2 border-primary bg-background font-bold font-mono text-primary transition-all duration-300 hover:scale-105 hover:bg-primary hover:text-background">
-                04
+                <HugeiconsIcon icon={PaintBoardIcon} className="size-5" />
               </div>
             </div>
 
             {/* Decor text */}
-            <div className="absolute bottom-2 left-4 font-mono text-[10px] text-primary/60">
-              FIG. 1.0 // ARCHITECTURE
-            </div>
+            <span className="absolute bottom-2 left-4 font-mono text-[10px] text-primary/60">
+              FIG.1.0 __ ARCHITECTURE
+            </span>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ export function CtaSection() {
     <section id="mobile" className="border-primary border-y-2 bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
         <div className="flex flex-col justify-center border-primary-foreground/20 border-b-2 px-6 py-20 lg:border-r-2 lg:border-b-0 lg:p-24">
-          <h2 className="mb-6 font-black font-mono text-4xl uppercase leading-none tracking-tighter md:text-6xl">
+          <h2 className="mb-6 font-bold font-mono text-4xl uppercase leading-none tracking-tighter md:text-6xl">
             Foundation
             <br />
             Ready.
@@ -26,7 +26,7 @@ export function CtaSection() {
             <Button
               variant="default"
               size="lg"
-              className="h-20 w-full border-2 border-primary-foreground bg-primary-foreground font-black text-primary text-xl uppercase hover:bg-transparent hover:text-primary-foreground dark:text-foreground"
+              className="h-20 w-full border-2 border-primary-foreground bg-primary-foreground font-bold text-primary text-xl uppercase hover:bg-transparent hover:text-primary-foreground dark:text-foreground"
             >
               <HugeiconsIcon icon={Building01Icon} className="mr-3 size-6" />
               Start_Building
