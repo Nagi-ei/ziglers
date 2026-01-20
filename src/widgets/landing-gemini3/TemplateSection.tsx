@@ -8,10 +8,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 
 export function TemplateSection() {
   const templates = [
-    { name: "Career_Path", icon: Briefcase01Icon, color: "bg-blue-500" },
-    { name: "Health_Protocol", icon: WorkoutRunIcon, color: "bg-red-500" },
-    { name: "Finance_Stack", icon: Coins01Icon, color: "bg-green-500" },
-    { name: "Skill_Acquisition", icon: BookOpen01Icon, color: "bg-yellow-500" },
+    { name: "Career_Blueprint", icon: Briefcase01Icon, color: "bg-blue-500" },
+    { name: "Health_Foundation", icon: WorkoutRunIcon, color: "bg-red-500" },
+    { name: "Finance_Structure", icon: Coins01Icon, color: "bg-green-500" },
+    { name: "Skill_Architecture", icon: BookOpen01Icon, color: "bg-yellow-500" },
   ];
 
   return (
@@ -19,10 +19,10 @@ export function TemplateSection() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="font-black font-mono text-3xl text-foreground uppercase tracking-tight md:text-5xl">
-            Pre-Built Modules
+            Ready-Made Blueprints
           </h2>
           <p className="mx-auto mt-4 max-w-2xl font-mono text-muted-foreground text-sm">
-            Select a cartridge to load default parameters.
+            Select a blueprint to start building.
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export function TemplateSection() {
                 type="button"
                 className="mt-4 font-bold text-primary text-xs uppercase opacity-0 transition-opacity group-hover:opacity-100"
               >
-                [ Load_Module ]
+                [ Start_Build ]
               </button>
 
               {/* Corner Accents */}

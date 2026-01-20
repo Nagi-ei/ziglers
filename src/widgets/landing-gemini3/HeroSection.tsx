@@ -1,6 +1,6 @@
 import {
   ArrowRight01Icon,
-  CpuIcon,
+  Building01Icon,
   Layers01Icon,
   Settings01Icon,
 } from "@hugeicons/core-free-icons";
@@ -20,28 +20,28 @@ export function HeroSection() {
         }}
       ></div>
 
-      <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
+      <div className="mx-auto grid max-w-7xl xl:grid-cols-2">
         {/* Left Content */}
-        <div className="relative z-10 flex flex-col justify-center px-6 py-20 lg:border-primary lg:border-r-2 lg:px-12 lg:py-32">
+        <div className="relative z-10 flex flex-col justify-center px-6 py-20 lg:px-8 xl:border-primary xl:border-r-2 xl:px-12 xl:py-32">
           <div className="mb-8 flex items-center gap-2">
             <div className="flex items-center gap-2 border border-primary px-2 py-1 font-bold font-mono text-primary text-xs uppercase">
               <span className="relative flex size-2">
                 <span className="absolute inline-flex h-full w-full animate-ping bg-primary opacity-75"></span>
                 <span className="relative inline-flex size-2 bg-primary"></span>
               </span>
-              System_Online
+              Site_Active
             </div>
             <div className="h-px flex-1 bg-primary/20"></div>
           </div>
 
           <h1 className="mb-6 font-black font-mono text-5xl text-foreground uppercase leading-none tracking-tighter sm:text-6xl lg:text-7xl">
-            Engineer <br />
-            Your <span className="bg-primary px-2 text-background">Vision</span>
+            Architect <br />
+            Your <span className="bg-primary px-2 text-background">Ambition</span>
           </h1>
 
           <p className="mb-10 max-w-md border-primary border-l-4 pl-6 font-medium text-lg text-muted-foreground leading-relaxed">
-            Chaos is a bug. Structure is the patch. Decompose your central ambition into 64
-            executable subroutines with the Mandalart framework.
+            Chaos is unstable ground. Structure is strength. Decompose your central ambition into 64
+            executable building blocks with the Mandalart framework.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
@@ -50,15 +50,15 @@ export function HeroSection() {
               size="lg"
               className="h-14 border-2 border-transparent px-8 font-bold font-mono text-base uppercase tracking-wide hover:border-foreground hover:bg-background hover:text-foreground"
             >
-              <HugeiconsIcon icon={CpuIcon} className="mr-2 size-5" />
-              Initialize_Plan
+              <HugeiconsIcon icon={Building01Icon} className="mr-2 size-5" />
+              Lay_Foundation
             </Button>
             <Button
               variant="default"
               size="lg"
               className="h-14 border-2 border-primary bg-transparent px-8 font-bold font-mono text-base text-primary uppercase tracking-wide hover:bg-primary hover:text-background"
             >
-              View_Schematics
+              View_Blueprint
               <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 size-5" />
             </Button>
           </div>
@@ -66,17 +66,17 @@ export function HeroSection() {
           <div className="mt-16 flex items-center gap-8 border-primary/20 border-t pt-8 font-bold font-mono text-muted-foreground text-xs uppercase">
             <div className="flex items-center gap-2">
               <HugeiconsIcon icon={Settings01Icon} className="size-4 text-primary" />
-              <span>Logic_Based</span>
+              <span>Structure_First</span>
             </div>
             <div className="flex items-center gap-2">
               <HugeiconsIcon icon={Layers01Icon} className="size-4 text-primary" />
-              <span>Recursive_Depth</span>
+              <span>Layer_By_Layer</span>
             </div>
           </div>
         </div>
 
         {/* Right Visual - Schematic Blueprint */}
-        <div className="relative flex min-h-[400px] items-center justify-center overflow-hidden bg-primary/5 p-8 lg:p-16">
+        <div className="relative flex min-h-[400px] items-center justify-center overflow-hidden bg-primary/5 p-8 xl:p-16">
           <div className="relative aspect-square w-full max-w-md">
             {/* Blueprint Grid Lines */}
             <div className="pointer-events-none absolute inset-0 z-0 border-2 border-primary/30">

@@ -1,4 +1,4 @@
-import { Rocket01Icon } from "@hugeicons/core-free-icons";
+import { Building01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/shared/ui/shadcn/Button";
 
@@ -8,12 +8,12 @@ export function CtaSection() {
       <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
         <div className="flex flex-col justify-center border-primary-foreground/20 border-b-2 px-6 py-20 lg:border-r-2 lg:border-b-0 lg:p-24">
           <h2 className="mb-6 font-black font-mono text-4xl uppercase leading-none tracking-tighter md:text-6xl">
-            System
+            Foundation
             <br />
             Ready.
           </h2>
           <p className="max-w-md font-mono text-lg opacity-80">
-            Awaiting user input. Begin the initialization sequence to structure your goals.
+            Your blueprint awaits. Begin the construction process to structure your goals.
           </p>
         </div>
 
@@ -28,11 +28,11 @@ export function CtaSection() {
               size="lg"
               className="h-20 w-full border-2 border-primary-foreground bg-primary-foreground font-black text-primary text-xl uppercase hover:bg-transparent hover:text-primary-foreground dark:text-foreground"
             >
-              <HugeiconsIcon icon={Rocket01Icon} className="mr-3 size-6" />
-              Start_Engine
+              <HugeiconsIcon icon={Building01Icon} className="mr-3 size-6" />
+              Start_Building
             </Button>
             <p className="text-center font-mono text-[10px] opacity-60">
-              NO CREDIT CARD REQUIRED FOR INITIALIZATION
+              NO CREDIT CARD REQUIRED FOR CONSTRUCTION
             </p>
           </div>
         </div>
