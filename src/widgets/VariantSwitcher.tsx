@@ -7,11 +7,9 @@ import { useEffect, useState } from "react";
 import { Button } from "@/shared/ui/shadcn/Button";
 
 const VARIANTS = [
-  { id: "gemini1", name: "Gemini v1" },
-  { id: "gemini2", name: "Gemini v2" },
-  { id: "gemini3", name: "Gemini v3" },
-  { id: "gemini4", name: "Gemini v4" },
-  { id: "opus", name: "Opus" },
+  { id: "v1", name: "v1" },
+  { id: "v2", name: "v2" },
+  { id: "v3", name: "v3" },
 ] as const;
 
 export function VariantSwitcher() {
@@ -28,7 +26,7 @@ export function VariantSwitcher() {
 
   if (!isVisible) return null;
 
-  const currentVariantId = searchParams.get("variant") || "gemini1";
+  const currentVariantId = searchParams.get("variant") || "v1";
   const currentVariant = VARIANTS.find((v) => v.id === currentVariantId) || VARIANTS[0];
 
   const handleSwitch = () => {
