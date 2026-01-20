@@ -1,53 +1,71 @@
+import { GridViewIcon, LayoutGridIcon, TaskDaily01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
 
 const STEPS = [
   {
     step: "01",
-    title: "Define Your Core Goal",
+    icon: LayoutGridIcon,
+    title: "Define Core Goal",
     description:
-      "Start with one central goal that you want to achieve. This becomes the heart of your Mandalart.",
+      "Lay the foundation. Choose one central ambition that will anchor your entire structure.",
   },
   {
     step: "02",
-    title: "Break Into 8 Sub-Goals",
-    description:
-      "Surround your main goal with 8 related objectives that support your central vision.",
+    icon: GridViewIcon,
+    title: "Expand Structure",
+    description: "Build the walls. Surround your core goal with 8 supporting pillars or sub-goals.",
   },
   {
     step: "03",
-    title: "Create 81 Action Items",
+    icon: TaskDaily01Icon,
+    title: "Stack Actions",
     description:
-      "Each sub-goal expands into 8 specific tasks, giving you 81 actionable steps to success.",
+      "Detail the bricks. Break each pillar into 8 actionable tasks—64 steps to the top.",
   },
 ];
 
 export function MethodSection() {
   return (
-    <section className="w-full bg-muted py-16 lg:py-24">
+    <section id="method" className="w-full border-border border-y bg-muted py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-12 text-center">
-          <h2 className="mb-4 font-bold text-2xl text-foreground sm:text-3xl lg:text-4xl">
-            The Mandalart Method
+        <div className="mb-16 text-center">
+          <h2 className="mb-6 font-black text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
+            The Construction Method
           </h2>
-          <p className="mx-auto max-w-2xl text-muted-foreground text-sm sm:text-base">
-            A proven goal-setting technique used by world-class achievers to turn ambitions into
-            reality.
+          <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg">
+            A proven architectural blueprint for success. Build your dreams one calculated brick at
+            a time.
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {STEPS.map((step) => (
-            <Card key={step.step} className="border-none">
-              <CardHeader>
-                <div className="mb-2 inline-flex size-12 items-center justify-center bg-primary font-bold text-lg text-primary-foreground">
-                  {step.step}
-                </div>
-                <CardTitle className="text-lg">{step.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-sm">{step.description}</p>
-              </CardContent>
-            </Card>
+        <div className="relative grid gap-8 md:grid-cols-3">
+          <div className="absolute top-12 left-0 -z-10 hidden h-0.5 w-full bg-border md:block" />
+
+          {STEPS.map((step, index) => (
+            <div
+              key={step.step}
+              className={`flex flex-col ${index === 1 ? "md:mt-12" : index === 2 ? "md:mt-24" : ""}`}
+            >
+              <Card className="h-full rounded-none border-2 border-foreground shadow-[6px_6px_0px_0px_rgba(0,0,0,0.1)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--color-brand-primary)]">
+                <CardHeader className="pb-4">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="inline-flex size-14 items-center justify-center border-2 border-foreground bg-primary font-bold text-primary-foreground text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      {step.step}
+                    </div>
+                    <HugeiconsIcon icon={step.icon} className="size-10 text-muted-foreground/50" />
+                  </div>
+                  <CardTitle className="font-bold text-xl uppercase tracking-wide">
+                    {step.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    {step.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           ))}
         </div>
       </div>
