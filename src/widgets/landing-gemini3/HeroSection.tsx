@@ -20,9 +20,9 @@ export function HeroSection() {
         }}
       ></div>
 
-      <div className="mx-auto grid max-w-7xl xl:grid-cols-2">
+      <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
         {/* Left Content */}
-        <div className="relative z-10 flex flex-col justify-center px-6 py-20 lg:px-8 xl:border-primary xl:border-r-2 xl:px-12 xl:py-32">
+        <div className="relative z-10 flex flex-col justify-center px-6 py-20 lg:border-primary lg:border-r-2 lg:px-12 lg:py-32">
           <div className="mb-8 flex items-center gap-2">
             <div className="flex items-center gap-2 border border-primary px-2 py-1 font-bold font-mono text-primary text-xs uppercase">
               <span className="relative flex size-2">
@@ -34,7 +34,7 @@ export function HeroSection() {
             <div className="h-px flex-1 bg-primary/20"></div>
           </div>
 
-          <h1 className="mb-6 font-black font-mono text-5xl text-foreground uppercase leading-none tracking-tighter sm:text-6xl lg:text-7xl">
+          <h1 className="mb-6 font-black font-mono text-5xl text-foreground uppercase leading-none tracking-tighter sm:text-6xl xl:text-7xl">
             Architect <br />
             Your <span className="bg-primary px-2 text-background">Ambition</span>
           </h1>
@@ -76,7 +76,7 @@ export function HeroSection() {
         </div>
 
         {/* Right Visual - Schematic Blueprint */}
-        <div className="relative flex min-h-[400px] items-center justify-center overflow-hidden bg-primary/5 p-8 xl:p-16">
+        <div className="relative flex min-h-[400px] items-center justify-center overflow-hidden bg-primary/5 p-8 lg:p-16">
           <div className="relative aspect-square w-full max-w-md">
             {/* Blueprint Grid Lines */}
             <div className="pointer-events-none absolute inset-0 z-0 border-2 border-primary/30">
