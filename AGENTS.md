@@ -33,6 +33,22 @@ based on `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md`.
 - When a component is split, it must be placed in a separate file.
 - Defining multiple React components in a single file is not allowed.
 
+#### Exceptions
+
+The following cases are **allowed** as exceptions to the single-component rule:
+
+| Exception                 | Example                                              | Reason                                                |
+| ------------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
+| **Suspense wrapper**      | `page.tsx` with internal `PageContent` component     | Next.js App Router pattern for `useSearchParams` etc. |
+| **ErrorBoundary wrapper** | `page.tsx` with internal error handling component    | React error boundary pattern                          |
+| **Compound components**   | `Tabs` with `TabsList`, `TabsTrigger`, `TabsContent` | Design system pattern (only in `shared/ui`)           |
+
+**Conditions for exceptions:**
+
+- The internal component must NOT be exported (private to the file)
+- The internal component must be a direct child wrapper, not a reusable component
+- The pattern must be a well-known framework convention (Next.js, React)
+
 ---
 
 ## 4) Detailed Roles
@@ -43,7 +59,6 @@ based on `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md`.
 - **Reference:** `SCAFFOLD_STRUCTURE.md`
 - **Main functions:**
   - Detect violations of import direction (`app → widgets → features → entities → shared`)
-  - Identify missing barrel files (`index.ts`)
   - Warn if Supabase is accessed directly outside of `entities/lib/`
   - Detect disallowed relative imports (`../..`)
 - **Trigger:** On PR creation or AI refactor execution
@@ -51,7 +66,6 @@ based on `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md`.
   ```json
   {
     "status": "pass",
-    "missing_barrels": [],
     "invalid_imports": []
   }
   ```

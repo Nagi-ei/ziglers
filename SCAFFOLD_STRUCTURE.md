@@ -49,17 +49,14 @@ src/
 │  │  │  ├─ repository.ts                # Port (interface)
 │  │  │  ├─ supabase.adapter.ts          # Adapter (implementation) → Replaced by http.adapter.ts in M2
 │  │  │  └─ mapper.ts
-│  │  ├─ ui/
-│  │  │  └─ card.tsx
-│  │  └─ index.ts
+│  │  └─ ui/
+│  │     └─ card.tsx
 │  ├─ cell/
 │  │  ├─ model/{types.ts, keys.ts, queries.ts}
 │  │  └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│  │  └─ index.ts
 │  └─ task/
 │     ├─ model/{types.ts, keys.ts, queries.ts}
 │     └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│  │  └─ index.ts
 │
 ├─ shared/
 │  ├─ ui/                                # shadcn extensions (buttons/modals/toasts, etc.)
@@ -111,19 +108,6 @@ prisma/
 - **Dependency Direction:** `app → widgets → features → entities → shared`  
    (Higher layers may import lower layers, never the reverse.  
    Example: entities importing widgets ❌)
-- **Public API:** Each slice exposes only minimal exports via `index.ts` - Example:
-
-      ```ts
-
-  // src/entities/board/index.ts
-  export _ from './model/types';
-  export _ from './model/queries';
-  export \* from './lib/repository';
-
-  ```
-
-  ```
-
 - **Data Access Rules:**
   - All database access must be performed in **server-side code only**.
   - Prisma Client can be used only in:

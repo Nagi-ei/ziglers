@@ -5,7 +5,9 @@ import {
   Search01Icon,
   Settings01Icon,
 } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon as Icon } from "@hugeicons/react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
@@ -22,27 +24,27 @@ const items = [
   {
     title: "Home",
     url: "/",
-    icon: <HugeiconsIcon icon={Home03Icon} />,
+    icon: <Icon icon={Home03Icon} />,
   },
   {
     title: "Inbox",
     url: "#",
-    icon: <HugeiconsIcon icon={InboxDownloadIcon} />,
+    icon: <Icon icon={InboxDownloadIcon} />,
   },
   {
     title: "Calendar",
     url: "#",
-    icon: <HugeiconsIcon icon={Calendar04Icon} />,
+    icon: <Icon icon={Calendar04Icon} />,
   },
   {
     title: "Search",
     url: "#",
-    icon: <HugeiconsIcon icon={Search01Icon} />,
+    icon: <Icon icon={Search01Icon} />,
   },
   {
     title: "Settings",
     url: "#",
-    icon: <HugeiconsIcon icon={Settings01Icon} />,
+    icon: <Icon icon={Settings01Icon} />,
   },
 ];
 
@@ -50,8 +52,13 @@ export default function SidebarExample({ ...props }) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroup className="gap-4">
+          <SidebarGroupLabel>
+            <Link href="/" className="flex items-center gap-2">
+              <Image src="/logo.png" alt="Logo" width={24} height={24} draggable={false} />
+              Zieglers
+            </Link>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

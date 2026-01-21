@@ -43,7 +43,6 @@ _Last updated: 2025-12-18 (KST)_
 - **기준 문서:** `SCAFFOLD_STRUCTURE.md`
 - **주요 기능:**
   - `src/app → widgets → features → entities → shared` 방향 위반 탐지
-  - 각 슬라이스 루트의 `index.ts` 배럴 파일 누락 감지
   - `entities/lib/` 외부에서 Supabase 직접 접근 시 경고
   - 비허용 경로 import (`../..` 등) 탐지
 - **트리거:** PR 생성 시 / AI 리팩토링 실행 시 자동 수행
@@ -51,7 +50,6 @@ _Last updated: 2025-12-18 (KST)_
   ```json
   {
     "status": "pass",
-    "missing_barrels": [],
     "invalid_imports": []
   }
   ```
