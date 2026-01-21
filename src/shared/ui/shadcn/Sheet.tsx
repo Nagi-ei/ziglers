@@ -2,7 +2,7 @@
 
 import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon as Icon } from "@hugeicons/react";
 import type * as React from "react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/shadcn/Button";
@@ -64,7 +64,7 @@ function SheetContent({
             data-slot="sheet-close"
             render={<Button variant="ghost" className="absolute top-3 right-3" size="icon-sm" />}
           >
-            <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+            <Icon icon={Cancel01Icon} strokeWidth={2} />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}

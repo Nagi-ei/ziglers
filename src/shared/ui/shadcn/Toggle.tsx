@@ -51,7 +51,7 @@ export { Toggle, toggleVariants };
 //   pressed = { isBookmarked }
 //   onPressedChange = { handleBookmark }
 // >
-//   <HugeiconsIcon
+//   <Icon
 //     icon={Bookmark02Icon}
 //     className="transition-colors group-data-pressed/toggle:fill-blue-500 group-data-pressed/toggle:text-blue-500"
 //   />

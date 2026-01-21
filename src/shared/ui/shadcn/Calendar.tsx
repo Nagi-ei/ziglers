@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon as Icon } from "@hugeicons/react";
 import * as React from "react";
 import { type DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 import { cn } from "@/shared/lib/utils";
@@ -120,7 +120,7 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
-              <HugeiconsIcon
+              <Icon
                 icon={ArrowLeftIcon}
                 strokeWidth={2}
                 className={cn("size-4", className)}
@@ -131,7 +131,7 @@ function Calendar({
 
           if (orientation === "right") {
             return (
-              <HugeiconsIcon
+              <Icon
                 icon={ArrowRightIcon}
                 strokeWidth={2}
                 className={cn("size-4", className)}
@@ -141,7 +141,7 @@ function Calendar({
           }
 
           return (
-            <HugeiconsIcon
+            <Icon
               icon={ArrowDownIcon}
               strokeWidth={2}
               className={cn("size-4", className)}

@@ -1,20 +1,27 @@
 import { Menu01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon as Icon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/shared/ui/shadcn/Button";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
+
+const NAV_ITEMS = [
+  { name: "Method", href: "#method" },
+  { name: "Templates", href: "#templates" },
+  { name: "Mobile", href: "#mobile" },
+] as const;
 
 export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-primary/20 border-b-2 bg-background/95 backdrop-blur-sm">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-3">
-          <div className="relative rotate-[-2deg] transition-transform duration-300 group-hover:rotate-0">
+          <div className="relative -rotate-2 transition-transform duration-300 group-hover:rotate-0">
             <div className="absolute inset-0 translate-x-0.5 translate-y-0.5 rounded-none bg-primary opacity-20" />
             <Image
               src="/logo.png"
               alt="Zieglers"
+              draggable={false}
               width={36}
               height={36}
               className="relative size-9"
@@ -24,13 +31,13 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-10 md:flex">
-          {["Method", "Templates", "Mobile"].map((item) => (
+          {NAV_ITEMS.map((item) => (
             <Link
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="relative font-medium text-foreground/80 text-sm transition-colors hover:text-primary"
+              key={item.name}
+              href={item.href}
+              className="group relative font-medium text-foreground/80 text-sm transition-colors hover:text-primary"
             >
-              <span className="relative z-10">{item}</span>
+              <span className="relative z-10">{item.name}</span>
               <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary/40 transition-all duration-300 hover:w-full group-hover:w-full" />
             </Link>
           ))}
@@ -47,14 +54,14 @@ export function Header() {
               Log in
             </Button>
             <Button
-              className="rounded-none border-2 border-primary bg-primary text-primary-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              className="rounded-none border-2 border-primary bg-primary text-primary-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] transition-all hover:translate-x-px hover:translate-y-px hover:bg-primary hover:text-primary-foreground hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               size="sm"
             >
               Get Started
             </Button>
           </div>
           <Button variant="ghost" size="icon" className="md:hidden">
-            <HugeiconsIcon icon={Menu01Icon} className="size-6 text-foreground" />
+            <Icon icon={Menu01Icon} className="size-6 text-foreground" />
           </Button>
         </div>
       </div>

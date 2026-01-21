@@ -1,35 +1,36 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export function Footer() {
-  const footerLinks = {
-    Product: [
-      { name: "Features", href: "#" },
-      { name: "Templates", href: "#templates" },
-      { name: "Method", href: "#method" },
-    ],
-    Company: [
-      { name: "About", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Careers", href: "#" },
-    ],
-    Legal: [
-      { name: "Privacy", href: "#" },
-      { name: "Terms", href: "#" },
-    ],
-  };
+const FOOTER_LINKS = {
+  Product: [
+    { name: "Features", href: "#" },
+    { name: "Templates", href: "#templates" },
+    { name: "Method", href: "#method" },
+  ],
+  Company: [
+    { name: "About", href: "#" },
+    { name: "Blog", href: "#" },
+    { name: "Careers", href: "#" },
+  ],
+  Legal: [
+    { name: "Privacy", href: "#" },
+    { name: "Terms", href: "#" },
+  ],
+} as const;
 
+export function Footer() {
   return (
     <footer className="border-primary/20 border-t-2 bg-background pt-16 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="group mb-6 flex items-center gap-3">
-              <div className="relative rotate-[-2deg] transition-transform duration-300 group-hover:rotate-0">
+              <div className="relative -rotate-2 transition-transform duration-300 group-hover:rotate-0">
                 <div className="absolute inset-0 translate-x-0.5 translate-y-0.5 rounded-none bg-primary opacity-20" />
                 <Image
                   src="/logo.png"
                   alt="Zieglers"
+                  draggable={false}
                   width={32}
                   height={32}
                   className="relative size-8"
@@ -42,7 +43,7 @@ export function Footer() {
             </p>
           </div>
 
-          {Object.entries(footerLinks).map(([category, links]) => (
+          {Object.entries(FOOTER_LINKS).map(([category, links]) => (
             <div key={category}>
               <h3 className="font-semibold text-foreground text-sm uppercase tracking-wider">
                 {category}
