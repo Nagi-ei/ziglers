@@ -128,7 +128,7 @@ export function HeroSection() {
             {/* Hand-drawn annotation */}
             <div className="absolute -right-8 -bottom-6 hidden rotate-[-5deg] md:block">
               <div className="flex flex-col items-center">
-                <span className="font-handwriting text-primary text-sm">Start here!</span>
+                <span className="text-primary text-sm">Start here!</span>
                 <svg
                   width="40"
                   height="40"
