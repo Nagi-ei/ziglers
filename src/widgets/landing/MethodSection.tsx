@@ -51,13 +51,13 @@ export function MethodSection() {
           {STEPS.map((step, index) => (
             <div key={step.title} className="group relative">
               {index < STEPS.length - 1 && (
-                <div className="absolute top-1/2 -right-4 z-10 hidden -translate-y-1/2 md:block">
+                <div className="absolute top-1/2 -right-4 z-10 hidden -translate-y-1/2 transition-all duration-300 group-hover:z-100 group-hover:translate-x-5 md:block">
                   <Icon icon={ArrowRight01Icon} className="size-8 text-primary/40" />
                 </div>
               )}
 
               <div
-                className={`relative h-full border-2 border-primary/10 bg-background p-6 transition-transform duration-300 hover:z-10 hover:-translate-y-2 ${step.rotate} shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]`}
+                className={`relative h-full border-2 border-primary/10 bg-background p-6 transition-transform duration-300 group-hover:z-10 group-hover:-translate-y-2 ${step.rotate} shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]`}
               >
                 <DecoTape className="absolute -top-3 left-1/2 -translate-x-1/2 rotate-1" />
 
