@@ -37,6 +37,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <div className="hidden items-center gap-3 sm:flex">
             <Button
               variant="ghost"
@@ -52,7 +53,6 @@ export function Header() {
               Get Started
             </Button>
           </div>
-          <ThemeToggle />
           <Button variant="ghost" size="icon" className="md:hidden">
             <HugeiconsIcon icon={Menu01Icon} className="size-6 text-foreground" />
           </Button>
