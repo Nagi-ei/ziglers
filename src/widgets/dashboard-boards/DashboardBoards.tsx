@@ -7,7 +7,7 @@ import { DecoTape } from "@/shared/ui/common/DecoTape";
 
 import { Button } from "@/shared/ui/shadcn/Button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
-import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/shadcn/progress";
+import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/shadcn/Progress";
 import { useBoardsList } from "./model";
 
 export const DashboardBoards = () => {
@@ -30,7 +30,7 @@ export const DashboardBoards = () => {
         {boards.map((board, index) => (
           <div
             key={board.id}
-            className={`relative h-full ${index % 2 === 0 ? "rotate-[-1deg]" : "rotate-[1deg]"} transition-transform hover:-translate-y-2`}
+            className={`relative h-full ${index % 2 === 0 ? "-rotate-1" : "rotate-1"} transition-transform hover:-translate-y-2`}
           >
             <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
             <Card className="flex h-full flex-col justify-between rounded-none border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)] transition-shadow hover:shadow-[6px_6px_0px_0px_rgba(45,45,45,0.1)]">
@@ -68,7 +68,7 @@ export const DashboardBoards = () => {
           </div>
         ))}
 
-        <div className="relative h-full rotate-[1deg] transition-transform hover:-translate-y-2">
+        <div className="relative h-full rotate-1 transition-transform hover:-translate-y-2">
           <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 opacity-50" />
           <button
             type="button"

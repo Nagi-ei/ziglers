@@ -10,7 +10,7 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/shared/ui/shadcn/chart";
+} from "@/shared/ui/shadcn/Chart";
 import { useChartData } from "./model";
 
 const progressChartConfig = {
@@ -36,7 +36,7 @@ export function DashboardCharts() {
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <div className="relative rotate-[-1deg] transition-transform hover:-translate-y-2">
+        <div className="relative -rotate-1 transition-transform hover:-translate-y-2">
           <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
           <Card className="rounded-none border-2 border-primary/10 shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
             <CardHeader>
@@ -67,7 +67,7 @@ export function DashboardCharts() {
           </Card>
         </div>
 
-        <div className="relative rotate-[1deg] transition-transform hover:-translate-y-2">
+        <div className="relative rotate-1 transition-transform hover:-translate-y-2">
           <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
           <Card className="rounded-none border-2 border-primary/10 shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
             <CardHeader>
@@ -87,7 +87,7 @@ export function DashboardCharts() {
                   />
                   <ChartLegend
                     content={<ChartLegendContent nameKey="status" />}
-                    className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+                    className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
                   />
                 </PieChart>
               </ChartContainer>
