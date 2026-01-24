@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { SIDEBAR_COOKIE_NAME, SidebarProvider, SidebarTrigger } from "@/shared/ui/shadcn/Sidebar";
+import { SIDEBAR_COOKIE_NAME, SidebarProvider } from "@/shared/ui/shadcn/Sidebar";
 import { AppSidebar } from "@/widgets/app-sidebar/AppSidebar";
 
 export default async function DefaultSidebarLayout({
@@ -14,12 +14,7 @@ export default async function DefaultSidebarLayout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar variant="sidebar" />
-      <main className="flex flex-1 flex-col">
-        <header className="flex h-14 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
-        </header>
-        {children}
-      </main>
+      <main className="flex flex-1 flex-col">{children}</main>
     </SidebarProvider>
   );
 }

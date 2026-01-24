@@ -1,10 +1,5 @@
 import { cookies } from "next/headers";
-import {
-  SIDEBAR_COOKIE_NAME,
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/shared/ui/shadcn/Sidebar";
+import { SIDEBAR_COOKIE_NAME, SidebarInset, SidebarProvider } from "@/shared/ui/shadcn/Sidebar";
 import { AppSidebar } from "@/widgets/app-sidebar/AppSidebar";
 
 export default async function InsetSidebarLayout({
@@ -19,10 +14,7 @@ export default async function InsetSidebarLayout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar variant="inset" />
-      <SidebarInset className="rounded-none">
-        <header className="flex h-14 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
-        </header>
+      <SidebarInset className="rounded-none md:peer-data-[variant=inset]:rounded-none">
         {children}
       </SidebarInset>
     </SidebarProvider>

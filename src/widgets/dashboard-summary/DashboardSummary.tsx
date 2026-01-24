@@ -7,6 +7,7 @@ import {
   Target02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon as Icon } from "@hugeicons/react";
+import { DecoTape } from "@/shared/ui/common/DecoTape";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
 import { useSummaryStats } from "./model";
 
@@ -41,21 +42,24 @@ export const DashboardSummary = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {stats.map((stat, index) => (
+        <div
           key={stat.title}
-          className="rounded-none bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]"
+          className={`relative ${index % 2 === 0 ? "rotate-[-1deg]" : "rotate-[1deg]"} transition-transform hover:-translate-y-2`}
         >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">{stat.title}</CardTitle>
-            <Icon icon={stat.icon} className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stat.value}</div>
-            <p className="text-muted-foreground text-xs">{stat.change}</p>
-          </CardContent>
-        </Card>
+          <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
+          <Card className="rounded-none border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="font-medium text-sm">{stat.title}</CardTitle>
+              <Icon icon={stat.icon} className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">{stat.change}</p>
+            </CardContent>
+          </Card>
+        </div>
       ))}
     </div>
   );

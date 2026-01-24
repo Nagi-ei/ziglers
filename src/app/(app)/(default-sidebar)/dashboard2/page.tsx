@@ -4,10 +4,9 @@ import { DashboardSummary } from "@/widgets/dashboard-summary/DashboardSummary";
 
 export default function Dashboard2Page() {
   return (
-    <main className="container space-y-8 py-8">
-      <div>
+    <main className="mx-auto w-full max-w-screen-xl space-y-8 px-4 py-8 md:px-8">
+      <div className="sticky top-0 z-10 border-b bg-background pb-4">
         <h1 className="font-bold text-2xl">Dashboard</h1>
-        <p className="text-muted-foreground">일반 Sidebar 레이아웃</p>
       </div>
       <DashboardSummary />
       <DashboardCharts />
