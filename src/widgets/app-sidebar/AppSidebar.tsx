@@ -13,7 +13,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type * as React from "react";
+import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/shadcn/Avatar";
+import { Separator } from "@/shared/ui/shadcn/Separator";
 import {
   Sidebar,
   SidebarContent,
@@ -59,50 +61,106 @@ export function AppSidebar({ variant = "inset", ...props }: AppSidebarProps) {
 
   return (
     <Sidebar variant={variant} collapsible="icon" {...props} className="border-r-0">
-      <SidebarHeader className="p-4 pb-2">
-        <div className="flex items-center justify-between px-1">
+      {/* Header */}
+      <SidebarHeader className="mb-4 border-b py-4">
+        <div
+          className={cn(
+            "flex items-center justify-between transition-all duration-200 ease-linear",
+            isCollapsed ? "px-0" : "pl-1",
+          )}
+        >
           <button
             type="button"
             onClick={isCollapsed ? toggleSidebar : undefined}
-            className={`flex items-center gap-2 ${isCollapsed ? "cursor-pointer" : "cursor-default"}`}
+            className={cn(
+              "flex items-center transition-all duration-300 ease-in",
+              isCollapsed ? "cursor-pointer" : "cursor-default gap-2",
+            )}
           >
             <div className="relative size-8 shrink-0">
               <Image src="/logo.png" alt="Zieglers Logo" fill className="object-contain" />
             </div>
-            <span className="font-semibold text-sidebar-foreground text-xl tracking-tight group-data-[collapsible=icon]:hidden">
+            <span
+              className={cn(
+                "max-w-64 overflow-hidden whitespace-nowrap font-semibold text-sidebar-foreground text-xl tracking-tight opacity-100 transition-all duration-300 ease-in",
+                isCollapsed ? "max-w-0 opacity-0" : "",
+              )}
+            >
               Zieglers
             </span>
           </button>
           <button
             type="button"
             onClick={toggleSidebar}
-            className="flex size-8 items-center justify-center text-sidebar-foreground/70 transition-colors hover:text-sidebar-foreground group-data-[collapsible=icon]:hidden"
+            className={cn(
+              "flex size-8 items-center justify-center overflow-hidden text-sidebar-foreground/70 transition-all duration-200 ease-linear hover:text-sidebar-foreground",
+              isCollapsed ? "hidden max-w-0 opacity-0" : "-mr-2",
+            )}
           >
             <Icon icon={SidebarLeft01Icon} size={20} strokeWidth={1.5} />
           </button>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 py-2">
+      {/* New Board */}
+      <SidebarContent className={cn("gap-6", isCollapsed ? "p-1 py-2" : "p-2")}>
         <Link
           href="/boards/new"
-          className="mb-2 flex h-10 w-full items-center justify-start gap-2 rounded-none bg-primary font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+          className={cn(
+            "flex h-10 items-center rounded-none bg-sidebar-accent font-medium text-sidebar-accent-foreground transition-all duration-200 ease-in hover:bg-secondary",
+            isCollapsed ? "justify-center gap-0 px-0" : "gap-3 px-[11px]",
+          )}
         >
-          <Icon icon={Add01Icon} size={20} strokeWidth={2} />
-          <span className="group-data-[collapsible=icon]:hidden">New Board</span>
+          <Icon icon={Add01Icon} size={20} className={cn("shrink-0")} strokeWidth={2} />
+          <span
+            className={cn(
+              "max-w-64 overflow-hidden whitespace-nowrap font-bold text-base opacity-100 transition-all duration-200 ease-linear",
+              isCollapsed ? "max-w-0 opacity-0" : "",
+            )}
+          >
+            New Board
+          </span>
         </Link>
-        <SidebarMenu className="gap-1">
+
+        <Separator />
+
+        {/* Menu Items */}
+        <SidebarMenu className={cn("flex flex-col gap-2", isCollapsed ? "items-center" : "")}>
           {MENU_ITEMS.map((item) => {
             const isActive = pathname === item.href || item.alternatives?.includes(pathname);
+
             return (
-              <SidebarMenuItem key={item.title}>
+              <SidebarMenuItem
+                key={item.title}
+                className={cn(
+                  "w-full transition-all duration-300 ease-in",
+                  isCollapsed ? "flex justify-center" : "",
+                )}
+              >
                 <SidebarMenuButton
                   isActive={isActive}
-                  className="h-10 gap-3 rounded-none font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-foreground"
+                  className={cn(
+                    "h-10 rounded-none font-medium transition-all duration-200 ease-in",
+                    isCollapsed
+                      ? "justify-center gap-0 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-2!"
+                      : "gap-3 px-[11px]",
+                  )}
                   render={
                     <Link href={item.href}>
-                      <Icon icon={item.icon} size={20} strokeWidth={isActive ? 2 : 1.5} />
-                      <span>{item.title}</span>
+                      <Icon
+                        icon={item.icon}
+                        size={20}
+                        className="shrink-0"
+                        strokeWidth={isActive ? 2 : 1.5}
+                      />
+                      <span
+                        className={cn(
+                          "max-w-64 overflow-hidden whitespace-nowrap opacity-100 transition-all duration-200 ease-linear",
+                          isCollapsed ? "max-w-0 opacity-0" : "",
+                        )}
+                      >
+                        {item.title}
+                      </span>
                     </Link>
                   }
                 />
@@ -112,15 +170,31 @@ export function AppSidebar({ variant = "inset", ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="border-sidebar-border/40 border-t p-4 group-data-[collapsible=icon]:p-2">
-        <div className="flex items-center gap-3 px-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+      {/* User */}
+      <SidebarFooter
+        className={cn(
+          "border-sidebar-border/40 border-t p-4 transition-all duration-200 ease-linear",
+          isCollapsed ? "p-2" : "",
+        )}
+      >
+        <div
+          className={cn(
+            "flex items-center transition-all duration-200 ease-linear",
+            isCollapsed ? "justify-center gap-0 px-0" : "gap-3 px-1",
+          )}
+        >
           <Avatar className="h-9 w-9 shrink-0 rounded-none border border-sidebar-border shadow-sm">
             <AvatarImage src="" alt={PLACEHOLDER_USER.name} />
             <AvatarFallback className="flex items-center justify-center rounded-none bg-sidebar-accent font-medium text-sidebar-foreground">
               <Icon icon={UserIcon} size={16} className="text-sidebar-foreground/70" />
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col overflow-hidden group-data-[collapsible=icon]:hidden">
+          <div
+            className={cn(
+              "flex max-w-64 flex-col overflow-hidden whitespace-nowrap opacity-100 transition-all duration-200 ease-linear",
+              isCollapsed ? "max-w-0 opacity-0" : "",
+            )}
+          >
             <span className="truncate font-medium text-sidebar-foreground text-sm">
               {PLACEHOLDER_USER.name}
             </span>

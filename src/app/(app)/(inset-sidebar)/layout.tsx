@@ -14,7 +14,7 @@ export default async function InsetSidebarLayout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar variant="inset" />
-      <SidebarInset className="rounded-none md:peer-data-[variant=inset]:rounded-none">
+      <SidebarInset className="overflow-visible rounded-none md:peer-data-[variant=inset]:rounded-none">
         {children}
       </SidebarInset>
     </SidebarProvider>
