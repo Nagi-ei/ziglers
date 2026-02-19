@@ -4,7 +4,7 @@ import { DashboardSummary } from "@/widgets/dashboard-summary/DashboardSummary";
 
 export default function Dashboard1Page() {
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
       <DashboardSummary />
       <DashboardCharts />
       <DashboardBoards />

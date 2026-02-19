@@ -28,16 +28,14 @@ export function DashboardCharts() {
 
   return (
     <section>
-      <div className="mb-6">
-        <h2 className="relative inline-block font-bold text-xl">
-          <span className="relative z-10">Your Progress Journey</span>
-          <span className="absolute -bottom-1 left-0 h-2 w-full -rotate-1 bg-primary/20" />
-        </h2>
-      </div>
+      <h2 className="relative mb-10 inline-block font-bold text-xl">
+        <span className="relative z-10">Your Progress Journey</span>
+        <span className="absolute -bottom-1 left-0 h-2 w-full -rotate-1 bg-primary/20" />
+      </h2>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <div className="relative -rotate-1 transition-transform hover:-translate-y-2">
-          <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
+        <div className="group relative transition-transform duration-300 hover:-translate-y-2 hover:-rotate-1">
+          <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
           <Card className="rounded-none border-2 border-primary/10 shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
             <CardHeader>
               <CardTitle>Goal Progress</CardTitle>
@@ -67,8 +65,8 @@ export function DashboardCharts() {
           </Card>
         </div>
 
-        <div className="relative rotate-1 transition-transform hover:-translate-y-2">
-          <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
+        <div className="group relative transition-transform duration-300 hover:-translate-y-2 hover:rotate-1">
+          <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
           <Card className="rounded-none border-2 border-primary/10 shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
             <CardHeader>
               <CardTitle>Status Distribution</CardTitle>

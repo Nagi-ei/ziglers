@@ -14,8 +14,12 @@ export default async function InsetSidebarLayout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar variant="inset" />
-      <SidebarInset className="overflow-visible rounded-none md:peer-data-[variant=inset]:rounded-none">
-        {children}
+      <SidebarInset className="bg-sidebar md:peer-data-[variant=inset]:m-0 md:peer-data-[variant=inset]:rounded-none md:peer-data-[variant=inset]:shadow-none">
+        <div className="h-full min-h-0 overflow-y-auto">
+          <div className="my-4 mr-4 flex min-h-[calc(100%-2rem)] flex-col overflow-clip bg-background shadow-sm">
+            {children}
+          </div>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

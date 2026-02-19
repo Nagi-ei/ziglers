@@ -21,9 +21,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   useSidebar,
 } from "@/shared/ui/shadcn/Sidebar";
 
@@ -63,26 +60,21 @@ export function AppSidebar({ variant = "inset", ...props }: AppSidebarProps) {
     <Sidebar variant={variant} collapsible="icon" {...props} className="border-r-0">
       {/* Header */}
       <SidebarHeader className="mb-4 border-b py-4">
-        <div
-          className={cn(
-            "flex items-center justify-between transition-all duration-200 ease-linear",
-            isCollapsed ? "px-0" : "pl-1",
-          )}
-        >
+        <div className="flex items-center justify-between transition-all duration-200 ease-linear">
           <button
             type="button"
             onClick={isCollapsed ? toggleSidebar : undefined}
             className={cn(
-              "flex items-center transition-all duration-300 ease-in",
-              isCollapsed ? "cursor-pointer" : "cursor-default gap-2",
+              "flex items-center gap-3 transition-all duration-200 ease-linear",
+              isCollapsed ? "cursor-pointer" : "cursor-default",
             )}
           >
-            <div className="relative size-8 shrink-0">
+            <div className="relative size-10 shrink-0">
               <Image src="/logo.png" alt="Zieglers Logo" fill className="object-contain" />
             </div>
             <span
               className={cn(
-                "max-w-64 overflow-hidden whitespace-nowrap font-semibold text-sidebar-foreground text-xl tracking-tight opacity-100 transition-all duration-300 ease-in",
+                "max-w-64 overflow-hidden whitespace-nowrap font-semibold text-sidebar-foreground text-xl tracking-tight opacity-100 transition-all duration-200 ease-linear",
                 isCollapsed ? "max-w-0 opacity-0" : "",
               )}
             >
@@ -103,18 +95,17 @@ export function AppSidebar({ variant = "inset", ...props }: AppSidebarProps) {
       </SidebarHeader>
 
       {/* New Board */}
-      <SidebarContent className={cn("gap-6", isCollapsed ? "p-1 py-2" : "p-2")}>
+      <SidebarContent className="gap-6 p-2">
         <Link
           href="/boards/new"
           className={cn(
-            "flex h-10 items-center rounded-none bg-sidebar-accent font-medium text-sidebar-accent-foreground transition-all duration-200 ease-in hover:bg-secondary",
-            isCollapsed ? "justify-center gap-0 px-0" : "gap-3 px-[11px]",
+            "flex h-10 items-center rounded-none bg-sidebar-accent px-[11px] font-medium text-sidebar-accent-foreground transition-all duration-200 ease-linear hover:bg-secondary",
           )}
         >
           <Icon icon={Add01Icon} size={20} className={cn("shrink-0")} strokeWidth={2} />
           <span
             className={cn(
-              "max-w-64 overflow-hidden whitespace-nowrap font-bold text-base opacity-100 transition-all duration-200 ease-linear",
+              "ml-3 max-w-64 overflow-hidden whitespace-nowrap font-bold text-base opacity-100 transition-all duration-200 ease-linear",
               isCollapsed ? "max-w-0 opacity-0" : "",
             )}
           >
@@ -125,65 +116,45 @@ export function AppSidebar({ variant = "inset", ...props }: AppSidebarProps) {
         <Separator />
 
         {/* Menu Items */}
-        <SidebarMenu className={cn("flex flex-col gap-2", isCollapsed ? "items-center" : "")}>
+        <nav className="flex flex-col gap-2">
           {MENU_ITEMS.map((item) => {
             const isActive = pathname === item.href || item.alternatives?.includes(pathname);
 
             return (
-              <SidebarMenuItem
+              <Link
                 key={item.title}
+                href={item.href}
                 className={cn(
-                  "w-full transition-all duration-300 ease-in",
-                  isCollapsed ? "flex justify-center" : "",
+                  "flex h-10 items-center rounded-none px-[11px] font-medium transition-all duration-200 ease-linear",
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 )}
               >
-                <SidebarMenuButton
-                  isActive={isActive}
-                  className={cn(
-                    "h-10 rounded-none font-medium transition-all duration-200 ease-in",
-                    isCollapsed
-                      ? "justify-center gap-0 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-2!"
-                      : "gap-3 px-[11px]",
-                  )}
-                  render={
-                    <Link href={item.href}>
-                      <Icon
-                        icon={item.icon}
-                        size={20}
-                        className="shrink-0"
-                        strokeWidth={isActive ? 2 : 1.5}
-                      />
-                      <span
-                        className={cn(
-                          "max-w-64 overflow-hidden whitespace-nowrap opacity-100 transition-all duration-200 ease-linear",
-                          isCollapsed ? "max-w-0 opacity-0" : "",
-                        )}
-                      >
-                        {item.title}
-                      </span>
-                    </Link>
-                  }
+                <Icon
+                  icon={item.icon}
+                  size={20}
+                  className="shrink-0"
+                  strokeWidth={isActive ? 2 : 1.5}
                 />
-              </SidebarMenuItem>
+                <span
+                  className={cn(
+                    "ml-3 max-w-64 overflow-hidden whitespace-nowrap opacity-100 transition-all duration-200 ease-linear",
+                    isCollapsed ? "max-w-0 opacity-0" : "",
+                  )}
+                >
+                  {item.title}
+                </span>
+              </Link>
             );
           })}
-        </SidebarMenu>
+        </nav>
       </SidebarContent>
 
       {/* User */}
-      <SidebarFooter
-        className={cn(
-          "border-sidebar-border/40 border-t p-4 transition-all duration-200 ease-linear",
-          isCollapsed ? "p-2" : "",
-        )}
-      >
-        <div
-          className={cn(
-            "flex items-center transition-all duration-200 ease-linear",
-            isCollapsed ? "justify-center gap-0 px-0" : "gap-3 px-1",
-          )}
-        >
-          <Avatar className="h-9 w-9 shrink-0 rounded-none border border-sidebar-border shadow-sm">
+      <SidebarFooter className="border-sidebar-border/40 border-t py-4 transition-all duration-200 ease-linear">
+        <div className="flex items-center overflow-hidden transition-all duration-200 ease-linear">
+          <Avatar className="size-10 shrink-0 rounded-none border border-sidebar-border shadow-sm">
             <AvatarImage src="" alt={PLACEHOLDER_USER.name} />
             <AvatarFallback className="flex items-center justify-center rounded-none bg-sidebar-accent font-medium text-sidebar-foreground">
               <Icon icon={UserIcon} size={16} className="text-sidebar-foreground/70" />
@@ -191,7 +162,7 @@ export function AppSidebar({ variant = "inset", ...props }: AppSidebarProps) {
           </Avatar>
           <div
             className={cn(
-              "flex max-w-64 flex-col overflow-hidden whitespace-nowrap opacity-100 transition-all duration-200 ease-linear",
+              "ml-3 flex max-w-64 flex-col overflow-hidden whitespace-nowrap opacity-100 transition-all duration-200 ease-linear",
               isCollapsed ? "max-w-0 opacity-0" : "",
             )}
           >

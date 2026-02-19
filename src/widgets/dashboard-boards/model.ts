@@ -19,7 +19,7 @@ export const MOCK_BOARDS = [
   },
 ];
 
-export const useBoardsList = () => {
+export const getBoardsList = () => {
   return {
     data: MOCK_BOARDS,
     isLoading: false,

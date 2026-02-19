@@ -9,7 +9,7 @@ export const MOCK_SUMMARY = {
   overallProgressChange: "+4% this week",
 };
 
-export const useSummaryStats = () => {
+export const getSummaryStats = () => {
   return {
     data: MOCK_SUMMARY,
     isLoading: false,

@@ -1,5 +1,3 @@
-"use client";
-
 import { Add01Icon, ArrowRight01Icon, Clock04Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon as Icon } from "@hugeicons/react";
 import Link from "next/link";
@@ -8,14 +6,14 @@ import { DecoTape } from "@/shared/ui/common/DecoTape";
 import { Button } from "@/shared/ui/shadcn/Button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
 import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/shadcn/Progress";
-import { useBoardsList } from "./model";
+import { getBoardsList } from "./model";
 
 export const DashboardBoards = () => {
-  const { data: boards } = useBoardsList();
+  const { data: boards } = getBoardsList();
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="mb-10 flex items-center justify-between">
         <h2 className="relative inline-block font-bold text-xl">
           <span className="relative z-10">Your Boards</span>
           <span className="absolute -bottom-1 left-0 h-2 w-full -rotate-1 bg-primary/20" />
@@ -30,9 +28,9 @@ export const DashboardBoards = () => {
         {boards.map((board, index) => (
           <div
             key={board.id}
-            className={`relative h-full ${index % 2 === 0 ? "-rotate-1" : "rotate-1"} transition-transform hover:-translate-y-2`}
+            className={`group relative h-full transition-transform duration-300 ${index % 2 === 0 ? "hover:-rotate-1" : "hover:rotate-1"} hover:-translate-y-2`}
           >
-            <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
+            <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
             <Card className="flex h-full flex-col justify-between rounded-none border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)] transition-shadow hover:shadow-[6px_6px_0px_0px_rgba(45,45,45,0.1)]">
               <div className="flex flex-1 flex-col">
                 <CardHeader className="pb-2">
@@ -68,19 +66,19 @@ export const DashboardBoards = () => {
           </div>
         ))}
 
-        <div className="relative h-full rotate-1 transition-transform hover:-translate-y-2">
-          <DecoTape className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 opacity-50" />
+        <div className="group/card relative h-full transition-transform duration-300 hover:-translate-y-2 hover:rotate-1">
+          <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 opacity-50 transition-all duration-500 group-hover/card:rotate-[-8deg] group-hover/card:scale-x-0 group-hover/card:opacity-0" />
           <button
             type="button"
-            className="group flex h-full min-h-[180px] w-full flex-col items-center justify-center gap-3 border-2 border-primary/20 border-dashed bg-background shadow-[4px_4px_0px_0px_rgba(45,45,45,0.05)] transition-colors hover:border-primary/50 hover:bg-primary/5"
+            className="group/btn flex h-full min-h-[180px] w-full flex-col items-center justify-center gap-3 border-2 border-primary/20 border-dashed bg-background shadow-[4px_4px_0px_0px_rgba(45,45,45,0.05)] transition-colors hover:border-primary/50 hover:bg-primary/5"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 shadow-sm ring-1 ring-primary/20 transition-transform group-hover:scale-110 group-hover:ring-primary/40">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 shadow-sm ring-1 ring-primary/20 transition-transform group-hover/btn:scale-110 group-hover/btn:ring-primary/40">
               <Icon
                 icon={Add01Icon}
-                className="h-6 w-6 text-primary/60 transition-colors group-hover:text-primary"
+                className="h-6 w-6 text-primary/60 transition-colors group-hover/btn:text-primary"
               />
             </div>
-            <span className="font-medium text-primary/80 text-sm group-hover:text-primary">
+            <span className="font-medium text-primary/80 text-sm group-hover/btn:text-primary">
               Create New Board
             </span>
           </button>
