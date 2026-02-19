@@ -5,7 +5,6 @@ import Link from "next/link";
 import { BackButton } from "@/shared/ui/common/BackButton";
 import { DecoTape } from "@/shared/ui/common/DecoTape";
 import { GridPatternBackground } from "@/shared/ui/common/GridPatternBackground";
-import { Button } from "@/shared/ui/shadcn/Button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/shared/ui/shadcn/Card";
 
 export default function NotFound() {
@@ -36,14 +35,13 @@ export default function NotFound() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-3 bg-primary/5 p-6 sm:flex-row sm:justify-center">
-              <Button
-                className="w-full min-w-30 gap-2 shadow-[2px_2px_0px_0px_rgba(45,45,45,1)] sm:w-auto"
-                render={<Link href="/" />}
-                nativeButton={false}
+              <Link
+                href="/"
+                className="flex h-8 w-full min-w-30 items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(45,45,45,1)] hover:bg-muted hover:text-foreground sm:w-auto dark:hover:bg-muted/50"
               >
                 <Icon icon={Home01Icon} className="h-4 w-4" />
                 <span>Return Home</span>
-              </Button>
+              </Link>
               <BackButton
                 variant="default"
                 className="w-full min-w-30 gap-2 shadow-[2px_2px_0px_0px_rgba(45,45,45,1)] sm:w-auto"

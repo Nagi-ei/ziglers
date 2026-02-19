@@ -17,7 +17,7 @@ export function Header() {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-3">
           <div className="relative -rotate-2 transition-transform duration-300 group-hover:rotate-0">
-            <div className="absolute inset-0 translate-x-0.5 translate-y-0.5 rounded-none bg-primary opacity-20" />
+            <div className="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-primary opacity-20" />
             <Image
               src="/logo.png"
               alt="Zieglers"
@@ -49,12 +49,12 @@ export function Header() {
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-none font-medium hover:bg-primary/10 hover:text-primary"
+              className="font-medium hover:bg-primary/10 hover:text-primary"
             >
               Log in
             </Button>
             <Button
-              className="rounded-none border-2 border-primary bg-primary text-primary-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] transition-all hover:translate-x-px hover:translate-y-px hover:bg-primary hover:text-primary-foreground hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              className="border-2 border-primary bg-primary text-primary-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] transition-all hover:translate-x-px hover:translate-y-px hover:bg-primary hover:text-primary-foreground hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               size="sm"
             >
               Get Started

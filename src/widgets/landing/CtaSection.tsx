@@ -24,7 +24,7 @@ export function CtaSection() {
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
               size="lg"
-              className="h-14 rounded-none border-2 border-primary bg-primary px-8 text-lg text-primary-foreground shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-primary hover:text-primary-foreground hover:shadow-[2px_2px_0px_0px_rgba(45,45,45,0.2)]"
+              className="h-14 border-2 border-primary bg-primary px-8 text-lg text-primary-foreground shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-primary hover:text-primary-foreground hover:shadow-[2px_2px_0px_0px_rgba(45,45,45,0.2)]"
             >
               Start Planning Free
               <Icon icon={ArrowRight01Icon} className="ml-2 size-5" />

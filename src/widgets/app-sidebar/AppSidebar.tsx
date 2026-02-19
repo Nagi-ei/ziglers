@@ -34,8 +34,7 @@ const MENU_ITEMS = [
   {
     title: "Dashboard",
     icon: DashboardSquare02Icon,
-    href: "/dashboard1",
-    alternatives: ["/dashboard2"],
+    href: "/dashboard",
   },
   {
     title: "My Boards",
@@ -118,7 +117,7 @@ export function AppSidebar({ variant = "inset", ...props }: AppSidebarProps) {
         {/* Menu Items */}
         <nav className="flex flex-col gap-2">
           {MENU_ITEMS.map((item) => {
-            const isActive = pathname === item.href || item.alternatives?.includes(pathname);
+            const isActive = pathname === item.href;
 
             return (
               <Link

@@ -47,7 +47,7 @@ export const DashboardSummary = () => {
           className={`group relative transition-transform duration-300 ${index % 2 === 0 ? "hover:-rotate-1" : "hover:rotate-1"} hover:-translate-y-2`}
         >
           <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
-          <Card className="rounded-none border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
+          <Card className="border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="font-medium text-sm">{stat.title}</CardTitle>
               <Icon icon={stat.icon} className="h-4 w-4 text-muted-foreground" />

@@ -58,7 +58,7 @@ export function HeroSection() {
           <div className="flex flex-wrap gap-4 max-lg:justify-center">
             <Button
               size="lg"
-              className="h-14 rounded-none border-2 border-primary bg-primary px-8 text-lg text-primary-foreground shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(45,45,45,0.2)]"
+              className="h-14 border-2 border-primary bg-primary px-8 text-lg text-primary-foreground shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(45,45,45,0.2)]"
             >
               Start Planning
               <Icon icon={ArrowRight01Icon} className="ml-2 size-5" />
@@ -67,7 +67,7 @@ export function HeroSection() {
             <Button
               size="lg"
               variant="ghost"
-              className="h-14 rounded-none border-2 border-primary/30 bg-transparent px-8 text-foreground text-lg hover:bg-primary/5 hover:text-primary"
+              className="h-14 border-2 border-primary/30 bg-transparent px-8 text-foreground text-lg hover:bg-primary/5 hover:text-primary"
             >
               <Icon icon={GridIcon} className="mr-2 size-5" />
               View Examples

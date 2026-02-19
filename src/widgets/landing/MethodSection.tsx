@@ -61,7 +61,7 @@ export function MethodSection() {
               >
                 <DecoTape className="absolute -top-3 left-1/2 -translate-x-1/2 rotate-1" />
 
-                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-none border-2 border-primary/20 bg-card shadow-[2px_2px_0px_0px_rgba(45,45,45,0.1)]">
+                <div className="mb-4 inline-flex size-12 items-center justify-center border-2 border-primary/20 bg-card shadow-[2px_2px_0px_0px_rgba(45,45,45,0.1)]">
                   <Icon icon={step.icon} className="size-6 text-primary" />
                 </div>
 

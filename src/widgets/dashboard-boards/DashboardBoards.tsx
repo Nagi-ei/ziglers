@@ -18,7 +18,7 @@ export const DashboardBoards = () => {
           <span className="relative z-10">Your Boards</span>
           <span className="absolute -bottom-1 left-0 h-2 w-full -rotate-1 bg-primary/20" />
         </h2>
-        <Button size="sm" className="gap-2 rounded-none shadow-[2px_2px_0px_0px_rgba(45,45,45,1)]">
+        <Button size="sm" className="gap-2 shadow-[2px_2px_0px_0px_rgba(45,45,45,1)]">
           <Icon icon={Add01Icon} className="h-4 w-4" />
           <span>New Board</span>
         </Button>
@@ -31,7 +31,7 @@ export const DashboardBoards = () => {
             className={`group relative h-full transition-transform duration-300 ${index % 2 === 0 ? "hover:-rotate-1" : "hover:rotate-1"} hover:-translate-y-2`}
           >
             <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
-            <Card className="flex h-full flex-col justify-between rounded-none border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)] transition-shadow hover:shadow-[6px_6px_0px_0px_rgba(45,45,45,0.1)]">
+            <Card className="flex h-full flex-col justify-between border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)] transition-shadow hover:shadow-[6px_6px_0px_0px_rgba(45,45,45,0.1)]">
               <div className="flex flex-1 flex-col">
                 <CardHeader className="py-2">
                   <CardTitle className="font-medium text-base">{board.title}</CardTitle>

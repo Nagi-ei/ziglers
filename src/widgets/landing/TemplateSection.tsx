@@ -50,7 +50,7 @@ export function TemplateSection() {
           </div>
           <Button
             variant="default"
-            className="rounded-none border-2 border-primary/30 bg-transparent shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+            className="border-2 border-primary/30 bg-transparent shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
           >
             See All Templates
           </Button>
@@ -65,7 +65,7 @@ export function TemplateSection() {
               <div className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-background shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]" />
 
               <div>
-                <div className="mb-4 inline-flex size-10 items-center justify-center rounded-none border border-primary/10 bg-card dark:bg-background">
+                <div className="mb-4 inline-flex size-10 items-center justify-center border border-primary/10 bg-card dark:bg-background">
                   <Icon icon={template.icon} className="size-5 text-primary" />
                 </div>
                 <h3 className="mb-2 font-bold text-foreground text-lg">{template.title}</h3>
