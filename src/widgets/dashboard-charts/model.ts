@@ -8,9 +8,9 @@ export const MOCK_PROGRESS_DATA = [
 ];
 
 export const MOCK_STATUS_DATA = [
-  { status: "Completed", value: 35, fill: "var(--color-completed)" },
-  { status: "In Progress", value: 45, fill: "var(--color-inProgress)" },
-  { status: "Pending", value: 20, fill: "var(--color-pending)" },
+  { status: "completed", value: 35, fill: "var(--color-completed)" },
+  { status: "inProgress", value: 45, fill: "var(--color-inProgress)" },
+  { status: "pending", value: 20, fill: "var(--color-pending)" },
 ];
 
 export const useChartData = () => {
