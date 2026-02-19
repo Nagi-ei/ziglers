@@ -26,7 +26,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="group mb-6 flex items-center gap-3">
               <div className="relative -rotate-2 transition-transform duration-300 group-hover:rotate-0">
-                <div className="absolute inset-0 translate-x-0.5 translate-y-0.5 rounded-none bg-primary opacity-20" />
+                <div className="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-primary opacity-20" />
                 <Image
                   src="/logo.png"
                   alt="Zieglers"

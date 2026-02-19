@@ -1,8 +1,13 @@
+import { DashboardBoards } from "@/widgets/dashboard-boards/DashboardBoards";
+import { DashboardCharts } from "@/widgets/dashboard-charts/DashboardCharts";
+import { DashboardSummary } from "@/widgets/dashboard-summary/DashboardSummary";
+
 export default function DashboardPage() {
   return (
-    <main className="container py-8">
-      <h1 className="font-bold text-2xl">Dashboard</h1>
-      <p className="mt-2 text-muted-foreground">Coming soon...</p>
-    </main>
+    <div className="space-y-16 px-4 py-8 md:px-8">
+      <DashboardSummary />
+      <DashboardCharts />
+      <DashboardBoards />
+    </div>
   );
 }

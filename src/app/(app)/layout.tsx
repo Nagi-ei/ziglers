@@ -1,13 +1,8 @@
 import { cookies } from "next/headers";
-import SidebarExample from "@/shared/ui/SidebarExample";
-import {
-  SIDEBAR_COOKIE_NAME,
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/shared/ui/shadcn/Sidebar";
+import { SIDEBAR_COOKIE_NAME, SidebarInset, SidebarProvider } from "@/shared/ui/shadcn/Sidebar";
+import { AppSidebar } from "@/widgets/app-sidebar/AppSidebar";
 
-export default async function AppLayout({
+export default async function InsetSidebarLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -18,10 +13,13 @@ export default async function AppLayout({
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <SidebarExample variant="inset" />
-      <SidebarInset>
-        <SidebarTrigger />
-        {children}
+      <AppSidebar variant="inset" />
+      <SidebarInset className="bg-sidebar md:peer-data-[variant=inset]:m-0 md:peer-data-[variant=inset]:rounded-none md:peer-data-[variant=inset]:shadow-none">
+        <div className="h-full min-h-0 overflow-y-auto">
+          <div className="my-4 mr-4 flex min-h-[calc(100%-2rem)] flex-col overflow-clip bg-background shadow-sm">
+            {children}
+          </div>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
