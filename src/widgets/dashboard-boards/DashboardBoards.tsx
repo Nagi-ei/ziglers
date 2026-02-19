@@ -5,7 +5,7 @@ import { DecoTape } from "@/shared/ui/common/DecoTape";
 
 import { Button } from "@/shared/ui/shadcn/Button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
-import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/shadcn/Progress";
+import { Progress, ProgressLabel } from "@/shared/ui/shadcn/Progress";
 import { getBoardsList } from "./model";
 
 export const DashboardBoards = () => {
@@ -33,17 +33,21 @@ export const DashboardBoards = () => {
             <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
             <Card className="flex h-full flex-col justify-between rounded-none border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)] transition-shadow hover:shadow-[6px_6px_0px_0px_rgba(45,45,45,0.1)]">
               <div className="flex flex-1 flex-col">
-                <CardHeader className="pb-2">
+                <CardHeader className="py-2">
                   <CardTitle className="font-medium text-base">{board.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="pb-4">
-                  <Progress
-                    value={board.progress}
-                    className="h-2 border border-primary/20 bg-primary/5"
-                  >
-                    <ProgressLabel className="sr-only">Progress</ProgressLabel>
-                    <ProgressValue className="bg-primary" />
-                  </Progress>
+                <CardContent className="py-2">
+                  <div className="flex items-center gap-3">
+                    <Progress
+                      value={board.progress}
+                      className="h-2 flex-1 border border-primary/20 bg-primary/5"
+                    >
+                      <ProgressLabel className="sr-only">Progress</ProgressLabel>
+                    </Progress>
+                    <span className="shrink-0 text-muted-foreground text-xs tabular-nums">
+                      {board.progress}%
+                    </span>
+                  </div>
                 </CardContent>
               </div>
               <CardFooter className="flex items-center justify-between border-primary/10 border-t bg-primary/5 p-4 text-muted-foreground text-xs">
@@ -70,7 +74,7 @@ export const DashboardBoards = () => {
           <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 opacity-50 transition-all duration-500 group-hover/card:rotate-[-8deg] group-hover/card:scale-x-0 group-hover/card:opacity-0" />
           <button
             type="button"
-            className="group/btn flex h-full min-h-[180px] w-full flex-col items-center justify-center gap-3 border-2 border-primary/20 border-dashed bg-background shadow-[4px_4px_0px_0px_rgba(45,45,45,0.05)] transition-colors hover:border-primary/50 hover:bg-primary/5"
+            className="group/btn flex h-full min-h-[160px] w-full flex-col items-center justify-center gap-3 border-2 border-primary/20 border-dashed bg-background shadow-[4px_4px_0px_0px_rgba(45,45,45,0.05)] transition-colors hover:border-primary/50 hover:bg-primary/5"
           >
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 shadow-sm ring-1 ring-primary/20 transition-transform group-hover/btn:scale-110 group-hover/btn:ring-primary/40">
               <Icon

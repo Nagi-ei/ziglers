@@ -68,7 +68,7 @@ export function DashboardCharts() {
         <div className="group relative transition-transform duration-300 hover:-translate-y-2 hover:rotate-1">
           <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
           <Card className="rounded-none border-2 border-primary/10 shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
-            <CardHeader>
+            <CardHeader className="flex justify-between">
               <CardTitle>Status Distribution</CardTitle>
               <CardDescription>2025 Goals</CardDescription>
             </CardHeader>
