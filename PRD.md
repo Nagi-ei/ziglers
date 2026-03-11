@@ -1,6 +1,6 @@
-# Mandalart Web – PRD (v1.0)
+# Mandalart Web – PRD (v1.1)
 
-_Last updated: 2025-11-08 (KST)_
+_Last updated: 2026-03-12 (KST)_
 
 ---
 
@@ -77,7 +77,7 @@ A web app that allows users to create mandal-art boards by theme, track progress
 - **Testing:** Jest, Playwright, MSW
 - **CI:** GitHub Actions
 - **Package Manager:** pnpm
-- **Lint/Format:** Biome + ESLint(next) + Prettier
+- **Lint/Format:** Biome + ESLint(next) + Prettier (docs/markdown)
 
 > Prisma is used as the primary server-side data access layer. Supabase remains responsible for Auth, Storage, and RLS-based authorization.
 
@@ -148,7 +148,9 @@ The MVP supports **only one level of expansion (1-depth)**.
   - Auth (session, user)
   - Storage (exported files, assets)
 - Client-side direct DB access is not used
-- Server Actions and Route Handlers perform all database reads and mutations
+- Reads are performed in Server Components or other server-only boundaries
+- Server Actions are the default mutation boundary for internal CRUD flows
+- Route Handlers are reserved for public API, webhook, or external callback boundaries
 - Prisma handles:
   - CRUD operations
   - Relation handling
@@ -178,6 +180,8 @@ The MVP supports **only one level of expansion (1-depth)**.
 > TanStack Query operates **above the server data layer**.  
 > Prisma is not exposed to the client and does not replace client-side caching or synchronization concerns.
 
+> Query keys should follow a stable hierarchical key-factory convention rather than ad-hoc inline arrays.
+
 > Actual schema code and validation logic are in **TECH_REFERENCE.md**.
 
 ---
@@ -189,7 +193,8 @@ The MVP supports **only one level of expansion (1-depth)**.
 - `DashboardCards` (progress, monthly chart, activity log)
 - `ExportButtonGroup` (PNG/PDF export)
 - `TemplatePicker` (for new board creation)
-- `ThemeSwitcher`, `LocaleSwitcher`
+- `ThemeToggle`
+- `LocaleSwitcher` (when internationalization is enabled in the app shell)
 
 ---
 
@@ -208,11 +213,13 @@ The MVP supports **only one level of expansion (1-depth)**.
 
 ### 10.2 Internationalization (Korean/English)
 
-- Based on `next-intl`
+- Product target: route-localized Korean/English UI
 - Default: `ko` / Secondary: `en`
 - Routes: `/dashboard`, `/en/dashboard`
 - Key naming convention: `page.section.key`
 - Runtime fallback: English
+
+> The exact i18n library and rollout state should be documented in **TECH_REFERENCE.md** when enabled in the repository.
 
 ---
 
@@ -262,9 +269,9 @@ The MVP supports **only one level of expansion (1-depth)**.
 
 ### Pipeline
 
-1. **Lint/Format:** `pnpm biome check`, `pnpm next lint`
-2. **Unit/Integration:** `pnpm test --runInBand --coverage`
-3. **E2E:** `pnpm exec playwright install --with-deps` → `pnpm exec playwright test --reporter=line`
+1. **Lint/Format:** `pnpm lint` and `pnpm prettier:docs` when document files change
+2. **Unit/Integration:** `pnpm test:unit`
+3. **E2E:** `pnpm test:e2e`
 
 ### Test Pyramid
 
@@ -282,8 +289,8 @@ The MVP supports **only one level of expansion (1-depth)**.
 
 - **PRD.md** – Product definition and requirements
 - **TECH_REFERENCE.md** – Technical specifications, SQL, code examples, version info
-- **SCAFFOLD_STRUCTURE.md** – Folder and component structure (FSD-Lite)
-- **AGENTS.md** – Codex agent guidelines and context configuration
+- **SCAFFOLD_STRUCTURE.md** – Folder, boundary, and scaffold rules
+- **AGENTS.md** – Agent workflow, branch-cycle, and document synchronization rules
 
 ---
 

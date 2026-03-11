@@ -26,3 +26,30 @@
   - `git diff --check -- AGENTS.md SCAFFOLD_STRUCTURE.md`
 - Result:
   - pass
+
+## Slice 2 - PRD and Tech Reference Alignment
+
+- PLAN:
+  - Correct `PRD.md` and `TECH_REFERENCE.md` wherever stale implementation wording, toolchain details, and boundary definitions conflict with the accepted architecture, while preserving product goals.
+- LENS CHECK:
+  - Binding skill lens: `frontend-architecture-rules`
+  - Key constraints enforced:
+    - reads in server boundaries, writes through Server Actions by default
+    - Route Handlers not treated as the default internal CRUD path
+    - hierarchical query key factories as the documented convention
+    - technical references should favor durable contracts over stale code/config dumps
+
+## TDD Cycle
+
+- RED: `PRD.md` still described reads and writes as `Server Actions and Route Handlers`; `TECH_REFERENCE.md` still pointed to stale Prisma paths, outdated versions, and repository/config examples that no longer reflect the accepted architecture or current repo reality.
+- GREEN: Updated `PRD.md` to preserve product requirements while fixing stale implementation wording, and updated `TECH_REFERENCE.md` to reflect current versions, server/client boundary rules, query-key conventions, and repo-backed verification references.
+- REFACTOR: Replaced stale config/code dumps with source-of-truth file references where possible, tightened the Server Action example, and normalized wording around i18n, lint/test commands, and cache consistency.
+
+## Verify
+
+- Commands:
+  - `pnpm prettier:docs`
+  - `rg -n "shared/lib/prisma/client|repositories/boardRepository|next-intl|pnpm next lint|pnpm test --runInBand --coverage|Route Handlers perform all database reads and mutations|ThemeSwitcher" PRD.md TECH_REFERENCE.md`
+  - `git diff --check -- PRD.md TECH_REFERENCE.md`
+- Result:
+  - pass
