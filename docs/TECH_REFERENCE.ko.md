@@ -1,38 +1,38 @@
-# Mandalart Web – TECH_REFERENCE (v1.1)
+# Mandalart Web – TECH_REFERENCE (v1.2)
 
-_Last updated: 2025-12-18 (KST)_
-
----
-
-## 1) Overview
-
-이 문서는 **Mandalart Web 프로젝트의 기술 구현 세부 사항**을 정의한다.  
-PRD.md에서 정의한 요구사항을 기술적으로 실현하기 위한 기준이며,  
-코드 자동 생성 및 유지보수 시 참조되는 최상위 기술 명세다.
+_Last updated: 2026-03-12 (KST)_
 
 ---
 
-## 2) Environment & Toolchain
+## 1) 개요
 
-| 항목                | 내용                                                      |
-| ------------------- | --------------------------------------------------------- |
-| **Framework**       | Next.js (App Router, v16.0.1), React (v19.2.0)            |
-| **Language**        | TypeScript (v5.x)                                         |
-| **Package Manager** | pnpm (v10.18.2)                                           |
-| **Database**        | Supabase (PostgreSQL 15)                                  |
-| **ORM**             | Prisma (v7.2.0)                                           |
-| **Styling/UI**      | TailwindCSS (v4), shadcn/ui                               |
-| **State/Data**      | TanStack Query (v5.90.8), Zustand (v5.0.8), Zod (v4.1.12) |
-| **Form**            | react-hook-form (v7.66.0) + zodResolver (v5.2.2)          |
-| **Testing**         | Jest + Playwright + MSW                                   |
-| **Lint/Format**     | Biome + ESLint(next) + Prettier                           |
-| **CI/CD**           | GitHub Actions + Vercel Preview Deploy                    |
-| **Timezone**        | Asia/Seoul (KST)                                          |
-| **Font**            | Pretendard Variable (woff2)                               |
+이 문서는 **Mandalart Web 프로젝트의 기술 구현 세부 사항**을 정의한다.
+`PRD.md`에서 정의한 요구사항을 실제로 구현하기 위한 기술적 기준이며,
+코드 생성과 유지보수 시 참조하는 최상위 기술 명세다.
 
 ---
 
-## 3) Database Schema (Supabase / Postgres)
+## 2) 환경 & 툴체인
+
+| 항목                | 내용                                                       |
+| ------------------- | ---------------------------------------------------------- |
+| **Framework**       | Next.js (App Router, v16.0.10), React (v19.2.1)            |
+| **Language**        | TypeScript (v5.x)                                          |
+| **Package Manager** | pnpm (v10.18.2)                                            |
+| **Database**        | Supabase (PostgreSQL 15)                                   |
+| **ORM**             | Prisma (v7.3.0)                                            |
+| **Styling/UI**      | TailwindCSS (v4), shadcn/ui                                |
+| **State/Data**      | TanStack Query (v5.90.20), Zustand (v5.0.11), Zod (v4.3.6) |
+| **Form**            | react-hook-form (v7.71.1) + zodResolver (v5.2.2)           |
+| **Testing**         | Jest + Playwright + MSW                                    |
+| **Lint/Format**     | Biome + ESLint(next) + Prettier                            |
+| **CI/CD**           | GitHub Actions + Vercel Preview Deploy                     |
+| **Timezone**        | Asia/Seoul (KST)                                           |
+| **Font**            | Pretendard Variable (woff2)                                |
+
+---
+
+## 3) 데이터베이스 스키마 (Supabase / Postgres)
 
 ### 3.1 DDL (SQL)
 
@@ -94,7 +94,7 @@ create table if not exists events (
 
 ---
 
-### 3.2 Indexes (성능 최적화)
+### 3.2 인덱스 (성능 최적화)
 
 ```sql
 -- boards
@@ -116,11 +116,11 @@ create index if not exists idx_events_created_at on events(created_at desc);
 create index if not exists idx_events_type on events(type);
 ```
 
-> ✅ **설명:**
+> ✅ **메모:**
 >
-> - `owner_id`, `board_id`, `cell_id`는 모든 데이터 접근의 기본 필터 기준이므로 인덱싱 필수
-> - `updated_at`, `done_at`, `created_at` 인덱스로 정렬 성능 향상
-> - `events`는 월별 집계 쿼리를 고려해 `(user_id, created_at)` 복합 인덱스도 추가 가능
+> - `owner_id`, `board_id`, `cell_id`는 모든 쿼리의 핵심 필터 키이므로 인덱싱이 필요하다.
+> - `updated_at`, `done_at`, `created_at` 인덱스는 정렬 성능을 높인다.
+> - `events`는 월별 집계 쿼리를 위해 이후 `(user_id, created_at)` 복합 인덱스를 추가할 수 있다.
 
 ---
 
@@ -175,7 +175,7 @@ create policy events_owner on events
 
 ---
 
-## 5) Queries & Data Fetching
+## 5) 쿼리 & 데이터 조회
 
 ### 5.1 대시보드 월별 완료 수
 
@@ -209,85 +209,56 @@ order by b.updated_at desc;
 
 ---
 
-## 6) Prisma 설정 및 사용 정책 (Prisma Setup & Usage Policy)
+## 6) Prisma 설정 및 사용 정책
 
-- **Prisma Client는** `shared/lib/prisma/client.ts` 에서 단일 인스턴스로 초기화한다.
-- **모든 서버 사이드 데이터베이스 접근은 Prisma를 통해서만 수행한다.**
-- **클라이언트 사이드에서의 직접적인 DB 접근은 허용하지 않는다.**
-- **Supabase의 역할은 다음으로 한정한다:**
-  - 인증(Auth)
-  - 스토리지(Storage)
-  - Row Level Security(RLS) 기반 인가(Authorization) 강제
+- Prisma Client는 `prisma/schema.prisma`로부터 생성되며 출력 위치는 `src/generated/prisma`다.
+- Prisma는 **모든 애플리케이션 레벨 서버 사이드 데이터베이스 접근**에 사용한다.
+- 클라이언트 사이드의 직접적인 DB 접근은 금지한다.
+- Supabase는 다음을 담당한다.
+  - Auth/세션 처리
+  - Storage
+  - RLS 강제
 
-> Prisma는 애플리케이션 레벨의 데이터 접근 표준을 제공하며,  
-> Supabase RLS는 데이터베이스 레벨에서 최종적인 보안 경계를 담당한다.
+> Prisma는 서버 사이드의 주요 데이터 접근 계층으로 사용한다.
+> Supabase RLS는 데이터베이스 레벨에서 적용된다.
+
+### 경계 규칙
+
+- 조회는 Server Component 또는 다른 server-only 모듈에서 수행하는 것을 우선한다.
+- 내부 create/update/delete 흐름에는 Server Action을 우선한다.
+- Route Handler는 기본 내부 CRUD 경계가 아니며, public API, webhook, 외부 callback에 한정한다.
+- repository/adapter layer는 명시적인 경계 가치가 있을 때만 도입한다.
 
 ---
 
-## 7) Repository Layer (예시)
+## 7) 애플리케이션 데이터 경계 패턴
 
-```ts
-// repositories/boardRepository.ts
+기본 애플리케이션 패턴:
 
-import { prisma } from "@/lib/prisma";
+- 데이터 조회는 Server Component 또는 server-only 모듈에서 수행한다.
+- 쓰기는 Server Action을 통해 수행한다.
+- 상호작용이 있는 mutation UX는 필요 시 TanStack Query `useMutation`으로 조정한다.
+- 쓰기 성공 후에는 명시적으로 invalidate 또는 revalidate를 수행한다.
 
-export const boardRepository = {
-  async listBoards(userId: string) {
-    return prisma.board.findMany({
-      where: { ownerId: userId },
-      orderBy: { updatedAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        updatedAt: true,
-      },
-    });
-  },
-
-  async createBoard(userId: string, input: { title: string; description?: string }) {
-    return prisma.board.create({
-      data: {
-        ownerId: userId,
-        ...input,
-      },
-      select: { id: true, title: true, description: true },
-    });
-  },
-
-  async getBoard(userId: string, id: string) {
-    return prisma.board.findFirst({
-      where: { id, ownerId: userId },
-      include: {
-        cells: {
-          include: { tasks: true },
-        },
-      },
-    });
-  },
-};
-```
-
-> ✅ Reference
->
-> - Prisma는 서버 사이드의 주요 데이터 접근 레이어로 사용된다.
-> - Supabase의 RLS(Row Level Security)는 데이터베이스 레벨에서 계속 적용된다.
-> - 이 Repository 구조는 향후 NestJS로 이전 시에도 재사용 가능하도록 설계되었다.
+repository/adapter 경계는 실제 계약 또는 transport 경계를 제공할 때만 허용한다.
+forwarding-only repository layer는 기본값으로 추가하지 않는다.
 
 ---
 
 ## 8) TanStack Query Keys
 
 ```ts
-export const queryKeys = {
-  boards: ["boards"] as const,
-  board: (id: string) => ["board", id] as const,
-  cells: (boardId: string) => ["board", boardId, "cells"] as const,
-  tasks: (cellId: string) => ["cell", cellId, "tasks"] as const,
+export const boardKeys = {
+  all: ["board"] as const,
+  list: () => [...boardKeys.all, "list"] as const,
+  listBy: (filter: { ownerId?: string }) => [...boardKeys.list(), { filter }] as const,
+  detail: (boardId: string) => [...boardKeys.all, "detail", boardId] as const,
+  cells: (boardId: string) => [...boardKeys.detail(boardId), "cells"] as const,
 };
 ```
 
-> 계층 구조 배열을 사용하여 `invalidateQueries(['board', id])` 시 관련 캐시를 일괄 무효화 가능.
+> 컴포넌트마다 inline query 배열을 흩뿌리기보다, 안정적인 계층형 key factory를 사용한다.
+> 이런 helper는 `entities/<domain>/model/keys.ts` 또는 명확한 이름의 query-key 모듈에 두는 것을 우선한다.
 
 ---
 
@@ -296,11 +267,10 @@ export const queryKeys = {
 ```ts
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { getUser } from "@/lib/auth";
+import { prisma } from "@/generated/prisma/client";
 
 export async function toggleTaskDone(id: string, next: boolean) {
-  const user = await getUser();
+  const user = await requireAuthenticatedUser();
 
   await prisma.$transaction([
     prisma.task.update({
@@ -321,13 +291,15 @@ export async function toggleTaskDone(id: string, next: boolean) {
 }
 ```
 
-> - 모든 데이터 변경(mutation)은 서버에서만 실행된다.
-> - 인가(Authorization)는 Supabase RLS에 의해 최종적으로 검증된다.
-> - Prisma는 관계 처리 및 트랜잭션 무결성을 담당한다.
+> - 모든 mutation은 server-side only로 실행한다.
+> - 인가는 Supabase RLS로 강제한다.
+> - Prisma가 관계 처리와 트랜잭션 무결성을 담당한다.
+> - 쓰기 성공 후에는 일관성을 소유한 client/server 경계에서 명시적으로 cache invalidation 또는 revalidation을 수행한다.
+> - `requireAuthenticatedUser()`는 프로젝트의 실제 server-side auth helper를 대신하는 placeholder다.
 
 ---
 
-## 10) Validation (Zod Schemas)
+## 10) 검증 (Zod Schemas)
 
 ```ts
 export const BoardSchema = z.object({
@@ -347,109 +319,63 @@ export const TaskSchema = z.object({
 
 ---
 
-## 11) Testing Reference
+## 11) 테스트 기준
 
-### 11.1 Jest Config (package.json)
-
-```json
-{
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
-    "coveragePathIgnorePatterns": ["/node_modules/", "/.next/"]
-  }
-}
-```
-
-### 11.2 E2E (Playwright)
-
-```bash
-pnpm exec playwright install --with-deps
-pnpm exec playwright test --reporter=line
-```
-
-> 실행 시 자동으로 `trace.zip` 및 스크린샷 저장.  
-> `playwright.config.ts` 내 baseURL = `http://localhost:3000`
+- Jest 설정의 기준 파일: `jest.config.ts`
+- Playwright 설정의 기준 파일: `playwright.config.ts`
+- 현재 package script:
+  - `pnpm test:unit`
+  - `pnpm test:e2e`
+- 현재 테스트 디렉터리:
+  - `tests/integration/`
+  - `tests/e2e/`
 
 ---
 
 ## 12) Lint & Format
 
-### 12.1 Biome 설정 (`biome.json`)
-
-```json
-{
-  "formatter": { "indentStyle": "space", "lineWidth": 100 },
-  "linter": {
-    "rules": {
-      "style/noUnusedVars": "error",
-      "performance/noUnnecessaryAwait": "warn"
-    }
-  }
-}
-```
-
-### 12.2 ESLint 확장
-
-```js
-extends: [
-	"next/core-web-vitals",
-	"plugin:@tanstack/eslint-plugin-query/recommended"
-]
-```
+- Biome 설정의 기준 파일: `biome.json`
+- ESLint 설정의 기준 파일: `eslint.config.mjs`
+- 현재 package script:
+  - `pnpm lint`
+  - `pnpm lint:biome`
+  - `pnpm lint:eslint`
+  - `pnpm prettier:docs`
 
 ---
 
 ## 13) CI / CD (GitHub Actions)
 
-```yaml
-name: CI
-
-on:
-	pull_request:
-		branches: [main, dev]
-
-jobs:
-	build-and-test:
-		runs-on: ubuntu-latest
-
-	steps:
-		- uses: actions/checkout@v4
-		- uses: pnpm/action-setup@v2
-			with:
-				version: 9
-		- run: pnpm install
-		- run: pnpm biome check
-		- run: pnpm next lint
-		- run: pnpm test --runInBand --coverage
-		- run: pnpm exec playwright test --reporter=line
-```
+- Build verification workflow: `.github/workflows/build_verification.yml`
+- Playwright workflow: `.github/workflows/playwright.yml`
+- 정확한 CI 동작 기준은 저장소의 workflow 파일을 source of truth로 사용한다.
+- 문서화된 Node/pnpm 가정은 해당 workflow 파일과 현재 package 설정에 맞춰 유지한다.
 
 ---
 
-## 14) Version Matrix
+## 14) 버전 매트릭스
 
-| 항목           | 버전    | 비고                                |
-| -------------- | ------- | ----------------------------------- |
-| Node.js        | 22.14.0 | Vercel 기본 환경                    |
-| Next.js        | 16.0.1  | App Router                          |
-| TypeScript     | 5.x     | Strict Mode                         |
-| Supabase-js    | 2.x     | RLS 및 Edge Function 대응           |
-| Prisma         | 7.2.0   | Server-side ORM, schema & migration |
-| TailwindCSS    | 4       | JIT                                 |
-| shadcn/ui      | Latest  | CLI 설치                            |
-| TanStack Query | 5.90.8  | Suspense 대응                       |
-| Zustand        | 5.0.8   | Middleware 포함                     |
-| Zod            | 4.1.12  | react-hook-form 연동                |
-| Biome          | 2.2.0   | ESLint 대체                         |
-| Jest           | 30.2.0  | SWC 기반                            |
-| Playwright     | 1.56.1  | Chromium/Firefox/WebKit             |
-| pnpm           | 10.18.2 | monorepo 대응                       |
+| 항목           | 버전    | 비고                                    |
+| -------------- | ------- | --------------------------------------- |
+| Node.js        | 22.14.0 | Build verification workflow target      |
+| Next.js        | 16.0.10 | App Router                              |
+| TypeScript     | 5.x     | Strict Mode                             |
+| Supabase-js    | 2.95.3  | RLS 및 Edge Functions 지원              |
+| Supabase SSR   | 0.8.0   | 서버/클라이언트 auth session 지원       |
+| Prisma         | 7.3.0   | 서버 사이드 ORM, 스키마 및 마이그레이션 |
+| TailwindCSS    | 4       | JIT                                     |
+| shadcn/ui      | Latest  | CLI 설치                                |
+| TanStack Query | 5.90.20 | 클라이언트 사이드 서버 상태 처리        |
+| Zustand        | 5.0.11  | 로컬 UI 상태                            |
+| Zod            | 4.3.6   | react-hook-form과 통합                  |
+| Biome          | 2.3.9   | ESLint 대체                             |
+| Jest           | 30.2.0  | SWC 기반                                |
+| Playwright     | 1.58.2  | 브라우저 자동화 및 E2E                  |
+| pnpm           | 10.18.2 | 모노레포 지원                           |
 
 ---
 
-✅ **요약:**  
-이 문서는 Mandalart Web의 기술 사양과 구현 기준을 정의한다.  
-PRD.md는 제품 요구 정의, 본 문서는 실제 개발 기준이다.  
-인덱스, RLS, Repository 구조, 테스트 설정 등은 모두 여기 기준으로 유지·관리한다.
+✅ **요약:**
+이 문서는 Mandalart Web의 **기술 명세와 구현 기준**을 정의한다.
+`PRD.md`가 제품 요구사항을 정의한다면, 이 문서는 실제 **개발 기준 문서** 역할을 한다.
+인덱스, RLS, server/client 경계, query-key 규약, 검증 기준은 모두 이 문서를 기준으로 유지한다.

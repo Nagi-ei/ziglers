@@ -53,3 +53,29 @@
   - `git diff --check -- PRD.md TECH_REFERENCE.md`
 - Result:
   - pass
+
+## Slice 3 - Korean Translation Sync
+
+- PLAN:
+  - Sync `docs/*.ko.md` with the accepted English source documents so the Korean references preserve the same workflow, architecture, and terminology decisions.
+- LENS CHECK:
+  - Binding skill lens: `frontend-architecture-rules`
+  - Key constraints enforced:
+    - translation files must not reintroduce stale Supabase adapter or old execution-pipeline language
+    - branch-cycle, `.agent` artifact rules, and server/client boundary wording must match the English source
+    - Korean docs should preserve the same query-key, shadcn, and repository/adapter guidance
+
+## TDD Cycle
+
+- RED: `docs/PRD.ko.md` and `docs/TECH_REFERENCE.ko.md` still reflected stale wording and older boundary/toolchain assumptions, while the newly rewritten `docs/AGENTS.ko.md` and `docs/SCAFFOLD_STRUCTURE.ko.md` needed final sync verification as a set.
+- GREEN: Rewrote `docs/PRD.ko.md` and `docs/TECH_REFERENCE.ko.md` against the current English source and confirmed the four Korean docs describe the same branch workflow, scaffold rules, and data-access model.
+- REFACTOR: Normalized translated terminology around branch-cycle stages, data boundaries, query-key factories, and installed shadcn primitive handling.
+
+## Verify
+
+- Commands:
+  - `pnpm prettier:docs`
+  - `rg -n "\\.agent|Spec|Research|Planner|Execution|Hardening|Review|Refactor|Final Verify|Prisma|TanStack Query|shadcn|components\\.json" docs/AGENTS.ko.md docs/SCAFFOLD_STRUCTURE.ko.md docs/PRD.ko.md docs/TECH_REFERENCE.ko.md`
+  - `git diff --check -- docs/AGENTS.ko.md docs/SCAFFOLD_STRUCTURE.ko.md docs/PRD.ko.md docs/TECH_REFERENCE.ko.md`
+- Result:
+  - pass

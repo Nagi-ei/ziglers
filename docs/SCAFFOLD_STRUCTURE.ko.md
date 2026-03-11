@@ -1,554 +1,243 @@
-# Mandalart Web – SCAFFOLD_STRUCTURE (v1.1)
+# Mandalart Web – SCAFFOLD_STRUCTURE (v2.0)
 
-_Last updated: 2025-12-18 (KST)_
+_Last updated: 2026-03-12 (KST)_
 
 ---
 
-## 1) 폴더 트리
+## 1) 목적
+
+이 문서는 Mandalart Web의 프로젝트 스캐폴드와 경계 규칙을 정의한다.
+다음 내용을 위한 기준 문서다.
+
+- 파일이 어디에 있어야 하는가
+- 어떤 레이어가 어떤 레이어를 import할 수 있는가
+- UI primitive와 application UI를 어떻게 구분하는가
+- 데이터 접근은 어디에서 허용되는가
+- TanStack Query key와 mutation 경계를 어떻게 정리하는가
+
+이 문서는 코드 덤프가 아니라 scaffold/architecture 문서다.
+프로젝트 전용 규칙이 아니면 긴 예시 코드를 남기지 않는다.
+
+---
+
+## 2) 현재 프로젝트 형태
 
 ```bash
 src/
-├─ app/                                  # Next App Router (RSC 가능)
+├─ app/
+│  ├─ (landing)/
+│  ├─ (app)/
 │  ├─ layout.tsx
-│  ├─ page.tsx                           # 랜딩
-│  ├─ dashboard/
-│  │  └─ page.tsx                        # 대시보드
-│  └─ boards/
-│     └─ [id]/
-│        └─ page.tsx                     # 보드 상세 (편집 UI는 Client)
-│
+│  ├─ not-found.tsx
+│  └─ globals.css
 ├─ widgets/
-│  ├─ dashboard-cards/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  └─ board-grid/
-│     ├─ ui.tsx
-│     └─ model.ts
-│
-├─ features/
-│  ├─ toggle-task/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  ├─ edit-cell/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  ├─ create-board/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  └─ export-board/
-│     ├─ ui.tsx
-│     └─ model.ts
-│
-├─ entities/
-│  ├─ board/
-│  │  ├─ model/
-│  │  │  ├─ types.ts
-│  │  │  ├─ keys.ts
-│  │  │  └─ queries.ts
-│  │  ├─ lib/
-│  │  │  ├─ repository.ts                # 포트(인터페이스)
-│  │  │  ├─ supabase.adapter.ts          # 어댑터(구현) → M2에서 http.adapter.ts로 교체
-│  │  │  └─ mapper.ts
-│  │  └─ ui/
-│  │     └─ card.tsx
-│  ├─ cell/
-│  │  ├─ model/{types.ts, keys.ts, queries.ts}
-│  │  └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│  └─ task/
-│     ├─ model/{types.ts, keys.ts, queries.ts}
-│     └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│
+│  ├─ landing/
+│  ├─ dashboard-summary/
+│  ├─ dashboard-charts/
+│  ├─ dashboard-boards/
+│  └─ app-sidebar/
+├─ features/                           # optional; stable feature boundary가 있을 때만 추가
+├─ entities/                           # optional; stable entity/domain boundary가 있을 때만 추가
 ├─ shared/
-│  ├─ ui/                                # shadcn 확장(버튼/모달/토스트 등)
-│  ├─ lib/
-│  │  ├─ prisma/
-│  │  │  ├─ client.ts                    # Prisma Client 싱글톤 (server-only)
-│  │  │  └─ server.ts
-│  │  ├─ supabase/
-│  │  │  ├─ client.ts                    # 클라이언트 전용 supabase
-│  │  │  └─ server.ts                    # 서버/RSC 전용 supabase (@supabase/ssr)
-│  │  ├─ queryClient.ts                  # TanStack Query 클라이언트/Provider
-│  │  ├─ i18n/
-│  │  │  ├─ provider.tsx
-│  │  │  ├─ locales/
-│  │  │  │  ├─ ko.json
-│  │  │  │  └─ en.json
-│  │  │  └─ helpers.ts
-│  │  ├─ theme/provider.tsx              # next-themes Provider
-│  │  ├─ validators/                     # Zod 스키마
-│  │  └─ utils.ts
-│  ├─ config/
-│  │  ├─ env.ts
-│  │  └─ constants.ts
-│  └─ styles/globals.css
-│
-└─ test/
-   ├─ unit/
-   ├─ integration/
-   └─ e2e/
-```
+│  ├─ ui/
+│  │  ├─ shadcn/                       # components.json 기준 설치형 shadcn primitive surface
+│  │  └─ common/                       # 프로젝트 전용 shared UI
+│  └─ lib/
+│     ├─ hooks/
+│     ├─ theme/
+│     └─ utils.ts
+└─ generated/
+   └─ prisma/
 
-> **pages/**, **processes/** 레이어는 생략(FSD-lite). 라우팅은 전부 `app/`에서만.
+tests/
+├─ e2e/
+└─ integration/
 
-### Root-level (outside `src/`)
-
-```bash
 prisma/
-├─ schema.prisma        # Prisma schema (Single Source of Truth)
-└─ migrations/          # Prisma migration history
+├─ schema.prisma
+└─ migrations/
 ```
 
-> 이 디렉토리는 Prisma CLI가 관리하며, 현재 Next.js와 향후 NestJS 백엔드에서 공통으로 사용된다.
+### 메모
+
+- `pages/`, `processes/`는 사용하지 않는다.
+- 라우팅은 `src/app/`에서 처리한다.
+- `features/`, `entities/`는 패턴을 맞추기 위해 빈 폴더를 미리 만들지 않는다.
+- 새 레이어는 기존 레이어에 둘 수 없는 안정적인 책임이 있을 때만 추가한다.
 
 ---
 
-## 2) 경계 규칙 (필수)
+## 3) 레이어 규칙
 
-- **의존 방향 강제**: `app → widgets → features → entities → shared`  
-   (상위가 하위만 import, 반대 금지. 예: entities가 widgets를 import ❌)
-- Data Access 규칙
-  - 모든 데이터베이스 접근은 **서버 사이드 코드에서만** 수행한다.
-  - Prisma Client는 아래 위치에서만 사용 가능하다.
-    - Server Action
-    - Route Handler
-    - `entities/*/lib` 내부의 Adapter
-  - Client Component에서는 Prisma를 직접 import하거나, 데이터베이스에 직접 접근해서는 안 된다.
-- Data Adapter 구조
-  - 각 도메인은 `entities/*/model/repository.ts`에 Repository 인터페이스(Port)를 정의한다.
-  - 실제 데이터 접근 로직은 `entities/*/lib`의 Adapter에서 구현한다.
-  - Adapter는 도메인 로직과 분리되며, 교체 가능하도록 설계한다.
+### 의존 방향
 
-> 이 구조는 도메인 코드를 변경하지 않고도 Prisma 기반 구현을 HTTP/NestJS 서비스 등으로 쉽게 교체할 수 있도록 한다.
+해당 레이어가 존재할 때 import 방향은 다음을 따른다.
 
-- **쿼리 키/무효화**: `entities/*/model/keys.ts`의 키만 사용해 invalidate/revalidate
+`app -> widgets -> features -> entities -> shared`
 
----
+상위 레이어는 하위 레이어를 import할 수 있다.
+하위 레이어는 상위 레이어를 import하면 안 된다.
 
-## 3) 필수 초기 파일 (샘플)
+### 실무 해석
 
-### 3.1 `app/layout.tsx`
+- `app/`은 route boundary, page/layout composition, server-rendered entry point를 담당한다.
+- `widgets/`는 화면 수준/섹션 수준 UI를 조합한다.
+- `features/`는 실제 feature boundary가 있을 때 사용자 상호작용이나 mutation-oriented UI를 담당한다.
+- `entities/`는 실제 entity/domain boundary가 있을 때 도메인 타입, query key 등 안정적인 도메인 artifact를 담당한다.
+- `shared/`는 재사용 가능한 공통 인프라와 UI primitive를 담당한다.
 
-```tsx
-import "./globals.css";
-import { QueryProvider } from "@/shared/lib/queryClient";
-import { ThemeProvider } from "@/shared/lib/theme/provider";
-import { I18nProvider } from "@/shared/lib/i18n/provider";
+### 안티패턴
 
-export const metadata = { title: "Mandalart", description: "Mandalart Web" };
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="ko" suppressHydrationWarning>
-      <body>
-        <I18nProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <QueryProvider>{children}</QueryProvider>
-          </ThemeProvider>
-        </I18nProvider>
-      </body>
-    </html>
-  );
-}
-```
-
-### 3.2 `shared/lib/supabase/server.ts` (RSC/서버용)
-
-```ts
-import "server-only";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-
-export function getServerSupabase() {
-  const cookieStore = cookies();
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get: (k: string) => cookieStore.get(k)?.value } }
-  );
-}
-```
-
-### 3.3 `shared/lib/supabase/client.ts` (Client용)
-
-```ts
-"use client";
-import { createClient } from "@supabase/supabase-js";
-
-export function getClientSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-}
-```
-
-### 3.4 `shared/lib/queryClient.tsx`
-
-```tsx
-"use client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
-
-export function QueryProvider({ children }: { children: ReactNode }) {
-  const [qc] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: { staleTime: 30_000, retry: 1 },
-          mutations: { retry: 0 },
-        },
-      })
-  );
-  return <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
-}
-```
-
-### 3.5 `shared/lib/theme/provider.tsx`
-
-```tsx
-"use client";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-
-export function ThemeProvider(props: any) {
-  return <NextThemesProvider {...props} />;
-}
-```
-
-### 3.6 `shared/lib/i18n/provider.tsx`
-
-```tsx
-"use client";
-import { NextIntlClientProvider } from "next-intl";
-import ko from "./locales/ko.json";
-import en from "./locales/en.json";
-
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  // 간단 시작: ko 고정. 추후 locale 라우팅 연동
-  return <NextIntlClientProvider messages={ko}>{children}</NextIntlClientProvider>;
-}
-```
+- 스캐폴드 바깥에 parallel folder convention 만들기
+- `features/*`, `entities/*`를 “혹시 모르니” 미리 만들기
+- 새 레이어를 도입하면서 어떤 책임이 기존 레이어에 남을 수 없었는지 설명하지 못하는 경우
 
 ---
 
-## 4) Entities 레이어 (Board 예시)
+## 4) UI Surface 규칙
 
-### 4.1 `entities/board/model/types.ts`
+### 설치된 shadcn primitive surface
 
-```ts
-import { z } from "zod";
+- canonical installed shadcn primitive surface는 `components.json`이 정의한다.
+- 현재 저장소에서는 `components.json`이 설치된 shadcn component 경로를 `@/shared/ui/shadcn`으로 가리킨다.
+- 이 installed primitive surface 내부 파일은 upstream multi-export compound 구조를 유지할 수 있다.
 
-export const BoardSchema = z.object({
-  id: z.string().uuid(),
-  title: z.string().min(1).max(50),
-  description: z.string().max(200).optional(),
-  updated_at: z.string().datetime().optional(),
-});
-export type Board = z.infer<typeof BoardSchema>;
+### 프로젝트 UI
 
-export const CreateBoardInputSchema = BoardSchema.pick({ title: true, description: true }).partial({
-  description: true,
-});
-export type CreateBoardInput = z.infer<typeof CreateBoardInputSchema>;
-```
+- 설치된 shadcn primitive가 아닌 프로젝트 전용 UI는 그 surface 밖에 둔다.
+- 재사용 가능한 프로젝트 UI 및 visual helper는 `shared/ui/common`을 사용한다.
+- 도메인/화면 책임이 있는 UI는 `widgets/`, `features/`, 그 외 scaffold에 맞는 레이어에 둔다.
 
-### 4.2 `entities/board/model/keys.ts`
+### 컴포넌트 파일 규칙
+
+- 앱 전용 React 컴포넌트는 각자 자신의 파일에 있어야 한다.
+- 허용 예외:
+  - Suspense 또는 Error Boundary 구성을 위한 non-exported route-local wrapper
+  - canonical shadcn surface 내부의 설치형 primitive 파일
+
+### 하지 말아야 할 것
+
+- 설치된 shadcn primitive 파일에 feature logic, data fetching, mutation orchestration 섞기
+- shadcn 예외를 근거로 다른 앱 파일에서 multi-component 구성을 정당화하기
+
+---
+
+## 5) 데이터 접근 경계
+
+### 기본 모델
+
+- 데이터베이스 접근은 서버 사이드에서만 수행한다.
+- Prisma가 애플리케이션 레벨의 주요 데이터 접근 계층이다.
+- Supabase는 auth/session, storage, 데이터베이스 레벨의 RLS enforcement를 담당한다.
+
+### 허용 경계
+
+- Server Component는 직접 읽거나 server-only helper module을 통해 읽을 수 있다.
+- Server Action은 내부 create/update/delete 흐름의 기본 write boundary다.
+- Route Handler는 public API, webhook, 외부 인터페이스 경계에 한정한다.
+- Client Component는 데이터베이스에 직접 접근하면 안 된다.
+
+### Repository / Adapter 규칙
+
+repository/adapter layer는 기본값이 아니라 선택 사항이다.
+다음과 같은 명확한 가치가 있을 때만 추가한다.
+
+- 안정적인 server-only transport boundary
+- 실제 multi-source integration boundary
+- mapping/auth/transaction 책임을 별도 모듈로 두는 편이 더 명확한 경우
+
+아래 호출을 한 번 감싸는 forwarding-only repository/adapter는 의미 있는 경계로 보지 않는다.
+
+---
+
+## 6) Query Key와 Mutation
+
+### Query Key 규약
+
+ad-hoc inline query key 대신 안정적인 계층형 key factory를 사용한다.
 
 ```ts
 export const boardKeys = {
   all: ["board"] as const,
-  lists: () => [...boardKeys.all, "list"] as const,
-  list: (ownerId: string) => [...boardKeys.lists(), ownerId] as const,
-  details: () => [...boardKeys.all, "detail"] as const,
-  detail: (id: string) => [...boardKeys.details(), id] as const,
+  list: () => [...boardKeys.all, "list"] as const,
+  listBy: (filter: { ownerId?: string }) => [...boardKeys.list(), { filter }] as const,
+  detail: (boardId: string) => [...boardKeys.all, "detail", boardId] as const,
+  cells: (boardId: string) => [...boardKeys.detail(boardId), "cells"] as const,
 };
 ```
 
-### 4.3 `entities/board/lib/repository.ts` (포트)
+### 배치 위치
 
-```ts
-import { Board, CreateBoardInput } from "../model/types";
+- domain boundary가 있으면 `src/entities/<domain>/model/keys.ts`를 우선한다.
+- 그렇지 않으면 명확한 이름의 shared 또는 feature-local query-key module을 사용한다.
 
-export interface BoardRepository {
-  listBoards(ownerId: string): Promise<Board[]>;
-  getBoard(id: string): Promise<Board | null>;
-  createBoard(input: CreateBoardInput & { owner_id: string }): Promise<Board>;
-  updateBoard(id: string, patch: Partial<CreateBoardInput>): Promise<Board>;
-  deleteBoard(id: string): Promise<void>;
-}
-```
+### Mutation 경계
 
-### 4.4 `entities/board/lib/supabase.adapter.ts` (어댑터)
-
-```ts
-import { getClientSupabase } from "@/shared/lib/supabase/client";
-import { BoardRepository } from "./repository";
-import { Board } from "../model/types";
-
-const toBoard = (row: any): Board => ({
-  id: row.id,
-  title: row.title,
-  description: row.description ?? undefined,
-  updated_at: row.updated_at,
-});
-
-export const supabaseBoardRepository: BoardRepository = {
-  async listBoards(ownerId) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .select("id,title,description,updated_at")
-      .eq("owner_id", ownerId)
-      .order("updated_at", { ascending: false });
-    if (error) throw error;
-    return (data ?? []).map(toBoard);
-  },
-  async getBoard(id) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .select("id,title,description,updated_at")
-      .eq("id", id)
-      .maybeSingle();
-    if (error) throw error;
-    return data ? toBoard(data) : null;
-  },
-  async createBoard(input) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .insert(input)
-      .select("id,title,description,updated_at")
-      .single();
-    if (error) throw error;
-    return toBoard(data);
-  },
-  async updateBoard(id, patch) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .update(patch)
-      .eq("id", id)
-      .select("id,title,description,updated_at")
-      .single();
-    if (error) throw error;
-    return toBoard(data);
-  },
-  async deleteBoard(id) {
-    const sb = getClientSupabase();
-    const { error } = await sb.from("boards").delete().eq("id", id);
-    if (error) throw error;
-  },
-};
-```
-
-### 4.5 `entities/board/model/queries.ts`
-
-```ts
-"use client";
-import { useQuery } from "@tanstack/react-query";
-import { supabaseBoardRepository as repo } from "../lib/supabase.adapter";
-import { boardKeys } from "./keys";
-
-export function useBoardsQuery(ownerId: string) {
-  return useQuery({
-    queryKey: boardKeys.list(ownerId),
-    queryFn: () => repo.listBoards(ownerId),
-  });
-}
-```
+- 애플리케이션 write에는 `Server Action + useMutation`을 우선한다.
+- success handling은 항상 명시적으로 적는다.
+  - invalidate
+  - revalidate
+  - refresh
+  - navigation
+- mutation orchestration이 재사용되거나 복잡해지면, 컴포넌트마다 inline으로 반복하지 말고 feature-local UI hook으로 분리한다.
 
 ---
 
-## 5) Features 레이어 (Toggle Task 예시)
+## 7) Shared Infrastructure
 
-### 5.1 `features/toggle-task/model.ts`
+### Provider와 shared lib
 
-```ts
-"use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { taskKeys } from "@/entities/task/model/keys";
-// import repo from '@/entities/task/lib/supabase.adapter';
+- 재사용 가능한 인프라는 `src/shared/lib/`에 둔다.
+- 현재 저장소에는 다음이 이미 존재한다.
+  - `src/shared/lib/theme/`
+  - `src/shared/lib/hooks/`
+  - `src/shared/lib/utils.ts`
 
-export function useToggleTask(taskId: string) {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (next: boolean) => {
-      // await repo.toggleDone(taskId, next)
-      // (PRD 예시 코드 로직 연결)
-    },
-    onMutate: async (next) => {
-      const key = taskKeys.detail(taskId);
-      await qc.cancelQueries({ queryKey: key });
-      const prev = qc.getQueryData<any>(key);
-      qc.setQueryData(key, (old: any) => ({
-        ...old,
-        is_done: next,
-        done_at: next ? new Date().toISOString() : null,
-      }));
-      return { prev, key };
-    },
-    onError: (_e, _next, ctx) => {
-      if (ctx?.prev && ctx.key) qc.setQueryData(ctx.key, ctx.prev);
-    },
-    // onSuccess: () => qc.invalidateQueries(boardKeys.detail(boardId)),
-  });
-}
-```
+### 스타일
 
-### 5.2 `features/toggle-task/ui.tsx`
+- 글로벌 스타일은 `src/app/globals.css`에 둔다.
 
-```tsx
-"use client";
-import { Checkbox } from "@/shared/ui/checkbox";
-import { useToggleTask } from "./model";
+### 생성 코드
 
-export function ToggleTask({ taskId, checked }: { taskId: string; checked: boolean }) {
-  const { mutate } = useToggleTask(taskId);
-  return <Checkbox defaultChecked={checked} onCheckedChange={(v) => mutate(!!v)} />;
-}
-```
+- Prisma generated output은 `src/generated/prisma/`에 둔다.
+- generated folder 안에 hand-written application code를 섞지 않는다.
 
 ---
 
-## 6) Widgets 레이어 (대시보드 카드 예시)
+## 8) 라우트 및 렌더링 규칙
 
-### 6.1 `widgets/dashboard-cards/model.ts`
-
-```ts
-// 여러 쿼리 결합/가공(derive) 책임
-export function useDashboardSummary() {
-  // useBoardsQuery, useMonthlyStatsQuery 등을 조합해 메모이즈된 요약을 리턴
-  return {
-    totalProgress: 0.72,
-    monthlyDone: [
-      /* ... */
-    ],
-    recent: [
-      /* ... */
-    ],
-  };
-}
-```
-
-### 6.2 `widgets/dashboard-cards/ui.tsx`
-
-```tsx
-"use client";
-import { useDashboardSummary } from "./model";
-
-export function DashboardCards() {
-  const { totalProgress } = useDashboardSummary();
-  return (
-    <section className="grid gap-4 md:grid-cols-3">
-      <div className="rounded-2xl p-4 shadow">총 진행률: {(totalProgress * 100).toFixed(0)}%</div>
-      {/* Recharts 카드 등 */}
-    </section>
-  );
-}
-```
+- 페이지/뷰 데이터 조회는 Server Component를 우선한다.
+- `use client` 경계는 가능한 한 좁게 유지한다.
+- route params와 search params는 route boundary에서 검증한다.
+- 로딩/에러 처리는 관련 없는 컴포넌트에 흩뿌리지 말고, 의미 있는 route/feature boundary에 Suspense와 Error Boundary를 둔다.
 
 ---
 
-## 7) App 라우팅 파일
+## 9) 테스트 배치
 
-### 7.1 `app/page.tsx` (랜딩)
+현재 루트 테스트 디렉터리:
 
-```tsx
-export default async function Page() {
-  return (
-    <main className="container py-10">
-      <h1 className="text-3xl font-bold">Mandalart</h1>
-      {/* TemplatePicker 등 */}
-    </main>
-  );
-}
-```
+- `tests/e2e/`
+- `tests/integration/`
 
-### 7.2 `app/dashboard/page.tsx` (RSC)
-
-```tsx
-import { DashboardCards } from "@/widgets/dashboard-cards/ui";
-
-export const revalidate = 60; // 예시
-
-export default async function DashboardPage() {
-  // 필요하면 서버 Supabase로 읽기 후 props로 위젯에 내려주기 가능
-  return (
-    <main className="container py-8">
-      <DashboardCards />
-    </main>
-  );
-}
-```
-
-### 7.3 `app/boards/[id]/page.tsx`
-
-```tsx
-export const fetchCache = "default-no-store"; // 필요 시
-
-export default async function BoardPage({ params }: { params: { id: string } }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/boards/${params.id}`, {
-    next: { tags: [`board:${params.id}`] },
-  });
-  const board = await res.json();
-  return <main className="container py-8">{/* <BoardGrid board={board} /> */}</main>;
-}
-```
+unit test를 도입하거나 확장할 때는, 프로젝트 전역 규칙 없이 임의로 폴더별 test placement를 만드는 대신 안정적인 root-level test directory 아래에 둔다.
 
 ---
 
-## 8) 환경 변수 & 설정
+## 10) 마이그레이션 메모
 
-- `.env.local`
-  - `NEXT_PUBLIC_SUPABASE_URL`
-  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- 선택(서버 전용): `SUPABASE_SERVICE_ROLE` (Route Handler/Action에서만)
-
-**경고:** `SUPABASE_SERVICE_ROLE`은 **클라이언트 노출 금지**
+- 향후 M2 아키텍처에서 실제 HTTP 또는 NestJS transport boundary가 생기면, 그 server-only boundary를 명시적으로 문서화하고 정당화한다.
+- 오래된 client-side adapter convention을 migration 언어 때문에 기본값처럼 유지하지 않는다.
+- query key naming과 stable contract는 실제 재사용 가치가 있는 경우에만 공유한다.
 
 ---
 
-## 9) 경로 alias (tsconfig)
+## 요약
 
-```json
-{
-  "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {
-      "@/*": ["*"]
-    }
-  }
-}
-```
+Mandalart Web의 scaffold는 다음을 선호한다.
 
----
-
-## 10) 테스트 디렉터리 가이드
-
-- **unit**: entities의 유틸/매퍼/계산
-- **integration**: features의 mutation 흐름(MSW로 Supabase 응답 모킹)
-- **e2e**: Playwright로 “로그인→보드 생성→체크→PDF” 시나리오
-
----
-
-## 11) 다크모드 & i18n 배치 규칙
-
-- 다크모드: `ThemeProvider`(next-themes) + Tailwind `dark:`. 토글은 `shared/ui/theme-toggle.tsx`로 별도 분리 권장
-- i18n: `I18nProvider`(next-intl). 키 네이밍 `page.section.key` 유지, 기본 ko / `/en/*` 라우트로 영어
-
----
-
-## 12) 무효화/리밸리데이션 정책
-
-- 쓰기 성공 시:
-  - **TanStack**: 관련 `queryKey` 무효화 (e.g., `boardKeys.detail(id)`)
-  - **RSC**: `revalidateTag('board:{id}')` 사용(서버에서 태깅된 fetch가 있을 때)
-
----
-
-## 13) M2 전환 대비 포인트
-
-- `entities/*/lib/repository.ts` 유지, `supabase.adapter.ts`만 `http.adapter.ts`로 교체
-- RN(Expo)는 동일 `keys.ts` 네이밍과 API 응답 타입을 공유하면, 캐시 정책 재사용 쉬움
-
----
+- 명확한 레이어 책임
+- 좁은 server/client boundary
+- 설치된 shadcn primitive와 application UI의 분리
+- 명시적인 query key factory
+- 저가치 추상화보다 직접적이고 설명 가능한 구조
