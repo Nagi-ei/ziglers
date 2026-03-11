@@ -1,574 +1,243 @@
-# Mandalart Web – SCAFFOLD_STRUCTURE (v1.1)
+# Mandalart Web – SCAFFOLD_STRUCTURE (v2.0)
 
-_Last updated: 2025-12-18 (KST)_
+_Last updated: 2026-03-12 (KST)_
 
 ---
 
-## 1) Folder Tree
+## 1) Purpose
+
+This document defines the project scaffold and boundary rules for Mandalart Web.
+It is the source of truth for:
+
+- where files should live
+- which layers may import which
+- how UI primitives differ from application UI
+- where data access is allowed
+- how TanStack Query keys and mutation boundaries should be organized
+
+This is a scaffold and architecture document, not a code dump.
+Only keep examples here when they illustrate a project-specific rule that would otherwise be ambiguous.
+
+---
+
+## 2) Current Project Shape
 
 ```bash
 src/
-├─ app/                                  # Next App Router (RSC-enabled)
+├─ app/
+│  ├─ (landing)/
+│  ├─ (app)/
 │  ├─ layout.tsx
-│  ├─ page.tsx                           # Landing page
-│  ├─ dashboard/
-│  │  └─ page.tsx                        # Dashboard
-│  └─ boards/
-│     └─ [id]/
-│        └─ page.tsx                     # Board detail (edit UI is Client-side)
-│
+│  ├─ not-found.tsx
+│  └─ globals.css
 ├─ widgets/
-│  ├─ dashboard-cards/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  └─ board-grid/
-│     ├─ ui.tsx
-│     └─ model.ts
-│
-├─ features/
-│  ├─ toggle-task/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  ├─ edit-cell/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  ├─ create-board/
-│  │  ├─ ui.tsx
-│  │  └─ model.ts
-│  └─ export-board/
-│     ├─ ui.tsx
-│     └─ model.ts
-│
-├─ entities/
-│  ├─ board/
-│  │  ├─ model/
-│  │  │  ├─ types.ts
-│  │  │  ├─ keys.ts
-│  │  │  └─ queries.ts
-│  │  ├─ lib/
-│  │  │  ├─ repository.ts                # Port (interface)
-│  │  │  ├─ supabase.adapter.ts          # Adapter (implementation) → Replaced by http.adapter.ts in M2
-│  │  │  └─ mapper.ts
-│  │  └─ ui/
-│  │     └─ card.tsx
-│  ├─ cell/
-│  │  ├─ model/{types.ts, keys.ts, queries.ts}
-│  │  └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│  └─ task/
-│     ├─ model/{types.ts, keys.ts, queries.ts}
-│     └─ lib/{repository.ts, supabase.adapter.ts, mapper.ts}
-│
+│  ├─ landing/
+│  ├─ dashboard-summary/
+│  ├─ dashboard-charts/
+│  ├─ dashboard-boards/
+│  └─ app-sidebar/
+├─ features/                           # optional; add only when a stable feature boundary exists
+├─ entities/                           # optional; add only when a stable entity/domain boundary exists
 ├─ shared/
-│  ├─ ui/                                # shadcn extensions (buttons/modals/toasts, etc.)
-│  ├─ lib/
-│  │  ├─ prisma/
-│  │  │  ├─ client.ts                    # Prisma Client singleton (server-only)
-│  │  │  └─ server.ts
-│  │  ├─ supabase/
-│  │  │  ├─ client.ts                    # Supabase for client
-│  │  │  └─ server.ts                    # Supabase for server/RSC (@supabase/ssr)
-│  │  ├─ queryClient.ts                  # TanStack Query client/provider
-│  │  ├─ i18n/
-│  │  │  ├─ provider.tsx
-│  │  │  ├─ locales/
-│  │  │  │  ├─ ko.json
-│  │  │  │  └─ en.json
-│  │  │  └─ helpers.ts
-│  │  ├─ theme/provider.tsx              # next-themes Provider
-│  │  ├─ validators/                     # Zod schemas
-│  │  └─ utils.ts
-│  ├─ config/
-│  │  ├─ env.ts
-│  │  └─ constants.ts
-│  └─ styles/globals.css
-│
-└─ test/
-   ├─ unit/
-   ├─ integration/
-   └─ e2e/
-```
+│  ├─ ui/
+│  │  ├─ shadcn/                       # installed shadcn primitive surface (from components.json)
+│  │  └─ common/                       # project-specific shared UI
+│  └─ lib/
+│     ├─ hooks/
+│     ├─ theme/
+│     └─ utils.ts
+└─ generated/
+   └─ prisma/
 
-> **pages/** and **processes/** layers are omitted (FSD-lite).  
-> All routing is handled exclusively in the `app/` directory.
+tests/
+├─ e2e/
+└─ integration/
 
-### Root-level (outside `src/`)
-
-```bash
 prisma/
-├─ schema.prisma        # Prisma schema (Single Source of Truth)
-└─ migrations/          # Prisma migration history
+├─ schema.prisma
+└─ migrations/
 ```
 
-> This directory is managed by Prisma CLI and shared across Next.js and future NestJS backends.
+### Notes
+
+- `pages/` and `processes/` are not used.
+- Routing is handled in `src/app/`.
+- `features/` and `entities/` should not be scaffolded by default just to satisfy a pattern.
+- Add a layer only when it owns a stable responsibility that cannot stay in an existing layer cleanly.
 
 ---
 
-## 2) Boundary Rules (Required)
+## 3) Layer Rules
 
-- **Dependency Direction:** `app → widgets → features → entities → shared`  
-   (Higher layers may import lower layers, never the reverse.  
-   Example: entities importing widgets ❌)
-- **Data Access Rules:**
-  - All database access must be performed in **server-side code only**.
-  - Prisma Client can be used only in:
-    - Server Actions
-    - Route Handlers
-    - Adapters inside `entities/*/lib`
-  - Client Components must never import Prisma or perform direct database access.
+### Dependency Direction
 
-- Data Adapter Structure
-  - Each domain defines a repository interface (`repository.ts`) in `entities/*/model`.
-  - Actual data access is implemented via adapters in `entities/*/lib`.
-  - Adapters are replaceable and isolated from domain logic.
+When these layers exist, imports should flow:
 
-> This structure allows seamless backend replacement  
-> (e.g. Prisma → HTTP/NestJS service) without changing domain code.
+`app -> widgets -> features -> entities -> shared`
 
-- **Query Keys / Invalidation:**  
-   Use only keys defined in `entities/*/model/keys.ts` for invalidate/revalidate operations.
+Higher layers may import lower layers.
+Lower layers must not import higher layers.
 
----
+### Practical Interpretation
 
-## 3) Required Initial Files (Samples)
+- `app/` owns route boundaries, page/layout composition, and server-rendered entry points.
+- `widgets/` compose screen-level or section-level UI.
+- `features/` own reusable user interactions or mutation-oriented UI behavior when a real feature boundary exists.
+- `entities/` own domain-facing types, query keys, and other stable domain artifacts when a real entity boundary exists.
+- `shared/` owns reusable cross-app infrastructure and UI primitives.
 
-### 3.1 `app/layout.tsx`
+### Anti-patterns
 
-```tsx
-import "./globals.css";
-import { QueryProvider } from "@/shared/lib/queryClient";
-import { ThemeProvider } from "@/shared/lib/theme/provider";
-import { I18nProvider } from "@/shared/lib/i18n/provider";
-
-export const metadata = { title: "Mandalart", description: "Mandalart Web" };
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="ko" suppressHydrationWarning>
-      <body>
-        <I18nProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <QueryProvider>{children}</QueryProvider>
-          </ThemeProvider>
-        </I18nProvider>
-      </body>
-    </html>
-  );
-}
-```
-
-### 3.2 `shared/lib/supabase/server.ts` (For RSC/Server)
-
-```ts
-import "server-only";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-
-export function getServerSupabase() {
-  const cookieStore = cookies();
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get: (k: string) => cookieStore.get(k)?.value } }
-  );
-}
-```
-
-### 3.3 `shared/lib/supabase/client.ts` (For Client)
-
-```ts
-"use client";
-import { createClient } from "@supabase/supabase-js";
-
-export function getClientSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-}
-```
-
-### 3.4 `shared/lib/queryClient.tsx`
-
-```tsx
-"use client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
-
-export function QueryProvider({ children }: { children: ReactNode }) {
-  const [qc] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: { staleTime: 30_000, retry: 1 },
-          mutations: { retry: 0 },
-        },
-      })
-  );
-  return <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
-}
-```
-
-### 3.5 `shared/lib/theme/provider.tsx`
-
-```tsx
-"use client";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-
-export function ThemeProvider(props: any) {
-  return <NextThemesProvider {...props} />;
-}
-```
-
-### 3.6 `shared/lib/i18n/provider.tsx`
-
-```tsx
-"use client";
-import { NextIntlClientProvider } from "next-intl";
-import ko from "./locales/ko.json";
-import en from "./locales/en.json";
-
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  // Simple start: fixed to ko. Later linked with locale routing.
-  return <NextIntlClientProvider messages={ko}>{children}</NextIntlClientProvider>;
-}
-```
+- creating parallel folder conventions beside the scaffold
+- adding empty `features/*` or `entities/*` folders “just in case”
+- introducing a new layer without explaining what responsibility could not stay in an existing one
 
 ---
 
-## 4) Entities Layer (Board Example)
+## 4) UI Surface Rules
 
-### 4.1 `entities/board/model/types.ts`
+### Installed shadcn primitive surface
 
-```ts
-import { z } from "zod";
+- The canonical installed shadcn primitive surface is defined by `components.json`.
+- In the current repository, `components.json` points installed shadcn components to `@/shared/ui/shadcn`.
+- Files in that installed primitive surface may preserve upstream multi-export compound structure.
 
-export const BoardSchema = z.object({
-  id: z.string().uuid(),
-  title: z.string().min(1).max(50),
-  description: z.string().max(200).optional(),
-  updated_at: z.string().datetime().optional(),
-});
-export type Board = z.infer<typeof BoardSchema>;
+### Project UI
 
-export const CreateBoardInputSchema = BoardSchema.pick({ title: true, description: true }).partial({
-  description: true,
-});
-export type CreateBoardInput = z.infer<typeof CreateBoardInputSchema>;
-```
+- Project-specific UI that is not an installed shadcn primitive belongs outside that installed primitive surface.
+- Use `shared/ui/common` for reusable project UI and visual helpers.
+- Use `widgets/`, `features/`, or other scaffold-appropriate layers for application UI with domain or screen responsibility.
 
-### 4.2 `entities/board/model/keys.ts`
+### Component file rule
+
+- Each app-specific React component must live in its own file.
+- Allowed exceptions:
+  - a non-exported route-local wrapper component used directly for Suspense or Error Boundary composition
+  - installed shadcn primitive files in the canonical shadcn surface
+
+### Do not do this
+
+- mix feature logic, data fetching, or mutation orchestration into installed shadcn primitive files
+- use the shadcn exception to justify multi-component app files elsewhere
+
+---
+
+## 5) Data Access Boundaries
+
+### Default model
+
+- Database access is server-side only.
+- Prisma is the primary application data-access layer.
+- Supabase remains responsible for auth/session, storage, and database-level RLS enforcement.
+
+### Allowed boundaries
+
+- Server Components may perform reads directly or through server-only helper modules.
+- Server Actions are the default write boundary for internal create/update/delete flows.
+- Route Handlers are reserved for public API, webhooks, or other external interface boundaries.
+- Client components must never access the database directly.
+
+### Repository / Adapter rule
+
+Repository or adapter layers are optional, not default.
+Add them only when they provide clear value such as:
+
+- a stable server-only transport boundary
+- a real multi-source integration boundary
+- contract mapping or auth/transaction logic that is clearer in its own module
+
+Do not add forwarding-only repositories or adapters that merely wrap one lower-level call without owning a meaningful boundary.
+
+---
+
+## 6) Query Keys and Mutations
+
+### Query key convention
+
+Use stable hierarchical key factories rather than ad-hoc inline query keys.
 
 ```ts
 export const boardKeys = {
   all: ["board"] as const,
-  lists: () => [...boardKeys.all, "list"] as const,
-  list: (ownerId: string) => [...boardKeys.lists(), ownerId] as const,
-  details: () => [...boardKeys.all, "detail"] as const,
-  detail: (id: string) => [...boardKeys.details(), id] as const,
+  list: () => [...boardKeys.all, "list"] as const,
+  listBy: (filter: { ownerId?: string }) => [...boardKeys.list(), { filter }] as const,
+  detail: (boardId: string) => [...boardKeys.all, "detail", boardId] as const,
+  cells: (boardId: string) => [...boardKeys.detail(boardId), "cells"] as const,
 };
 ```
 
-### 4.3 `entities/board/lib/repository.ts` (Port)
+### Placement
 
-```ts
-import { Board, CreateBoardInput } from "../model/types";
+- Prefer `src/entities/<domain>/model/keys.ts` when the domain boundary exists.
+- Otherwise use a clearly named shared or feature-local query-key module.
 
-export interface BoardRepository {
-  listBoards(ownerId: string): Promise<Board[]>;
-  getBoard(id: string): Promise<Board | null>;
-  createBoard(input: CreateBoardInput & { owner_id: string }): Promise<Board>;
-  updateBoard(id: string, patch: Partial<CreateBoardInput>): Promise<Board>;
-  deleteBoard(id: string): Promise<void>;
-}
-```
+### Mutation boundaries
 
-### 4.4 `entities/board/lib/supabase.adapter.ts` (Adapter)
-
-```ts
-import { getClientSupabase } from "@/shared/lib/supabase/client";
-import { BoardRepository } from "./repository";
-import { Board } from "../model/types";
-
-const toBoard = (row: any): Board => ({
-  id: row.id,
-  title: row.title,
-  description: row.description ?? undefined,
-  updated_at: row.updated_at,
-});
-
-export const supabaseBoardRepository: BoardRepository = {
-  async listBoards(ownerId) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .select("id,title,description,updated_at")
-      .eq("owner_id", ownerId)
-      .order("updated_at", { ascending: false });
-    if (error) throw error;
-    return (data ?? []).map(toBoard);
-  },
-
-  async getBoard(id) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .select("id,title,description,updated_at")
-      .eq("id", id)
-      .maybeSingle();
-    if (error) throw error;
-    return data ? toBoard(data) : null;
-  },
-
-  async createBoard(input) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .insert(input)
-      .select("id,title,description,updated_at")
-      .single();
-    if (error) throw error;
-    return toBoard(data);
-  },
-
-  async updateBoard(id, patch) {
-    const sb = getClientSupabase();
-    const { data, error } = await sb
-      .from("boards")
-      .update(patch)
-      .eq("id", id)
-      .select("id,title,description,updated_at")
-      .single();
-    if (error) throw error;
-    return toBoard(data);
-  },
-
-  async deleteBoard(id) {
-    const sb = getClientSupabase();
-    const { error } = await sb.from("boards").delete().eq("id", id);
-    if (error) throw error;
-  },
-};
-```
-
-### 4.5 `entities/board/model/queries.ts`
-
-```ts
-"use client";
-import { useQuery } from "@tanstack/react-query";
-import { supabaseBoardRepository as repo } from "../lib/supabase.adapter";
-import { boardKeys } from "./keys";
-
-export function useBoardsQuery(ownerId: string) {
-  return useQuery({
-    queryKey: boardKeys.list(ownerId),
-    queryFn: () => repo.listBoards(ownerId),
-  });
-}
-```
+- Prefer `Server Action + useMutation` for application writes.
+- Keep success handling explicit:
+  - invalidate
+  - revalidate
+  - refresh
+  - navigation
+- When mutation orchestration is reused or non-trivial, move it into a feature-local UI hook instead of repeating inline logic across components.
 
 ---
 
-## 5) Features Layer (Toggle Task Example)
+## 7) Shared Infrastructure
 
-### 5.1 `features/toggle-task/model.ts`
+### Providers and shared libs
 
-```ts
-"use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { taskKeys } from "@/entities/task/model/keys";
-// import repo from '@/entities/task/lib/supabase.adapter';
+- Keep reusable infrastructure in `src/shared/lib/`.
+- The current repository already uses:
+  - `src/shared/lib/theme/`
+  - `src/shared/lib/hooks/`
+  - `src/shared/lib/utils.ts`
 
-export function useToggleTask(taskId: string) {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (next: boolean) => {
-      // await repo.toggleDone(taskId, next)
-      // (Connect with PRD example logic)
-    },
-    onMutate: async (next) => {
-      const key = taskKeys.detail(taskId);
-      await qc.cancelQueries({ queryKey: key });
-      const prev = qc.getQueryData<any>(key);
-      qc.setQueryData(key, (old: any) => ({
-        ...old,
-        is_done: next,
-        done_at: next ? new Date().toISOString() : null,
-      }));
-      return { prev, key };
-    },
-    onError: (_e, _next, ctx) => {
-      if (ctx?.prev && ctx.key) qc.setQueryData(ctx.key, ctx.prev);
-    },
-    // onSuccess: () => qc.invalidateQueries(boardKeys.detail(boardId)),
-  });
-}
-```
+### Styles
 
-### 5.2 `features/toggle-task/ui.tsx`
+- Global styles belong in `src/app/globals.css`.
 
-```tsx
-"use client";
-import { Checkbox } from "@/shared/ui/checkbox";
-import { useToggleTask } from "./model";
+### Generated code
 
-export function ToggleTask({ taskId, checked }: { taskId: string; checked: boolean }) {
-  const { mutate } = useToggleTask(taskId);
-  return <Checkbox defaultChecked={checked} onCheckedChange={(v) => mutate(!!v)} />;
-}
-```
+- Generated Prisma output belongs in `src/generated/prisma/`.
+- Hand-written application code should not be mixed into generated folders.
 
 ---
 
-## 6) Widgets Layer (Dashboard Card Example)
+## 8) Route and Rendering Rules
 
-### 6.1 `widgets/dashboard-cards/model.ts`
-
-```ts
-// Responsible for combining/deriving multiple queries
-export function useDashboardSummary() {
-  // Combine useBoardsQuery, useMonthlyStatsQuery, etc. and return memoized summary
-  return {
-    totalProgress: 0.72,
-    monthlyDone: [
-      /* ... */
-    ],
-    recent: [
-      /* ... */
-    ],
-  };
-}
-```
-
-### 6.2 `widgets/dashboard-cards/ui.tsx`
-
-```tsx
-"use client";
-import { useDashboardSummary } from "./model";
-
-export function DashboardCards() {
-  const { totalProgress } = useDashboardSummary();
-  return (
-    <section className="grid gap-4 md:grid-cols-3">
-      <div className="rounded-2xl p-4 shadow">
-        Total Progress: {(totalProgress * 100).toFixed(0)}%
-      </div>
-      {/* Recharts cards, etc. */}
-    </section>
-  );
-}
-```
+- Prefer Server Component reads for page/view data.
+- Keep `use client` boundaries as narrow as possible.
+- Validate route params and search params at route boundaries.
+- Place Suspense and Error Boundaries at meaningful route or feature boundaries rather than scattering ad-hoc loading/error logic across unrelated components.
 
 ---
 
-## 7) App Routing Files
+## 9) Testing Placement
 
-### 7.1 `app/page.tsx` (Landing)
+Current root-level test directories:
 
-```tsx
-export default async function Page() {
-  return (
-    <main className="container py-10">
-      <h1 className="text-3xl font-bold">Mandalart</h1>
-      {/* TemplatePicker, etc. */}
-    </main>
-  );
-}
-```
+- `tests/e2e/`
+- `tests/integration/`
 
-### 7.2 `app/dashboard/page.tsx` (RSC)
-
-```tsx
-import { DashboardCards } from "@/widgets/dashboard-cards/ui";
-
-export const revalidate = 60; // Example
-
-export default async function DashboardPage() {
-  // Can optionally read from server Supabase and pass props to widgets
-  return (
-    <main className="container py-8">
-      <DashboardCards />
-    </main>
-  );
-}
-```
-
-### 7.3 `app/boards/[id]/page.tsx`
-
-```tsx
-export const fetchCache = "default-no-store"; // Optional
-
-export default async function BoardPage({ params }: { params: { id: string } }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/boards/${params.id}`, {
-    next: { tags: [`board:${params.id}`] },
-  });
-  const board = await res.json();
-  return <main className="container py-8">{/* <BoardGrid board={board} /> */}</main>;
-}
-```
+If unit tests are introduced or expanded, keep them under a stable root-level test directory rather than inventing ad-hoc per-folder test placement without a project-wide rule.
 
 ---
 
-## 8) Environment Variables & Configuration
+## 10) Migration Notes
 
-- `.env.local`
-  - `NEXT_PUBLIC_SUPABASE_URL`
-  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- Optional (Server-only): `SUPABASE_SERVICE_ROLE` (for Route Handler/Actions only)
-
-⚠️ **Warning:** `SUPABASE_SERVICE_ROLE` must **never be exposed to clients**.
+- If a future M2 architecture introduces a real HTTP or NestJS transport boundary, document and justify that server-only boundary explicitly.
+- Do not preserve older client-side adapter conventions as the default just to keep migration language around.
+- Share query key naming and stable contracts only where they provide real reuse value across clients.
 
 ---
 
-## 9) Path Alias (tsconfig)
+## Summary
 
-```json
-{
-  "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {
-      "@/*": ["*"]
-    }
-  }
-}
-```
+The Mandalart Web scaffold favors:
 
----
-
-## 10) Test Directory Guide
-
-- **unit**: Utilities/mappers/calculations in entities
-- **integration**: Feature mutation flows (mock Supabase responses with MSW)
-- **e2e**: Playwright scenarios for “Login → Create Board → Check → PDF”
-
----
-
-## 11) Dark Mode & i18n Placement Rules
-
-- Dark mode: Use `ThemeProvider` (next-themes) + Tailwind `dark:`.  
-   Toggle component recommended as `shared/ui/theme-toggle.tsx`.
-- i18n: Use `I18nProvider` (next-intl).  
-   Key naming convention: `page.section.key`.  
-   Default locale: `ko`, English accessible via `/en/*` routes.
-
----
-
-## 12) Invalidation / Revalidation Policy
-
-- On successful write:
-  - **TanStack:** Invalidate related `queryKey` (e.g., `boardKeys.detail(id)`)
-  - **RSC:** Use `revalidateTag('board:{id}')` when fetches are tagged server-side.
-
----
-
-## 13) Preparation for M2 Migration
-
-- Keep `entities/*/lib/repository.ts`, replace only `supabase.adapter.ts` with `http.adapter.ts`.
-- For RN (Expo), sharing the same `keys.ts` naming and API response types simplifies cache policy reuse.
-
----
-
-✅ **Summary:**  
-This document defines the **folder structure and layer boundaries** for the Mandalart Web project following **FSD-Lite architecture**.  
-It standardizes dependency direction, public API exposure, initialization files, and data access rules for scalable and maintainable development.
-
----
+- clear layer ownership
+- narrow server/client boundaries
+- installed shadcn primitives separated from application UI
+- explicit query key factories
+- direct, explainable architecture over low-value abstraction
