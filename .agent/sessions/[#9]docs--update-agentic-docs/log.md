@@ -79,3 +79,29 @@
   - `git diff --check -- docs/AGENTS.ko.md docs/SCAFFOLD_STRUCTURE.ko.md docs/PRD.ko.md docs/TECH_REFERENCE.ko.md`
 - Result:
   - pass
+
+## Slice 4 - Terminology and Structure Precision
+
+- PLAN:
+  - Tighten document wording where the current text is directionally correct but still misrepresents the operating model, especially around role naming, FSD-lite scaffold language, and locale-routing wording.
+- LENS CHECK:
+  - Binding skill lens: `frontend-architecture-rules`
+  - Key constraints enforced:
+    - document language must reflect the actual branch-orchestrated workflow rather than imply nonexistent runtime agents or role taxonomies
+    - scaffold wording should describe `src/app/` as the App Router replacement for the old `pages/` responsibility
+    - scaffold docs should focus on ownership/placement while technical examples stay in technical references
+
+## TDD Cycle
+
+- RED: `AGENTS.md` still framed responsibility areas as separate agents, `SCAFFOLD_STRUCTURE.md` still underspecified the FSD-lite/App Router relationship and over-carried query-key example detail, and `PRD.md` could describe locale routing more explicitly as a path-based routing choice.
+- GREEN: Removed the non-operational role taxonomy from `AGENTS.md`, kept only project-wide rules that actually guide work, clarified `SCAFFOLD_STRUCTURE.md` as an FSD-lite scaffold adapted to the App Router with `src/app/` replacing the traditional `pages/` responsibility, and tightened `PRD.md` locale-routing wording. Synced the same adjustments into the Korean docs.
+- REFACTOR: Reduced scaffold/query-key duplication by keeping ownership and placement in scaffold docs while leaving canonical examples in technical references, and absorbed the only worth-keeping UI note into the branch workflow section.
+
+## Verify
+
+- Commands:
+  - `pnpm prettier:docs`
+  - `git diff --check -- AGENTS.md SCAFFOLD_STRUCTURE.md PRD.md docs/AGENTS.ko.md docs/SCAFFOLD_STRUCTURE.ko.md docs/PRD.ko.md`
+  - `rg -n "FSD-lite|path-based locale routing|전통적인|경로 기반 locale routing|UI 브랜치에 대한 메모|Notes For UI Branches" AGENTS.md SCAFFOLD_STRUCTURE.md PRD.md docs/AGENTS.ko.md docs/SCAFFOLD_STRUCTURE.ko.md docs/PRD.ko.md`
+- Result:
+  - pass

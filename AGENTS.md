@@ -1,12 +1,12 @@
 # AGENTS.md (for Mandalart Web)
 
-_Last updated: 2026-03-12 (KST)_
+_Last updated: 2026-03-13 (KST)_
 
 ---
 
 ## 1) Purpose
 
-This document defines the AI-agent operating model for Mandalart Web.
+This document defines the project-wide AI working rules for Mandalart Web.
 It aligns project documents and implementation workflow with the currently installed skills, especially:
 
 - branch-cycle delivery under `.agent/sessions/...`
@@ -15,7 +15,7 @@ It aligns project documents and implementation workflow with the currently insta
 - English source docs plus Korean translation sync
 
 `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md` remain the core project documents.
-This file defines how agents are expected to work across them.
+This file defines the project-wide instructions that apply across them.
 
 ---
 
@@ -37,20 +37,7 @@ Korean documents under `docs/*.ko.md` must be synchronized after the English sou
 
 ---
 
-## 3) Agent Hierarchy
-
-| Level       | Name                     | Role                                                                     | Reference Document                |
-| ----------- | ------------------------ | ------------------------------------------------------------------------ | --------------------------------- |
-| Core Agent  | **Architect**            | Enforces scaffold, layer boundaries, and server/client data-access rules | `SCAFFOLD_STRUCTURE.md`           |
-| Logic Agent | **Feature Builder**      | Implements accepted branch specs into server/client application code     | `TECH_REFERENCE.md`               |
-| UI Agent    | **Interface Crafter**    | Builds or refines user-facing UI using project UI rules and shadcn/ui    | `PRD.md`, `SCAFFOLD_STRUCTURE.md` |
-| QA Agent    | **Validator**            | Runs verification, review, and branch quality gates                      | `TECH_REFERENCE.md`               |
-| Ops Agent   | **CI/CD Manager**        | Verifies environment, CI/CD, and deployment assumptions                  | `TECH_REFERENCE.md`               |
-| Doc Agent   | **Knowledge Maintainer** | Keeps English and Korean docs synchronized with accepted branch changes  | All documents                     |
-
----
-
-## 4) Global Coding & Generation Rules
+## 3) Global Coding & Generation Rules
 
 ### Component File Rule
 
@@ -100,79 +87,11 @@ Korean documents under `docs/*.ko.md` must be synchronized after the English sou
 
 ---
 
-## 5) Detailed Roles
-
-### 5.1 Architect Agent
-
-- **Goal:** Enforce scaffold and boundary rules.
-- **Reference:** `SCAFFOLD_STRUCTURE.md`
-- **Main functions:**
-  - Detect violations of import direction (`app -> widgets -> features -> entities -> shared`) when those layers exist
-  - Detect client-side database access or Prisma usage outside server-only boundaries
-  - Detect ad-hoc folders or redundant parallel structures that bypass the scaffold
-  - Detect invalid expansion of the shadcn multi-export exception outside the installed primitive surface
-- **Trigger:** On architecture changes, scaffold changes, or refactor-heavy branches
-
-### 5.2 Feature Builder Agent
-
-- **Goal:** Implement accepted branch specs into actual code structure.
-- **Reference:** `TECH_REFERENCE.md`, `SCAFFOLD_STRUCTURE.md`
-- **Main functions:**
-  - Translate branch `spec.md` and `plan.md` into implementation slices
-  - Prefer Server Component reads, Server Action writes, and feature-local UI mutation hooks
-  - Apply TanStack Query key/invalidation rules from the accepted project convention
-  - Introduce repository/adapter boundaries only when the plan explicitly justifies their value
-- **Output Example:** `feature_task_done.diff`
-
-### 5.3 Interface Crafter Agent
-
-- **Goal:** Maintain consistent and intentional UI implementation quality.
-- **Reference:** `PRD.md`, `SCAFFOLD_STRUCTURE.md`
-- **Main functions:**
-  - Reuse installed shadcn/ui primitives before creating custom UI primitives
-  - Keep project-specific UI components outside the installed shadcn primitive surface
-  - Apply one-component-per-file discipline except for the accepted exceptions
-  - Use the design-oriented skill path when a branch is explicitly creating or redesigning user-facing UI
-- **Output Example:** `ui_report.md`
-
-### 5.4 Validator Agent
-
-- **Goal:** Maintain correctness, stability, and review quality.
-- **Reference:** `TECH_REFERENCE.md`
-- **Main functions:**
-  - Run lint, type, test, and other branch-appropriate verification
-  - Review changed files against branch acceptance criteria and relevant specialist skills
-  - For UI changes, include accessibility and web-interface guideline review when appropriate
-  - For document branches, verify cross-document consistency, dead examples, and stale names/paths
-- **Output:** `qa_report.md`
-
-### 5.5 CI/CD Manager
-
-- **Goal:** Ensure environment and delivery assumptions stay correct.
-- **Reference:** `TECH_REFERENCE.md`
-- **Main functions:**
-  - Verify GitHub Actions and deployment assumptions against the current repository state
-  - Validate environment variable names and server/client exposure boundaries
-  - Keep package-manager and runtime assumptions aligned with the actual project configuration
-  - Trigger preview/prod deployment workflows when applicable
-
-### 5.6 Knowledge Maintainer
-
-- **Goal:** Keep documentation and branch artifacts synchronized.
-- **Reference:** `PRD.md`, `SCAFFOLD_STRUCTURE.md`, `TECH_REFERENCE.md`
-- **Main functions:**
-  - Ensure cross-document consistency when implementation rules change
-  - Keep English source docs and `docs/*.ko.md` aligned
-  - Update branch-local `spec.md`, `research.md`, `plan.md`, `log.md`, and `handoff.md` as the cycle progresses
-  - Prevent removed or stale patterns from reappearing in translated docs
-
----
-
-## 6) Collaboration Rules
+## 4) Collaboration Rules
 
 | Rule                              | Description                                                                                                |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Single Responsibility**         | Each agent should operate within a clear responsibility boundary.                                          |
+| **Single Responsibility**         | Each change should stay within a clear, explainable responsibility boundary.                               |
 | **Structure Changes Need Intent** | Structure-changing edits must be justified in the branch spec/plan rather than introduced casually.        |
 | **Automation First**              | Non-trivial branch work follows the branch-cycle workflow by default.                                      |
 | **Documentation First**           | When architecture or workflow rules change, update English source docs before syncing Korean translations. |
@@ -180,7 +99,7 @@ Korean documents under `docs/*.ko.md` must be synchronized after the English sou
 
 ---
 
-## 7) Branch Delivery Workflow
+## 5) Branch Delivery Workflow
 
 Use this workflow for non-trivial branch work:
 
@@ -217,9 +136,13 @@ Use this workflow for non-trivial branch work:
   - hardening focuses on consistency, stale examples, and terminology drift
   - final verification focuses on cross-document alignment and file/path/tooling correctness
 
+### Notes For UI Branches
+
+- Branches that explicitly create or redesign user-facing UI should use the design-oriented path during Execution and include UI-guideline review during Review.
+
 ---
 
-## 8) Future Expansion
+## 6) Future Expansion
 
 | Item                             | Description                                                                                                                                             |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -232,7 +155,7 @@ Use this workflow for non-trivial branch work:
 
 ## Summary
 
-This file defines how AI agents should operate in Mandalart Web today:
+This file defines the project-wide guidance that should stay true for any AI work in Mandalart Web:
 
 - follow the branch-cycle workflow
 - keep docs and translations aligned

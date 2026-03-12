@@ -1,6 +1,6 @@
 # Mandalart Web – PRD (v1.1)
 
-_Last updated: 2026-03-12 (KST)_
+_Last updated: 2026-03-13 (KST)_
 
 ---
 
@@ -213,9 +213,9 @@ The MVP supports **only one level of expansion (1-depth)**.
 
 ### 10.2 Internationalization (Korean/English)
 
-- Product target: route-localized Korean/English UI
+- Product target: path-based locale routing for Korean/English UI
 - Default: `ko` / Secondary: `en`
-- Routes: `/dashboard`, `/en/dashboard`
+- Example routes: `/dashboard` (default `ko`) and `/en/dashboard`
 - Key naming convention: `page.section.key`
 - Runtime fallback: English
 

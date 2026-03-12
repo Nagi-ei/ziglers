@@ -1,6 +1,6 @@
 # Mandalart Web – SCAFFOLD_STRUCTURE (v2.0)
 
-_Last updated: 2026-03-12 (KST)_
+_Last updated: 2026-03-13 (KST)_
 
 ---
 
@@ -17,6 +17,7 @@ _Last updated: 2026-03-12 (KST)_
 
 이 문서는 코드 덤프가 아니라 scaffold/architecture 문서다.
 프로젝트 전용 규칙이 아니면 긴 예시 코드를 남기지 않는다.
+이 프로젝트는 Next.js App Router에 맞게 조정한 **FSD-lite scaffold**를 사용한다.
 
 ---
 
@@ -60,8 +61,8 @@ prisma/
 
 ### 메모
 
-- `pages/`, `processes/`는 사용하지 않는다.
-- 라우팅은 `src/app/`에서 처리한다.
+- `src/app/`이 전통적인 `pages/` 레이어를 대체하며, 라우팅과 page/layout composition, route entry point를 담당한다.
+- `processes/`는 사용하지 않는다.
 - `features/`, `entities/`는 패턴을 맞추기 위해 빈 폴더를 미리 만들지 않는다.
 - 새 레이어는 기존 레이어에 둘 수 없는 안정적인 책임이 있을 때만 추가한다.
 
@@ -152,19 +153,10 @@ repository/adapter layer는 기본값이 아니라 선택 사항이다.
 
 ## 6) Query Key와 Mutation
 
-### Query Key 규약
+### Query Key 소유 규칙
 
 ad-hoc inline query key 대신 안정적인 계층형 key factory를 사용한다.
-
-```ts
-export const boardKeys = {
-  all: ["board"] as const,
-  list: () => [...boardKeys.all, "list"] as const,
-  listBy: (filter: { ownerId?: string }) => [...boardKeys.list(), { filter }] as const,
-  detail: (boardId: string) => [...boardKeys.all, "detail", boardId] as const,
-  cells: (boardId: string) => [...boardKeys.detail(boardId), "cells"] as const,
-};
-```
+여기서 중요한 것은 canonical example shape 자체보다, 어떤 레이어가 query key를 소유하고 어디에 배치하는지다.
 
 ### 배치 위치
 
@@ -236,8 +228,9 @@ unit test를 도입하거나 확장할 때는, 프로젝트 전역 규칙 없이
 
 Mandalart Web의 scaffold는 다음을 선호한다.
 
+- Next.js App Router에 맞춘 FSD-lite 레이어 모델
 - 명확한 레이어 책임
 - 좁은 server/client boundary
 - 설치된 shadcn primitive와 application UI의 분리
-- 명시적인 query key factory
+- 명시적인 query key 소유와 배치
 - 저가치 추상화보다 직접적이고 설명 가능한 구조

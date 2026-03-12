@@ -1,6 +1,6 @@
 # Mandalart Web – SCAFFOLD_STRUCTURE (v2.0)
 
-_Last updated: 2026-03-12 (KST)_
+_Last updated: 2026-03-13 (KST)_
 
 ---
 
@@ -17,6 +17,7 @@ It is the source of truth for:
 
 This is a scaffold and architecture document, not a code dump.
 Only keep examples here when they illustrate a project-specific rule that would otherwise be ambiguous.
+This project uses an **FSD-lite scaffold** adapted to the Next.js App Router.
 
 ---
 
@@ -60,8 +61,8 @@ prisma/
 
 ### Notes
 
-- `pages/` and `processes/` are not used.
-- Routing is handled in `src/app/`.
+- `src/app/` replaces the traditional `pages/` layer and owns routing, page/layout composition, and route entry points.
+- `processes/` is not used.
 - `features/` and `entities/` should not be scaffolded by default just to satisfy a pattern.
 - Add a layer only when it owns a stable responsibility that cannot stay in an existing layer cleanly.
 
@@ -152,19 +153,10 @@ Do not add forwarding-only repositories or adapters that merely wrap one lower-l
 
 ## 6) Query Keys and Mutations
 
-### Query key convention
+### Query key ownership
 
 Use stable hierarchical key factories rather than ad-hoc inline query keys.
-
-```ts
-export const boardKeys = {
-  all: ["board"] as const,
-  list: () => [...boardKeys.all, "list"] as const,
-  listBy: (filter: { ownerId?: string }) => [...boardKeys.list(), { filter }] as const,
-  detail: (boardId: string) => [...boardKeys.all, "detail", boardId] as const,
-  cells: (boardId: string) => [...boardKeys.detail(boardId), "cells"] as const,
-};
-```
+The scaffold concern here is ownership and placement, not the canonical example shape itself.
 
 ### Placement
 
@@ -236,8 +228,9 @@ If unit tests are introduced or expanded, keep them under a stable root-level te
 
 The Mandalart Web scaffold favors:
 
+- an FSD-lite layer model adapted to the Next.js App Router
 - clear layer ownership
 - narrow server/client boundaries
 - installed shadcn primitives separated from application UI
-- explicit query key factories
+- explicit query-key ownership and placement
 - direct, explainable architecture over low-value abstraction

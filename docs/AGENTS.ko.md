@@ -1,12 +1,12 @@
 # AGENTS.md (for Mandalart Web)
 
-_Last updated: 2026-03-12 (KST)_
+_Last updated: 2026-03-13 (KST)_
 
 ---
 
 ## 1) 목적
 
-이 문서는 Mandalart Web의 AI 에이전트 운영 모델을 정의한다.
+이 문서는 Mandalart Web의 프로젝트 공통 AI 작업 규칙을 정의한다.
 특히 현재 설치된 스킬과 구현 워크플로우를 다음 기준에 맞춰 정렬한다.
 
 - `.agent/sessions/...` 기반 브랜치 사이클
@@ -15,7 +15,7 @@ _Last updated: 2026-03-12 (KST)_
 - 영문 원본 문서와 한국어 번역 문서 동기화
 
 `PRD.md`, `SCAFFOLD_STRUCTURE.md`, `TECH_REFERENCE.md`는 계속 핵심 프로젝트 문서로 유지한다.
-이 문서는 에이전트가 그 문서들을 기준으로 어떻게 작업해야 하는지를 정의한다.
+이 문서는 그 문서들을 기준으로 항상 적용되어야 하는 프로젝트 공통 지침을 정의한다.
 
 ---
 
@@ -37,20 +37,7 @@ _Last updated: 2026-03-12 (KST)_
 
 ---
 
-## 3) 에이전트 계층
-
-| 레벨        | 이름                     | 역할                                                           | 기준 문서                         |
-| ----------- | ------------------------ | -------------------------------------------------------------- | --------------------------------- |
-| Core Agent  | **Architect**            | 스캐폴드, 레이어 경계, 서버/클라이언트 데이터 접근 규칙을 강제 | `SCAFFOLD_STRUCTURE.md`           |
-| Logic Agent | **Feature Builder**      | 승인된 브랜치 스펙을 서버/클라이언트 애플리케이션 코드로 구현  | `TECH_REFERENCE.md`               |
-| UI Agent    | **Interface Crafter**    | 프로젝트 UI 규칙과 shadcn/ui를 기준으로 사용자 UI를 구현/개선  | `PRD.md`, `SCAFFOLD_STRUCTURE.md` |
-| QA Agent    | **Validator**            | 검증, 리뷰, 브랜치 품질 게이트 수행                            | `TECH_REFERENCE.md`               |
-| Ops Agent   | **CI/CD Manager**        | 환경, CI/CD, 배포 가정을 검증                                  | `TECH_REFERENCE.md`               |
-| Doc Agent   | **Knowledge Maintainer** | 영문/한글 문서와 브랜치 산출물을 동기화                        | 모든 문서                         |
-
----
-
-## 4) 전역 코딩 및 생성 규칙
+## 3) 전역 코딩 및 생성 규칙
 
 ### 컴포넌트 파일 규칙
 
@@ -100,79 +87,11 @@ _Last updated: 2026-03-12 (KST)_
 
 ---
 
-## 5) 역할 상세
-
-### 5.1 Architect Agent
-
-- **목표:** 스캐폴드와 경계 규칙을 강제한다.
-- **기준 문서:** `SCAFFOLD_STRUCTURE.md`
-- **주요 기능:**
-  - 해당 레이어가 존재할 때 `app -> widgets -> features -> entities -> shared` import 방향 위반 탐지
-  - server-only 경계 밖의 Prisma 사용 또는 client-side DB 접근 탐지
-  - 스캐폴드를 우회하는 ad-hoc 폴더 및 중복 구조 탐지
-  - 설치된 shadcn primitive surface 밖에서 multi-export 예외를 남용하는 경우 탐지
-- **트리거:** 아키텍처 변경, 스캐폴드 변경, 리팩토링 비중이 큰 브랜치
-
-### 5.2 Feature Builder Agent
-
-- **목표:** 승인된 브랜치 스펙을 실제 코드 구조로 구현한다.
-- **기준 문서:** `TECH_REFERENCE.md`, `SCAFFOLD_STRUCTURE.md`
-- **주요 기능:**
-  - 브랜치 `spec.md`와 `plan.md`를 구현 slice로 번역
-  - Server Component read, Server Action write, feature-local UI mutation hook 우선 적용
-  - 승인된 프로젝트 query key / invalidation 규칙 적용
-  - repository/adapter는 plan에서 가치가 명시된 경우에만 도입
-- **출력 예시:** `feature_task_done.diff`
-
-### 5.3 Interface Crafter Agent
-
-- **목표:** 일관되고 의도적인 UI 구현 품질을 유지한다.
-- **기준 문서:** `PRD.md`, `SCAFFOLD_STRUCTURE.md`
-- **주요 기능:**
-  - custom UI primitive를 만들기 전에 설치된 shadcn/ui primitive를 재사용
-  - 프로젝트 전용 UI를 설치된 shadcn primitive surface 밖에 배치
-  - 허용된 예외 외에는 one-component-per-file 규칙 적용
-  - 새 화면/대규모 시각 재설계처럼 디자인 주도 브랜치에서는 design-oriented skill 경로 사용
-- **출력 예시:** `ui_report.md`
-
-### 5.4 Validator Agent
-
-- **목표:** 정확성, 안정성, 리뷰 품질을 유지한다.
-- **기준 문서:** `TECH_REFERENCE.md`
-- **주요 기능:**
-  - lint/type/test 및 브랜치 타입에 맞는 검증 수행
-  - 브랜치 acceptance criteria와 specialist skill 기준으로 변경 파일 검토
-  - UI 변경 시 접근성 및 web-interface guideline 리뷰 포함
-  - 문서 브랜치에서는 문서 간 일관성, 죽은 예시, stale name/path 점검
-- **출력:** `qa_report.md`
-
-### 5.5 CI/CD Manager
-
-- **목표:** 환경 및 전달 가정이 계속 맞는 상태인지 보장한다.
-- **기준 문서:** `TECH_REFERENCE.md`
-- **주요 기능:**
-  - GitHub Actions 및 배포 가정이 현재 저장소 상태와 맞는지 확인
-  - 환경 변수 이름과 server/client 노출 경계 검증
-  - package manager/runtime 가정이 실제 프로젝트 설정과 맞는지 유지
-  - 필요 시 preview/prod 배포 워크플로우 트리거
-
-### 5.6 Knowledge Maintainer
-
-- **목표:** 문서와 브랜치 산출물 동기화를 유지한다.
-- **기준 문서:** `PRD.md`, `SCAFFOLD_STRUCTURE.md`, `TECH_REFERENCE.md`
-- **주요 기능:**
-  - 구현 규칙이 바뀔 때 문서 간 일관성 유지
-  - 영문 원본과 `docs/*.ko.md` 동기화
-  - 브랜치 진행에 따라 `spec.md`, `research.md`, `plan.md`, `log.md`, `handoff.md` 업데이트
-  - 영문에서 제거된 stale pattern이 번역 문서에 다시 들어오지 않도록 방지
-
----
-
-## 6) 협업 규칙
+## 4) 협업 규칙
 
 | 규칙                        | 설명                                                                                            |
 | --------------------------- | ----------------------------------------------------------------------------------------------- |
-| **단일 책임**               | 각 에이전트는 설명 가능한 책임 경계 안에서만 동작해야 한다.                                     |
+| **단일 책임**               | 각 변경은 설명 가능한 책임 경계 안에 머물러야 한다.                                             |
 | **구조 변경에는 의도 필요** | 구조를 바꾸는 수정은 casual하게 넣지 말고 브랜치 spec/plan에서 정당화해야 한다.                 |
 | **자동화 우선**             | non-trivial branch work는 기본적으로 branch-cycle workflow를 따른다.                            |
 | **문서 우선**               | 아키텍처/워크플로우 규칙이 바뀌면 먼저 영문 원본 문서를 고치고 그다음 한국어 번역을 동기화한다. |
@@ -180,7 +99,7 @@ _Last updated: 2026-03-12 (KST)_
 
 ---
 
-## 7) 브랜치 전달 워크플로우
+## 5) 브랜치 전달 워크플로우
 
 non-trivial branch work에는 다음 순서를 사용한다.
 
@@ -217,9 +136,13 @@ non-trivial branch work에는 다음 순서를 사용한다.
   - hardening은 문서 간 일관성, stale example, 용어 drift 점검에 집중
   - final verify는 cross-document alignment와 file/path/tooling correctness 점검에 집중
 
+### UI 브랜치에 대한 메모
+
+- 새 화면을 만들거나 사용자 UI를 크게 재설계하는 브랜치는 Execution에서 design-oriented path를 사용하고, Review에서 UI guideline 점검을 포함한다.
+
 ---
 
-## 8) 향후 확장
+## 6) 향후 확장
 
 | 항목                      | 설명                                                                                                                   |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -232,7 +155,7 @@ non-trivial branch work에는 다음 순서를 사용한다.
 
 ## 요약
 
-이 문서는 현재 Mandalart Web의 AI 에이전트 운영 기준을 정의한다.
+이 문서는 Mandalart Web에서 어떤 AI 작업이든 항상 따라야 할 프로젝트 공통 지침을 정의한다.
 
 - branch-cycle workflow를 따른다
 - 문서와 번역을 함께 관리한다

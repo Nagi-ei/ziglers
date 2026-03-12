@@ -1,6 +1,6 @@
 # Mandalart Web – PRD (v1.1)
 
-_Last updated: 2026-03-12 (KST)_
+_Last updated: 2026-03-13 (KST)_
 
 ---
 
@@ -213,9 +213,9 @@ MVP는 **1단계 확장(1-depth)**만 지원한다.
 
 ### 10.2 국제화 (한국어/영어)
 
-- 제품 목표: 라우트 기준으로 한국어/영어 UI를 분리한다.
+- 제품 목표: 경로 기반 locale routing으로 한국어/영어 UI를 분리한다.
 - 기본 언어: `ko` / 보조 언어: `en`
-- 경로: `/dashboard`, `/en/dashboard`
+- 예시 경로: `/dashboard` (기본 `ko`), `/en/dashboard`
 - 키 네이밍 규칙: `page.section.key`
 - 런타임 fallback: 영어
 
