@@ -58,6 +58,19 @@ Korean documents under `docs/*.ko.md` must be synchronized after the English sou
 - They may be patched for styling, variants, accessibility, typing, or upstream-compatible fixes.
 - They must not absorb feature logic, business logic, data fetching, or mutation orchestration.
 
+### UI Reuse Rule
+
+- Reuse installed `shadcn/ui` primitives before creating new UI primitives.
+- Before creating new project UI, check existing reusable components such as `src/shared/ui/common` and other established shared surfaces first.
+- Only create a new project-specific UI primitive when installed primitives and existing shared components are both clearly insufficient.
+
+### Design Token Rule
+
+- Use only semantic color tokens and CSS variables defined through `src/app/globals.css` for app UI colors and theme values.
+- Prefer semantic utilities such as `bg-background`, `text-foreground`, `text-muted-foreground`, `bg-primary`, and related token-backed classes.
+- Do not introduce raw Tailwind color utilities or ad-hoc color values in component code when an approved token already exists.
+- If a new color/token is truly required, add it to the shared theme token system in `src/app/globals.css` rather than defining a one-off local workaround.
+
 ### Data Access Rule
 
 - All database access is server-side only.

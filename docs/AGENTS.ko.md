@@ -58,6 +58,19 @@ _Last updated: 2026-03-13 (KST)_
 - 스타일, variant, 접근성, 타입, upstream-compatible fix 정도만 허용한다.
 - feature logic, business logic, data fetching, mutation orchestration을 흡수하면 안 된다.
 
+### UI 재사용 규칙
+
+- 새 UI primitive를 만들기 전에 설치된 `shadcn/ui` primitive를 먼저 재사용한다.
+- 새 프로젝트 UI를 만들기 전에는 `src/shared/ui/common`과 그 밖의 이미 자리 잡은 shared surface에 재사용 가능한 컴포넌트가 있는지 먼저 확인한다.
+- 설치된 primitive와 기존 shared component가 모두 명확히 부족할 때만 새로운 프로젝트 전용 UI primitive를 만든다.
+
+### 디자인 토큰 규칙
+
+- 앱 UI의 색상과 테마 값은 `src/app/globals.css`를 통해 정의된 semantic color token과 CSS variable만 사용한다.
+- `bg-background`, `text-foreground`, `text-muted-foreground`, `bg-primary` 같은 token-backed utility를 우선 사용한다.
+- 승인된 토큰이 이미 있는데도 raw Tailwind color utility나 ad-hoc color 값을 컴포넌트 코드에 직접 넣지 않는다.
+- 정말 새 색상/토큰이 필요하다면, 일회성 local workaround를 만들지 말고 `src/app/globals.css`의 shared theme token system에 추가한다.
+
 ### 데이터 접근 규칙
 
 - 모든 데이터베이스 접근은 서버 사이드에서만 수행한다.

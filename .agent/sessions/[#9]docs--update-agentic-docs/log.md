@@ -105,3 +105,29 @@
   - `rg -n "FSD-lite|path-based locale routing|전통적인|경로 기반 locale routing|UI 브랜치에 대한 메모|Notes For UI Branches" AGENTS.md SCAFFOLD_STRUCTURE.md PRD.md docs/AGENTS.ko.md docs/SCAFFOLD_STRUCTURE.ko.md docs/PRD.ko.md`
 - Result:
   - pass
+
+## Slice 5 - UI Reuse and Token Rules
+
+- PLAN:
+  - Add explicit project-wide rules that UI work must reuse installed shadcn primitives and existing shared components first, and must rely on shared semantic tokens from `src/app/globals.css` for colors/theme values.
+- LENS CHECK:
+  - Binding skill lens: `frontend-architecture-rules`
+  - Key constraints enforced:
+    - `AGENTS.md` should state only project-wide rules that matter on every UI task
+    - UI reuse order should be explicit: installed primitives, then existing shared components, then new primitives
+    - color and theme values should come from the shared token system rather than ad-hoc component-local choices
+
+## TDD Cycle
+
+- RED: The project already implied `shadcn/ui` reuse and semantic-token styling in skills, but `AGENTS.md` did not explicitly require checking existing shared components first or tying app color usage back to `src/app/globals.css`.
+- GREEN: Added explicit UI reuse and design-token rules to `AGENTS.md` and `docs/AGENTS.ko.md`, and tightened `frontend-architecture-rules` so the same guidance is enforced during implementation and review.
+- REFACTOR: Kept the new rules short and project-specific, avoiding another broad design-system section in the project docs.
+
+## Verify
+
+- Commands:
+  - `pnpm prettier:docs`
+  - `git diff --check -- AGENTS.md docs/AGENTS.ko.md .agent/sessions/[#9]docs--update-agentic-docs/log.md`
+  - `rg -n "UI Reuse Rule|Design Token Rule|UI 재사용 규칙|디자인 토큰 규칙|src/app/globals.css" AGENTS.md docs/AGENTS.ko.md`
+- Result:
+  - pass
