@@ -1,6 +1,6 @@
 # AGENTS.md (for Mandalart Web)
 
-_Last updated: 2026-03-13 (KST)_
+_Last updated: 2026-03-15 (KST)_
 
 ---
 
@@ -14,16 +14,16 @@ It aligns project documents and implementation workflow with the currently insta
 - current server/client data-access boundaries
 - English source docs plus Korean translation sync
 
-`PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md` remain the core project documents.
+`docs/PRD.md`, `docs/SCAFFOLD_STRUCTURE.md`, and `docs/TECH_REFERENCE.md` remain the core project documents.
 This file defines the project-wide instructions that apply across them.
 
 ---
 
 ## 2) Source of Truth
 
-- Product goals and scope: `PRD.md`
-- Project scaffold and layer boundaries: `SCAFFOLD_STRUCTURE.md`
-- Technical implementation details: `TECH_REFERENCE.md`
+- Product goals and scope: `docs/PRD.md`
+- Project scaffold and layer boundaries: `docs/SCAFFOLD_STRUCTURE.md`
+- Technical implementation details: `docs/TECH_REFERENCE.md`
 - Branch-local execution artifacts:
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/spec.md`
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/research.md`
@@ -32,8 +32,8 @@ This file defines the project-wide instructions that apply across them.
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/log.md`
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/handoff.md`
 
-English project documents are the source of truth.
-Korean documents under `docs/*.ko.md` must be synchronized after the English source changes are finalized.
+English project documents under `docs/*.md` are the source of truth.
+Korean documents under `docs/ko/*.md` must be synchronized after the English source changes are finalized.
 
 ---
 

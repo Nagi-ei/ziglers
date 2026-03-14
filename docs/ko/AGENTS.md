@@ -1,6 +1,6 @@
 # AGENTS.md (for Mandalart Web)
 
-_Last updated: 2026-03-13 (KST)_
+_Last updated: 2026-03-15 (KST)_
 
 ---
 
@@ -14,16 +14,16 @@ _Last updated: 2026-03-13 (KST)_
 - 현재 서버/클라이언트 데이터 접근 경계
 - 영문 원본 문서와 한국어 번역 문서 동기화
 
-`PRD.md`, `SCAFFOLD_STRUCTURE.md`, `TECH_REFERENCE.md`는 계속 핵심 프로젝트 문서로 유지한다.
+`../PRD.md`, `../SCAFFOLD_STRUCTURE.md`, `../TECH_REFERENCE.md`는 계속 핵심 프로젝트 문서로 유지한다.
 이 문서는 그 문서들을 기준으로 항상 적용되어야 하는 프로젝트 공통 지침을 정의한다.
 
 ---
 
 ## 2) 기준 문서(Source of Truth)
 
-- 제품 목표와 범위: `PRD.md`
-- 프로젝트 스캐폴드 및 레이어 경계: `SCAFFOLD_STRUCTURE.md`
-- 기술 구현 세부 기준: `TECH_REFERENCE.md`
+- 제품 목표와 범위: `PRD.md` (영문 원본: `../PRD.md`)
+- 프로젝트 스캐폴드 및 레이어 경계: `SCAFFOLD_STRUCTURE.md` (영문 원본: `../SCAFFOLD_STRUCTURE.md`)
+- 기술 구현 세부 기준: `TECH_REFERENCE.md` (영문 원본: `../TECH_REFERENCE.md`)
 - 브랜치 로컬 실행 산출물:
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/spec.md`
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/research.md`
@@ -32,8 +32,8 @@ _Last updated: 2026-03-13 (KST)_
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/log.md`
   - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/handoff.md`
 
-영문 프로젝트 문서를 원본으로 본다.
-`docs/*.ko.md`의 한국어 문서는 영문 원본 변경이 확정된 뒤 동기화해야 한다.
+영문 프로젝트 문서는 `../*.md`를 원본으로 본다.
+`docs/ko/*.md`의 한국어 문서는 영문 원본 변경이 확정된 뒤 동기화해야 한다.
 
 ---
 
