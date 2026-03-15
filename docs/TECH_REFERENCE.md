@@ -1,6 +1,6 @@
-# Mandalart Web – TECH_REFERENCE (v1.1)
+# Mandalart Web – TECH_REFERENCE (v1.2)
 
-_Last updated: 2025-12-18 (KST)_
+_Last updated: 2026-03-12 (KST)_
 
 ---
 
@@ -14,21 +14,21 @@ and is the top-level technical specification referenced during code generation a
 
 ## 2) Environment & Toolchain
 
-| Item                | Description                                               |
-| ------------------- | --------------------------------------------------------- |
-| **Framework**       | Next.js (App Router, v16.0.1), React (v19.2.0)            |
-| **Language**        | TypeScript (v5.x)                                         |
-| **Package Manager** | pnpm (v10.18.2)                                           |
-| **Database**        | Supabase (PostgreSQL 15)                                  |
-| **ORM**             | Prisma (v7.2.0)                                           |
-| **Styling/UI**      | TailwindCSS (v4), shadcn/ui                               |
-| **State/Data**      | TanStack Query (v5.90.8), Zustand (v5.0.8), Zod (v4.1.12) |
-| **Form**            | react-hook-form (v7.66.0) + zodResolver (v5.2.2)          |
-| **Testing**         | Jest + Playwright + MSW                                   |
-| **Lint/Format**     | Biome + ESLint(next) + Prettier                           |
-| **CI/CD**           | GitHub Actions + Vercel Preview Deploy                    |
-| **Timezone**        | Asia/Seoul (KST)                                          |
-| **Font**            | Pretendard Variable (woff2)                               |
+| Item                | Description                                                |
+| ------------------- | ---------------------------------------------------------- |
+| **Framework**       | Next.js (App Router, v16.0.10), React (v19.2.1)            |
+| **Language**        | TypeScript (v5.x)                                          |
+| **Package Manager** | pnpm (v10.18.2)                                            |
+| **Database**        | Supabase (PostgreSQL 15)                                   |
+| **ORM**             | Prisma (v7.3.0)                                            |
+| **Styling/UI**      | TailwindCSS (v4), shadcn/ui                                |
+| **State/Data**      | TanStack Query (v5.90.20), Zustand (v5.0.11), Zod (v4.3.6) |
+| **Form**            | react-hook-form (v7.71.1) + zodResolver (v5.2.2)           |
+| **Testing**         | Jest + Playwright + MSW                                    |
+| **Lint/Format**     | Biome + ESLint(next) + Prettier                            |
+| **CI/CD**           | GitHub Actions + Vercel Preview Deploy                     |
+| **Timezone**        | Asia/Seoul (KST)                                           |
+| **Font**            | Pretendard Variable (woff2)                                |
 
 ---
 
@@ -211,82 +211,54 @@ order by b.updated_at desc;
 
 ## 6) Prisma Setup & Usage Policy
 
-- Prisma Client is initialized in `shared/lib/prisma/client.ts`
-- Prisma is used for **all server-side database access**
+- Prisma Client is generated from `prisma/schema.prisma` into `src/generated/prisma`
+- Prisma is used for **all application-level server-side database access**
 - Client-side direct DB access is prohibited
 - Supabase is responsible for:
-  - Auth
+  - Auth/session handling
   - Storage
   - RLS enforcement
 
 > Prisma is used as the primary server-side data access layer.
 > Supabase RLS is enforced at the database level.
 
+### Boundary Rules
+
+- Prefer reads in Server Components or other server-only modules.
+- Prefer Server Actions for internal create/update/delete flows.
+- Route Handlers are not the default internal CRUD boundary; reserve them for public API, webhooks, and external callbacks.
+- Repository/adapter layers are optional and should be introduced only when they provide an explicit boundary value.
+
 ---
 
-## 7) Repository Layer (Example)
+## 7) Application Data Boundary Pattern
 
-```ts
-// repositories/boardRepository.ts
-import { prisma } from "@/lib/prisma";
+Default application pattern:
 
-export const boardRepository = {
-  async listBoards(userId: string) {
-    return prisma.board.findMany({
-      where: { ownerId: userId },
-      orderBy: { updatedAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        updatedAt: true,
-      },
-    });
-  },
+- read data in Server Components or server-only modules
+- write through Server Actions
+- coordinate interactive mutation UX through TanStack Query `useMutation` when needed
+- invalidate or revalidate explicitly after successful writes
 
-  async createBoard(userId: string, input: { title: string; description?: string }) {
-    return prisma.board.create({
-      data: {
-        ownerId: userId,
-        ...input,
-      },
-      select: { id: true, title: true, description: true },
-    });
-  },
-
-  async getBoard(userId: string, id: string) {
-    return prisma.board.findFirst({
-      where: { id, ownerId: userId },
-      include: {
-        cells: {
-          include: { tasks: true },
-        },
-      },
-    });
-  },
-};
-```
-
-> ✅ Reference:
->
-> - Prisma is the primary data access layer.
-> - Supabase RLS is still enforced at the database level.
-> - This repository structure can be reused when migrating to NestJS.
+Repository/adapter boundaries are allowed only when they provide a real contract or transport boundary.
+Do not add forwarding-only repository layers by default.
 
 ---
 
 ## 8) TanStack Query Keys
 
 ```ts
-export const queryKeys = {
-  boards: ["boards"] as const,
-  board: (id: string) => ["board", id] as const,
-  cells: (boardId: string) => ["board", boardId, "cells"] as const,
-  tasks: (cellId: string) => ["cell", cellId, "tasks"] as const,
+export const boardKeys = {
+  all: ["board"] as const,
+  list: () => [...boardKeys.all, "list"] as const,
+  listBy: (filter: { ownerId?: string }) => [...boardKeys.list(), { filter }] as const,
+  detail: (boardId: string) => [...boardKeys.all, "detail", boardId] as const,
+  cells: (boardId: string) => [...boardKeys.detail(boardId), "cells"] as const,
 };
 ```
 
-> The hierarchical array structure allows for unified cache invalidation using `invalidateQueries(['board', id])`.
+> Use stable hierarchical key factories rather than scattering inline query arrays across components.
+> Prefer colocating these helpers in `entities/<domain>/model/keys.ts` or another clearly named query-key module.
 
 ---
 
@@ -295,11 +267,10 @@ export const queryKeys = {
 ```ts
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { getUser } from "@/lib/auth";
+import { prisma } from "@/generated/prisma/client";
 
 export async function toggleTaskDone(id: string, next: boolean) {
-  const user = await getUser();
+  const user = await requireAuthenticatedUser();
 
   await prisma.$transaction([
     prisma.task.update({
@@ -323,6 +294,8 @@ export async function toggleTaskDone(id: string, next: boolean) {
 > - All mutations run server-side only.
 > - Authorization is enforced by Supabase RLS.
 > - Prisma handles relations and transactional integrity.
+> - Follow successful writes with explicit cache invalidation or revalidation in the client/server boundary that owns consistency.
+> - `requireAuthenticatedUser()` stands in for the project's actual server-side auth helper.
 
 ---
 
@@ -348,82 +321,35 @@ export const TaskSchema = z.object({
 
 ## 11) Testing Reference
 
-### 11.1 Jest Config (package.json)
-
-```json
-{
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
-    "coveragePathIgnorePatterns": ["/node_modules/", "/.next/"]
-  }
-}
-```
-
-### 11.2 E2E (Playwright)
-
-```bash
-pnpm exec playwright install --with-deps
-pnpm exec playwright test --reporter=line
-```
-
-> Automatically saves `trace.zip` and screenshots upon execution.  
-> `baseURL` in `playwright.config.ts` = `http://localhost:3000`
+- Jest configuration source of truth: `jest.config.ts`
+- Playwright configuration source of truth: `playwright.config.ts`
+- Current package scripts:
+  - `pnpm test:unit`
+  - `pnpm test:e2e`
+- Current test directories:
+  - `tests/integration/`
+  - `tests/e2e/`
 
 ---
 
 ## 12) Lint & Format
 
-### 12.1 Biome Config (`biome.json`)
-
-```json
-{
-  "formatter": { "indentStyle": "space", "lineWidth": 100 },
-  "linter": {
-    "rules": {
-      "style/noUnusedVars": "error",
-      "performance/noUnnecessaryAwait": "warn"
-    }
-  }
-}
-```
-
-### 12.2 ESLint Extension
-
-```js
-extends: [
-	"next/core-web-vitals",
-	"plugin:@tanstack/eslint-plugin-query/recommended"
-]
-```
+- Biome configuration source of truth: `biome.json`
+- ESLint configuration source of truth: `eslint.config.mjs`
+- Current package scripts:
+  - `pnpm lint`
+  - `pnpm lint:biome`
+  - `pnpm lint:eslint`
+  - `pnpm prettier:docs`
 
 ---
 
 ## 13) CI / CD (GitHub Actions)
 
-```yaml
-name: CI
-
-on:
-	pull_request:
-		branches: [main, dev]
-
-jobs:
-	build-and-test:
-		runs-on: ubuntu-latest
-
-	steps:
-		- uses: actions/checkout@v4
-		- uses: pnpm/action-setup@v2
-			with:
-				version: 9
-		- run: pnpm install
-		- run: pnpm biome check
-		- run: pnpm next lint
-		- run: pnpm test --runInBand --coverage
-		- run: pnpm exec playwright test --reporter=line
-```
+- Build verification workflow: `.github/workflows/build_verification.yml`
+- Playwright workflow: `.github/workflows/playwright.yml`
+- Use the workflow files in the repository as the source of truth for exact CI behavior.
+- Keep documented Node/pnpm assumptions aligned with those workflow files and the current package configuration.
 
 ---
 
@@ -431,19 +357,20 @@ jobs:
 
 | Item           | Version | Note                                |
 | -------------- | ------- | ----------------------------------- |
-| Node.js        | 22.14.0 | Default Vercel environment          |
+| Node.js        | 22.14.0 | Build verification workflow target  |
 | Next.js        | 16.0.10 | App Router                          |
 | TypeScript     | 5.x     | Strict Mode                         |
-| Supabase-js    | 2.88.0  | Supports RLS and Edge Functions     |
-| Prisma         | 7.2.0   | Server-side ORM, schema & migration |
+| Supabase-js    | 2.95.3  | Supports RLS and Edge Functions     |
+| Supabase SSR   | 0.8.0   | Server/client auth session support  |
+| Prisma         | 7.3.0   | Server-side ORM, schema & migration |
 | TailwindCSS    | 4       | JIT                                 |
 | shadcn/ui      | Latest  | CLI installation                    |
-| TanStack Query | 5.90.12 | Supports Suspense                   |
-| Zustand        | 5.0.9   | Includes Middleware                 |
-| Zod            | 4.2.1   | Integrated with react-hook-form     |
+| TanStack Query | 5.90.20 | Client-side server-state handling   |
+| Zustand        | 5.0.11  | Local UI state                      |
+| Zod            | 4.3.6   | Integrated with react-hook-form     |
 | Biome          | 2.3.9   | ESLint replacement                  |
 | Jest           | 30.2.0  | SWC-based                           |
-| Playwright     | 1.57.0  | Chromium/Firefox/WebKit             |
+| Playwright     | 1.58.2  | Browser automation and E2E          |
 | pnpm           | 10.18.2 | Monorepo support                    |
 
 ---
@@ -451,4 +378,4 @@ jobs:
 ✅ **Summary:**  
 This document defines the **technical specifications and implementation standards** for Mandalart Web.  
 While **PRD.md** defines product requirements, this serves as the actual **development reference**.  
-Indexes, RLS, repository structure, and testing configurations are all maintained according to this document.
+Indexes, RLS, server/client boundaries, query-key conventions, and verification references are all maintained according to this document.

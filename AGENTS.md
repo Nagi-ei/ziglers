@@ -1,27 +1,39 @@
-# 🧩 AGENTS.md (for Mandalart Web)
+# AGENTS.md (for Mandalart Web)
 
-_Last updated: 2025-12-18 (KST)_
+_Last updated: 2026-03-15 (KST)_
 
 ---
 
 ## 1) Purpose
 
-This document defines the **AI agent configuration and roles** for the Mandalart Web project.  
-All agents collaborate across code creation, validation, refactoring, testing, and deployment automation,  
-based on `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md`.
+This document defines the project-wide AI working rules for Mandalart Web.
+It aligns project documents and implementation workflow with the currently installed skills, especially:
+
+- branch-cycle delivery under `.agent/sessions/...`
+- project-specific frontend architecture rules
+- current server/client data-access boundaries
+- English source docs plus Korean translation sync
+
+`docs/PRD.md`, `docs/SCAFFOLD_STRUCTURE.md`, and `docs/TECH_REFERENCE.md` remain the core project documents.
+This file defines the project-wide instructions that apply across them.
 
 ---
 
-## 2) Agent Hierarchy
+## 2) Source of Truth
 
-| Level          | Name                     | Role                                                                    | Reference Document                |
-| -------------- | ------------------------ | ----------------------------------------------------------------------- | --------------------------------- |
-| 🧠 Core Agent  | **Architect**            | Enforces structure and dependency rules (`FSD`, boundaries)             | `SCAFFOLD_STRUCTURE.md`           |
-| 🧩 Logic Agent | **Feature Builder**      | Generates Entity/Feature-level logic and data layers                    | `TECH_REFERENCE.md`               |
-| 🎨 UI Agent    | **Interface Crafter**    | Implements UI components (shadcn, theme, i18n)                          | `PRD.md`, `SCAFFOLD_STRUCTURE.md` |
-| 🔍 QA Agent    | **Validator**            | Linting, typing, testing, and performance checks                        | `TECH_REFERENCE.md`               |
-| 📦 Ops Agent   | **CI/CD Manager**        | Handles CI/CD, GitHub Actions, environment verification, and deployment | `TECH_REFERENCE.md`               |
-| 📚 Doc Agent   | **Knowledge Maintainer** | Synchronizes documents (`PRD`, `TECH_REFERENCE`) and summarizes changes | All documents                     |
+- Product goals and scope: `docs/PRD.md`
+- Project scaffold and layer boundaries: `docs/SCAFFOLD_STRUCTURE.md`
+- Technical implementation details: `docs/TECH_REFERENCE.md`
+- Branch-local execution artifacts:
+  - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/spec.md`
+  - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/research.md`
+  - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/plan.md`
+  - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/plans/*.md`
+  - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/log.md`
+  - `.agent/sessions/[#<issue-number>]<prefix>--<slug>/handoff.md`
+
+English project documents under `docs/*.md` are the source of truth.
+Korean documents under `docs/ko/*.md` must be synchronized after the English source changes are finalized.
 
 ---
 
@@ -29,155 +41,137 @@ based on `PRD.md`, `SCAFFOLD_STRUCTURE.md`, and `TECH_REFERENCE.md`.
 
 ### Component File Rule
 
-- Each file must contain exactly one React component.
-- When a component is split, it must be placed in a separate file.
-- Defining multiple React components in a single file is not allowed.
+- Each React component must live in its own file.
+- When a new component is introduced, create a new file immediately.
+- Defining multiple app-specific React components in one file is not allowed.
 
-#### Exceptions
+#### Allowed Exceptions
 
-The following cases are **allowed** as exceptions to the single-component rule:
+| Exception                           | Example                                                                      | Conditions                                                                                                             |
+| ----------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Route-local wrapper**             | `page.tsx` with a private wrapper for Suspense or Error Boundary composition | Must stay local to the route file, must not be exported, and must exist only for a direct page-level boundary          |
+| **Installed shadcn primitive file** | installed files such as `Tabs`, `DropdownMenu`, `NavigationMenu`             | The file must belong to the canonical shadcn primitive surface defined by `components.json` and project scaffold rules |
 
-| Exception                 | Example                                              | Reason                                                |
-| ------------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
-| **Suspense wrapper**      | `page.tsx` with internal `PageContent` component     | Next.js App Router pattern for `useSearchParams` etc. |
-| **ErrorBoundary wrapper** | `page.tsx` with internal error handling component    | React error boundary pattern                          |
-| **Compound components**   | `Tabs` with `TabsList`, `TabsTrigger`, `TabsContent` | Design system pattern (only in `shared/ui`)           |
+#### Additional Conditions
 
-**Conditions for exceptions:**
+- Installed shadcn primitive files are treated as vendor-like UI primitives.
+- They may be patched for styling, variants, accessibility, typing, or upstream-compatible fixes.
+- They must not absorb feature logic, business logic, data fetching, or mutation orchestration.
 
-- The internal component must NOT be exported (private to the file)
-- The internal component must be a direct child wrapper, not a reusable component
-- The pattern must be a well-known framework convention (Next.js, React)
+### UI Reuse Rule
 
----
+- Reuse installed `shadcn/ui` primitives before creating new UI primitives.
+- Before creating new project UI, check existing reusable components such as `src/shared/ui/common` and other established shared surfaces first.
+- Only create a new project-specific UI primitive when installed primitives and existing shared components are both clearly insufficient.
 
-## 4) Detailed Roles
+### Design Token Rule
 
-### 4.1 🧠 **Architect Agent**
+- Use only semantic color tokens and CSS variables defined through `src/app/globals.css` for app UI colors and theme values.
+- Prefer semantic utilities such as `bg-background`, `text-foreground`, `text-muted-foreground`, `bg-primary`, and related token-backed classes.
+- Do not introduce raw Tailwind color utilities or ad-hoc color values in component code when an approved token already exists.
+- If a new color/token is truly required, add it to the shared theme token system in `src/app/globals.css` rather than defining a one-off local workaround.
 
-- **Goal:** Enforce folder structure and dependency rules (FSD-Lite).
-- **Reference:** `SCAFFOLD_STRUCTURE.md`
-- **Main functions:**
-  - Detect violations of import direction (`app → widgets → features → entities → shared`)
-  - Warn if Supabase is accessed directly outside of `entities/lib/`
-  - Detect disallowed relative imports (`../..`)
-- **Trigger:** On PR creation or AI refactor execution
-- **Output:** `structure_report.json`
-  ```json
-  {
-    "status": "pass",
-    "invalid_imports": []
-  }
-  ```
+### Data Access Rule
 
----
+- All database access is server-side only.
+- Prisma is the primary application data-access layer.
+- Supabase remains responsible for auth/session, storage, and database-level RLS authorization.
+- Client components must never access the database directly.
+- Prefer:
+  - reads in Server Components or server-only modules
+  - writes via Server Actions
+  - Route Handlers only for public API, webhook, or external callback boundaries
 
-### 4.2 🧩 **Feature Builder Agent**
+### Query Key Rule
 
-- **Goal:** Implement functional specifications from `PRD.md` into actual code structure.
-- **Reference:** `TECH_REFERENCE.md`, `SCAFFOLD_STRUCTURE.md`
-- **Main functions:**
-  - Auto-generate scaffolds for each Entity/Feature
-    - Create default folders: `model`, `lib`, `ui`
-  - Generate Supabase Repository (`lib/supabase.adapter.ts`) and Query Hook (`model/queries.ts`)
-  - Apply TanStack Query Key / invalidation rules
-  - Implement mutation patterns similar to `features/toggle-task`
-- **Output Example:** `feature_task_done.diff`
+- Use explicit, stable TanStack Query key factories.
+- Prefer hierarchical key factories such as:
+  - `all -> list -> listBy -> entity/detail -> subresource`
+- Keep key helpers in a domain-owned key module rather than scattering inline query keys across components.
 
----
+### Abstraction Rule
 
-### 4.3 🎨 **Interface Crafter Agent**
-
-- **Goal:** Maintain consistent UI/UX implementation
-- **Reference:** `PRD.md`, `SCAFFOLD_STRUCTURE.md`
-- **Main functions:**
-  - Generate shadcn/ui + Tailwind-based components
-  - Verify ThemeProvider / I18nProvider injection
-  - Validate dark mode and i18n key naming (`page.section.key`)
-  - Generate initial layout prototypes in `widgets/` or `features/`
-- **Output Example:**  
-   `ui_report.md` (component tree and untranslated i18n key list)
+- Do not create service, repository, or adapter layers by default.
+- Introduce a repository/adapter boundary only when its responsibility is independently meaningful and explainable, such as:
+  - a stable contract for a real transport or backend swap
+  - a multi-source boundary
+  - a clear mapping/auth/transaction boundary
+- Forwarding-only wrapper layers are considered a smell, not a standard.
 
 ---
 
-### 4.4 🔍 **Validator Agent**
+## 4) Collaboration Rules
 
-- **Goal:** Maintain code quality and stability
-- **Reference:** `TECH_REFERENCE.md`
-- **Main functions:**
-  - Validate configuration for `biome`, `eslint`, `jest`, `playwright`
-  - Detect TypeScript strict mode errors
-  - Measure test coverage (`/test/unit`, `/test/integration`)
-  - Run lint/test in CI pipelines
-- **Output:**  
-   `qa_report.md` (lint, test, and type summary)
+| Rule                              | Description                                                                                                |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Single Responsibility**         | Each change should stay within a clear, explainable responsibility boundary.                               |
+| **Structure Changes Need Intent** | Structure-changing edits must be justified in the branch spec/plan rather than introduced casually.        |
+| **Automation First**              | Non-trivial branch work follows the branch-cycle workflow by default.                                      |
+| **Documentation First**           | When architecture or workflow rules change, update English source docs before syncing Korean translations. |
+| **Skill Precedence**              | Project-specific skills take precedence over generic framework or vendor advice when they conflict.        |
 
 ---
 
-### 4.5 📦 **Ops Agent**
+## 5) Branch Delivery Workflow
 
-- **Goal:** Ensure stable build and deployment pipelines
-- **Reference:** `TECH_REFERENCE.md`
-- **Main functions:**
-  - Verify GitHub Actions CI setup (`biome`, `test`, `playwright`)
-  - Validate `.env.local` variables (`NEXT_PUBLIC_SUPABASE_URL`, `ANON_KEY`, `SERVICE_ROLE`)
-  - Trigger Vercel Preview/Prod deploys
-  - Enforce consistent environment (Node 20.x / pnpm 9.x)
+Use this workflow for non-trivial branch work:
 
----
+1. **Spec**
+2. **Research** (conditional)
+3. **Planner**
+4. **Execution**
+5. **Hardening**
+6. **Review**
+7. **Refactor**
+8. **Final Verify**
 
-### 4.6 📚 **Knowledge Maintainer**
+### Session Convention
 
-- **Goal:** Keep documentation and code synchronized
-- **Reference:** `PRD.md`, `SCAFFOLD_STRUCTURE.md`, `TECH_REFERENCE.md`
-- **Main functions:**
-  - Ensure cross-document updates (e.g., schema ↔ scaffold sync)
-  - Validate consistency between PRD features, Entity schemas, and UI structure
-  - Add PR comments when generated code diverges from defined specs
-  - Update `docs/changelog.md` automatically with major document changes
+- Git branch format: `<prefix>/<issue-number>--<slug>`
+- Allowed prefixes: `feature`, `ui`, `refactor`, `fix`, `docs`, `chore`
+- Session folder format: `[#<issue-number>]<prefix>--<slug>`
+- Artifact root: `.agent/sessions/[#<issue-number>]<prefix>--<slug>/`
 
----
+### Artifact Behavior
 
-## 5) Collaboration Rules
+- `spec.md` fixes branch intent.
+- `research.md` exists only when required.
+- `plan.md` is the latest accepted execution plan.
+- `plans/*.md` stores plan snapshots.
+- `log.md` is append-only execution history.
+- `handoff.md` is the rolling latest-state resume document.
+- Mid-session compaction rewrites `handoff.md` and appends a compact checkpoint to `log.md`.
 
-| Rule                      | Description                                                              |
-| ------------------------- | ------------------------------------------------------------------------ |
-| **Single Responsibility** | Each agent acts only within its own scope.                               |
-| **No Cross-layer Edits**  | Only the Architect may modify upper-level structure.                     |
-| **Automation First**      | Scaffold → Feature → Validation → Deploy should be automated by default. |
-| **Documentation First**   | All changes must propagate in order: PRD → TECH_REFERENCE → SCAFFOLD.    |
+### Notes For Document Branches
 
----
+- Document branches use the same stage order.
+- The difference is in verification evidence, not in stage names:
+  - hardening focuses on consistency, stale examples, and terminology drift
+  - final verification focuses on cross-document alignment and file/path/tooling correctness
 
-## 6) Execution Pipeline (Automation Order)
+### Notes For UI Branches
 
-1. **Doc Sync:**  
-   Knowledge Maintainer verifies document freshness.
-2. **Scaffold Check:**  
-   Architect validates structure and dependencies.
-3. **Feature Build:**  
-   Feature Builder generates new scaffolds and repositories.
-4. **UI Generation:**  
-   Interface Crafter creates shadcn-based UI components.
-5. **QA Validation:**  
-   Validator runs lint/test/type checks.
-6. **CI/CD Deploy:**  
-   Ops Agent triggers GitHub Actions and Vercel deployment.
+- Branches that explicitly create or redesign user-facing UI should use the design-oriented path during Execution and include UI-guideline review during Review.
 
 ---
 
-## 7) Future Expansion (for M2)
+## 6) Future Expansion
 
-| Item                             | Description                                                                            |
-| -------------------------------- | -------------------------------------------------------------------------------------- |
-| **HTTP Adapter Transition**      | Automatically replace Supabase Adapter → HTTP Adapter for Nest API Gateway integration |
-| **Mobile Integration (RN/Expo)** | Add cross-platform agent sharing entity keys and types                                 |
-| **Auto Translation**             | Sync and translate PRD/Tech docs (ko-en) automatically                                 |
-| **Test Scenario Generation**     | Generate Playwright E2E tests based on PRD feature definitions                         |
+| Item                             | Description                                                                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Transport Boundary for M2**    | If a real Nest API or external transport boundary is introduced, document a justified server-only adapter boundary rather than assuming one by default. |
+| **Mobile Integration (RN/Expo)** | Share stable query-key and type conventions where they provide real reuse value.                                                                        |
+| **Auto Translation**             | Improve doc synchronization workflows for English/Korean project documents.                                                                             |
+| **Test Scenario Generation**     | Generate Playwright E2E scenarios from accepted branch specs or product requirements.                                                                   |
 
 ---
 
-✅ **Summary:**  
-This document defines the **AI & automation agent framework** for Mandalart Web.  
-All agents operate collaboratively based on `PRD`, `SCAFFOLD_STRUCTURE`, and `TECH_REFERENCE` documents.  
-The system maintains consistent structure, quality, and deployment flow through a **fully automated development cycle**.
+## Summary
+
+This file defines the project-wide guidance that should stay true for any AI work in Mandalart Web:
+
+- follow the branch-cycle workflow
+- keep docs and translations aligned
+- prefer direct, explainable server/client boundaries
+- avoid low-value abstraction
+- treat installed shadcn primitives and project UI code as distinct surfaces
