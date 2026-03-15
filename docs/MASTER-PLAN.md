@@ -139,15 +139,47 @@ The remaining sections of this document will turn those questions into an execut
 
 ## 6) Product and Experience Direction
 
-This section will summarize the planning-level product and UX direction that future branches must preserve while implementing MVP scope.
-It should stay above detailed requirements and defer concrete feature ownership to `docs/PRD.md`.
+The master plan should only define the product and experience direction needed to sequence the work.
+Detailed requirements, field rules, and user-facing acceptance still belong in `docs/PRD.md`.
+
+### 6.1 Product Direction
+
+- Prioritize the MVP flow already described in `docs/PRD.md`:
+  - account-based access
+  - board creation and management
+  - task completion flow
+  - dashboard visibility
+  - export output
+- Treat the current landing and dashboard implementation as baseline surfaces to refine, not disposable experiments.
+- Use the roadmap to move from static or demo-oriented UI surfaces toward real MVP behavior in a controlled order.
+
+### 6.2 UX Direction
+
+- Preserve the memo/paper/planning-board concept across landing, dashboard, and future board-related surfaces.
+- Keep the product legible and structured first; stylistic refresh work should strengthen clarity, hierarchy, and planning flow rather than add ornamental complexity.
+- Make the board flow the core experience and keep the dashboard as a summary and progress surface, not the product's primary editing surface.
+- Keep landing and dashboard refresh work visually aligned so the service identity reads as one system.
 
 ---
 
 ## 7) Architecture and Delivery Principles
 
-This section will summarize the planning-level architecture, UI-surface, and branch-delivery principles that future branches must follow.
-It should defer detailed scaffold and technical rules to `docs/SCAFFOLD_STRUCTURE.md`, `docs/TECH_REFERENCE.md`, and `AGENTS.md`.
+The master plan should only restate the architecture and delivery rules that materially affect roadmap order.
+Detailed file-placement and technical implementation rules still belong in `docs/SCAFFOLD_STRUCTURE.md`, `docs/TECH_REFERENCE.md`, and `AGENTS.md`.
+
+### 7.1 Architecture Principles
+
+- Keep database access server-side only, with Prisma as the primary application data-access layer and Supabase responsible for auth, storage, and RLS.
+- Keep the App Router scaffold, layer boundaries, and UI surface separation defined in `docs/SCAFFOLD_STRUCTURE.md`.
+- Reuse installed `shadcn/ui`, existing shared UI, and semantic tokens before introducing new project UI primitives or local color decisions.
+- Keep new work explainable from imports and boundaries; avoid low-value repository, adapter, or wrapper layers.
+
+### 7.2 Branch Delivery
+
+- Keep one issue per branch and one thread per branch.
+- Keep the documented branch cycle for non-trivial work and use branch-local artifacts under `.agent/sessions/...`.
+- Keep UI refresh work in dedicated UI branches instead of hiding it inside deeper feature branches.
+- Update English source docs first when roadmap or architecture guidance changes, then sync Korean documentation afterward.
 
 ---
 

@@ -28,6 +28,10 @@
    - documented the current repository baseline
    - fixed the project-level identity, visual-system, architecture, and workflow constraints
    - added the high-level section skeleton for the remaining slices
+6. Executed Slice 2 in `docs/MASTER-PLAN.md`:
+   - replaced placeholder prose with concise product and UX direction
+   - added concise architecture and branch-delivery principles
+   - kept the non-roadmap sections intentionally thin so the roadmap remains the main output
 
 ## Decisions
 
@@ -44,9 +48,8 @@
 
 ## Pending
 
-1. Commit the approved Slice 1 draft.
+1. Commit Slice 2 after the current execution step is recorded.
 2. Continue with:
-   - Slice 2: minimal planning principles only
    - Slice 3: branch roadmap and sequencing as the main deliverable
    - Slice 4: finalization, Korean sync, and minimal cross-reference touch-ups
 

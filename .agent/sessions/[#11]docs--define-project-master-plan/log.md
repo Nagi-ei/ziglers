@@ -38,3 +38,22 @@
 - Updated `spec.md` acceptance criteria to make roadmap priority explicit.
 - Replanned `plan.md` and saved the new accepted snapshot to `plans/02-roadmap-priority.md`.
 - Kept Slice 1 intact, but tightened Slice 2 and increased emphasis on Slice 3 as the main branch output.
+
+## 2026-03-16 - Slice 2 execution
+
+- Slice: `Slice 2`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep non-roadmap sections concise and only detailed enough to support the roadmap
+  - point detailed ownership back to `PRD`, `SCAFFOLD_STRUCTURE`, `TECH_REFERENCE`, and `AGENTS`
+  - keep workflow and architecture guidance aligned with the existing project rules
+- TDD cycle:
+  - RED: Slice 1 left the product, UX, architecture, and branch-delivery guidance as placeholders, so the roadmap would still be missing its minimum interpretive context.
+  - GREEN: replaced the placeholders with concise `Product Direction`, `UX Direction`, `Architecture Principles`, and `Branch Delivery` sections.
+  - REFACTOR: trimmed explanatory language so the new sections support the roadmap without re-stating detailed product or technical specification content.
+- Verify:
+  - `pnpm exec prettier --write 'docs/MASTER-PLAN.md'` -> pass, no formatting changes needed
+  - `rg -n "Product Direction|UX Direction|Architecture Principles|Branch Delivery" docs/MASTER-PLAN.md` -> pass, required section markers found
+  - `git diff --check -- 'docs/MASTER-PLAN.md'` -> pass
+- Task checklist:
+  - complete
