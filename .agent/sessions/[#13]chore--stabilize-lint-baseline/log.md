@@ -106,3 +106,21 @@
   - `pnpm exec biome check playwright.config.ts src/shared/lib/utils.ts tests/e2e/example.spec.ts` -> pass
 - Task checklist:
   - complete
+
+## 2026-03-17 - Slice 5 execution
+
+- Slice: `Slice 5`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep the fix localized to `src/shared/ui/ThemeToggle.tsx`
+  - preserve user-visible toggle behavior while removing the effect-driven mounted flag
+  - solve the hook-rule failure without widening the client boundary or adding new abstractions
+- TDD cycle:
+  - RED: after the earlier slices, `pnpm run lint:eslint` still reported `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`.
+  - GREEN: replaced the `useEffect` + `useState` mounted flag with `useSyncExternalStore` and an empty subscription to preserve the hydration guard without synchronous state-setting inside an effect.
+  - REFACTOR: kept the implementation to a single local helper and preserved the existing UI fallback and theme toggle behavior.
+- Verify:
+  - `pnpm exec eslint src/shared/ui/ThemeToggle.tsx` -> pass
+  - `pnpm run lint:eslint` -> pass
+- Task checklist:
+  - complete
