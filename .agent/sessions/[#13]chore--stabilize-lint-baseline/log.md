@@ -1,0 +1,56 @@
+# Log
+
+## 2026-03-17 - Cycle setup
+
+- Resolved the session artifact root for `chore/13--stabilize-lint-baseline` as `.agent/sessions/[#13]chore--stabilize-lint-baseline/`.
+- Confirmed the active branch is `chore/13--stabilize-lint-baseline`.
+- Read the required branch-cycle inputs:
+  - `docs/MASTER-PLAN.md`
+  - `docs/PRD.md`
+  - `docs/SCAFFOLD_STRUCTURE.md`
+  - `docs/TECH_REFERENCE.md`
+  - `frontend-architecture-rules`
+  - `next-best-practices`
+  - `branch-spec-gate`
+  - `branch-planner`
+  - `tdd`
+- Re-ran the current lint baseline:
+  - `pnpm run lint` -> failed on Biome schema mismatch, Tailwind directive parse errors, formatting/import issues, and `no-img-element`
+  - `pnpm run lint:eslint` -> failed because `next lint` is no longer a valid Next.js 16 CLI subcommand
+  - `pnpm exec eslint .` -> revealed the remaining actual ESLint findings:
+    - `@next/next/no-img-element` in `src/shared/ui/ComponentExample.tsx`
+    - `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
+    - deprecated `.eslintignore` warning under flat config
+- Wrote the accepted branch `spec.md`.
+- Wrote the accepted branch `plan.md` and archived the baseline snapshot in `plans/01-branch-baseline.md`.
+- Deferred execution to the first planned slice.
+
+## 2026-03-17 - Replan
+
+- User clarified that `src/shared/ui/ComponentExample.tsx` and `src/shared/ui/Example.tsx` are setup-only demo files and should be deleted at the start of the branch rather than brought into lint compliance.
+- Updated `spec.md` to:
+  - treat the two setup/demo files as deletion targets
+  - remove the previous `next/image`/`next.config.ts` maintenance path from accepted scope
+  - narrow the remaining shared-ui lint work to `src/shared/ui/ThemeToggle.tsx`
+- Updated `plan.md` and `plans/01-branch-baseline.md` to:
+  - add a new first slice for deleting the setup/demo files
+  - renumber later slices
+  - reduce the final shared-ui slice to the `ThemeToggle` fix
+
+## 2026-03-17 - Slice 1 execution
+
+- Slice: `Slice 1`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep the cleanup limited to the two setup/demo files only
+  - avoid widening the change into broader shared-ui deletion or restructuring
+  - confirm no active project imports would break before committing the removal
+- TDD cycle:
+  - RED: the current lint baseline still included findings from `src/shared/ui/ComponentExample.tsx`, a setup-only demo file, and that file depended only on the companion `src/shared/ui/Example.tsx`.
+  - GREEN: confirmed no external project imports referenced the two files, then deleted both setup/demo files.
+  - REFACTOR: re-checked the repository for stale imports and confirmed the remaining ESLint baseline narrowed to `.eslintignore` plus `src/shared/ui/ThemeToggle.tsx`.
+- Verify:
+  - `rg -n "ComponentExample|ExampleWrapper|from \"@/shared/ui/Example\"|from './Example'|from \"./Example\"|from \"@/shared/ui/ComponentExample\"" src tests` -> pass after deletion via no remaining matches
+  - `pnpm exec eslint .` -> fail as expected for later slices; remaining findings are the `.eslintignore` deprecation warning and `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
+- Task checklist:
+  - complete
