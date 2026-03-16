@@ -89,3 +89,20 @@
   - `pnpm exec biome check biome.json src/app/globals.css` -> pass
 - Task checklist:
   - complete
+
+## 2026-03-17 - Slice 4 execution
+
+- Slice: `Slice 4`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep this slice formatting-only with no behavioral changes
+  - limit the edits to the three known baseline files
+  - let Biome own import ordering and style normalization instead of hand-editing style drift
+- TDD cycle:
+  - RED: Biome still reported formatter/import-order failures in `playwright.config.ts`, `src/shared/lib/utils.ts`, and `tests/e2e/example.spec.ts`.
+  - GREEN: ran `pnpm exec biome check --write` on the three files to apply the formatter and organize imports.
+  - REFACTOR: confirmed the resulting diffs were style-only and did not alter runtime behavior.
+- Verify:
+  - `pnpm exec biome check playwright.config.ts src/shared/lib/utils.ts tests/e2e/example.spec.ts` -> pass
+- Task checklist:
+  - complete
