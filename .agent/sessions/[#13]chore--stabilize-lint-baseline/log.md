@@ -145,3 +145,32 @@
   - `pnpm run lint:eslint`
 - Result summary:
   - pass after the `ThemeToggle` formatting fix
+
+## Review
+
+- Findings:
+  - none
+- Open questions / assumptions:
+  - `pnpm run test:unit` is not currently a reliable unit-test lane because the repository-level Jest config also picks up `tests/e2e/*.spec.ts`
+  - Playwright execution in this environment is blocked by missing Firefox/WebKit browser binaries and Chromium launch permission failures under the sandboxed desktop environment
+- Summary:
+  - the branch goal and accepted scope were met without introducing scope creep; the remaining verification failures are outside the lint-baseline changes made here
+
+## Refactor Pass
+
+- Findings addressed:
+  - no additional review findings required code changes
+- Refactor changes:
+  - none beyond the earlier hardening-format fix already committed for `src/shared/ui/ThemeToggle.tsx`
+- Final verify command(s):
+  - `pnpm exec tsc --noEmit`
+  - `pnpm run lint`
+  - `pnpm run test:unit`
+  - `pnpm run test:e2e`
+- Final verify result:
+  - `pnpm exec tsc --noEmit` -> pass
+  - `pnpm run lint` -> pass
+  - `pnpm run test:unit` -> fail because Jest currently executes `tests/e2e/*.spec.ts` and crashes on Playwright imports (`TypeError: Class extends value undefined is not a constructor or null`)
+  - `pnpm run test:e2e` -> fail in the current environment:
+    - Chromium launch fails with `bootstrap_check_in ... Permission denied (1100)` under the sandboxed desktop environment
+    - Firefox and WebKit browser executables are not installed in the local Playwright cache
