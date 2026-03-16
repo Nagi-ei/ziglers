@@ -52,7 +52,11 @@ function MoonIcon() {
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   if (!mounted) {
     return (

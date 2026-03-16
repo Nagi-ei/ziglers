@@ -124,3 +124,24 @@
   - `pnpm run lint:eslint` -> pass
 - Task checklist:
   - complete
+
+## Hardening (branch)
+
+- Failure path tested:
+  - searched for stale imports of the deleted setup/demo components with `rg` and confirmed no remaining references
+  - re-ran split lint commands after all execution slices to catch any hidden repository-wide failures
+- Observability signals checked:
+  - `pnpm run lint:biome` and `pnpm run lint:eslint` now emit actionable file/rule diagnostics and both exit cleanly after the final formatting fix
+  - when hardening first re-ran `pnpm run lint:biome`, the output isolated the remaining gap to a single formatter expectation in `src/shared/ui/ThemeToggle.tsx`
+- UX resilience checked:
+  - for this maintenance branch, the practical UX equivalent is developer ergonomics: lint output is now directly actionable and no longer blocked by invalid CLI usage or unrelated setup/demo files
+  - the `ThemeToggle` hydration guard remains in place after the hook-rule fix
+- Fix / re-verify:
+  - `pnpm run lint:biome` initially failed in hardening because `src/shared/ui/ThemeToggle.tsx` still needed Biome line wrapping for the `useSyncExternalStore` call
+  - formatted the call to match Biome expectations and re-ran the split lint commands
+- Verify commands:
+  - `rg -n "ComponentExample|ExampleWrapper|from \"@/shared/ui/Example\"|from './Example'|from \"./Example\"|from \"@/shared/ui/ComponentExample\"" src tests`
+  - `pnpm run lint:biome`
+  - `pnpm run lint:eslint`
+- Result summary:
+  - pass after the `ThemeToggle` formatting fix
