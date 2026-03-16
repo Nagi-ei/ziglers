@@ -54,3 +54,21 @@
   - `pnpm exec eslint .` -> fail as expected for later slices; remaining findings are the `.eslintignore` deprecation warning and `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
 - Task checklist:
   - complete
+
+## 2026-03-17 - Slice 2 execution
+
+- Slice: `Slice 2`
+- Binding skill lens: `next-best-practices`
+- Key enforced constraints:
+  - use a supported ESLint CLI entrypoint for the current Next.js 16 toolchain
+  - keep ignore handling in flat config instead of relying on deprecated `.eslintignore`
+  - avoid adding ad-hoc CLI flags when the config can express the intended ignore scope directly
+- TDD cycle:
+  - RED: `pnpm run lint:eslint` failed immediately because `next lint` is no longer a valid Next.js 16 subcommand, and `pnpm exec eslint .` emitted the deprecated `.eslintignore` warning.
+  - GREEN: updated `package.json` to run `eslint .`, moved ignore rules into `eslint.config.mjs`, and removed `.eslintignore`.
+  - REFACTOR: kept the ignore list aligned with the existing build-artifact directories already present in the repository.
+- Verify:
+  - `pnpm exec eslint --print-config src/shared/ui/ThemeToggle.tsx` -> pass
+  - `pnpm run lint:eslint` -> fail as expected for later slices; command now executes correctly and reports only `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
+- Task checklist:
+  - complete
