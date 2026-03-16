@@ -72,3 +72,20 @@
   - `pnpm run lint:eslint` -> fail as expected for later slices; command now executes correctly and reports only `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
 - Task checklist:
   - complete
+
+## 2026-03-17 - Slice 3 execution
+
+- Slice: `Slice 3`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep `src/app/globals.css` as the shared token source of truth
+  - solve the Tailwind parsing problem through supported Biome configuration rather than CSS rewrites
+  - keep the Biome config change minimal and version-aligned
+- TDD cycle:
+  - RED: `pnpm run lint:biome` failed because `biome.json` still used schema `2.2.0` and `src/app/globals.css` could not be parsed with Tailwind directives disabled.
+  - GREEN: ran `biome migrate --write` to align the schema to `2.3.9`, then enabled `css.parser.tailwindDirectives` in `biome.json`.
+  - REFACTOR: kept the configuration change limited to the schema update plus the single parser option required for Tailwind v4 directives.
+- Verify:
+  - `pnpm exec biome check biome.json src/app/globals.css` -> pass
+- Task checklist:
+  - complete
