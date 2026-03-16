@@ -4,7 +4,7 @@
 
 - Branch: `docs/11--define-project-master-plan`
 - Goal: write `docs/MASTER-PLAN.md` as the top-level delivery plan for the current Mandalart Web baseline.
-- Status: `Spec`, `Research`, and `Planner` are complete. `Execution` is in progress and Slice 3 is approved for commit.
+- Status: branch work is complete. The English and Korean master-plan docs are in place, and final verification has been recorded.
 
 ## Completed
 
@@ -40,6 +40,11 @@
    - renamed later phase titles and branch slugs to keep branch intent easier to scan
    - expanded the roadmap to cover profile page, boards list page, board create/list/detail shell, and the MVP board-view/editing model
    - kept the roadmap at planning level instead of expanding it into branch-local specs
+8. Executed Slice 4 and closeout work:
+   - finalized sections 9 and 10 of `docs/MASTER-PLAN.md`
+   - updated the English master-plan timestamp
+   - added `docs/ko/MASTER-PLAN.md`
+   - recorded hardening, review, and final verification results in `log.md`
 
 ## Decisions
 
@@ -59,9 +64,8 @@
 
 ## Pending
 
-1. Commit the approved Slice 3 roadmap changes.
-2. Continue with:
-   - Slice 4: finalization, Korean sync, and minimal cross-reference touch-ups
+1. Optional follow-up only:
+   - open a PR or start the next roadmap branch
 
 ## Risks / Notes
 
@@ -80,7 +84,13 @@
   - `rg -n "Roadmap|Phase|Dependency|Verification" docs/MASTER-PLAN.md` -> pass
   - `git diff --check -- 'docs/MASTER-PLAN.md'` -> pass
   - `rg -n "Phase Model|Phase 2 - Design Foundation Refresh|Phase 3 - Surface Refresh|Phase 4 - Account Foundation|Phase 5 - Board Foundation|Phase 6 - Board Editing|read-only|app-shell-route-guard|board-domain-foundation|boards-page|cell-detail-flow|board-save-flow" docs/MASTER-PLAN.md` -> pass
+- Slice 4 and final verification completed:
+  - `pnpm exec prettier --write 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan/log.md' '.agent/sessions/[#11]docs--define-project-master-plan/handoff.md'` -> pass
+  - `git diff --check -- 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan/log.md' '.agent/sessions/[#11]docs--define-project-master-plan/handoff.md'` -> pass
+  - `rg -n "MASTER-PLAN|Master Plan|마스터 플랜" docs docs/ko` -> pass
+  - `rg -n "This section will" 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md'` -> pass
+  - `pnpm run lint` -> fail due existing repository-wide Biome configuration and formatting issues in unaffected files
 
 ## Resume
 
-- Next prompt: "Review the roadmap in `docs/MASTER-PLAN.md` and either approve the Slice 3 commit or request changes before finalization starts."
+- Next prompt: "Start the next roadmap branch from `docs/MASTER-PLAN.md`."

@@ -90,3 +90,68 @@
 - Slice checkpoint:
   - required
   - approval state: approved by user on 2026-03-17 before commit
+
+## 2026-03-17 - Slice 4 execution
+
+- Slice: `Slice 4`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - finalize the English source without expanding branch scope
+  - sync the Korean translation only after the English source was accepted
+  - keep supporting document touch-ups minimal and limited to the master-plan surfaces
+- TDD cycle:
+  - RED: the English source still had unfinished closing sections, the Korean translation did not exist, and the branch was not yet ready for final doc verification.
+  - GREEN: finalized sections 9 and 10 in `docs/MASTER-PLAN.md`, updated the document timestamp, and added `docs/ko/MASTER-PLAN.md`.
+  - REFACTOR: kept the closing sections concise, aligned the Korean structure with the English source, and preserved the roadmap as the document's main output.
+- Verify:
+  - `pnpm exec prettier --write 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan/log.md' '.agent/sessions/[#11]docs--define-project-master-plan/handoff.md'` -> pass
+  - `git diff --check -- 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan/log.md' '.agent/sessions/[#11]docs--define-project-master-plan/handoff.md'` -> pass
+  - `rg -n "MASTER-PLAN|Master Plan|마스터 플랜" docs docs/ko` -> pass
+  - `rg -n "This section will" 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md'` -> pass, no unresolved placeholder section markers
+  - `rg -n "cell-detail-task-editing|app-shell-and-route-guard|board-domain-and-create-flow|boards-list-and-navigation|Auth, App Shell, and Profile|Board Domain Foundation and Boards Index|Board View and Editor Flow" 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md'` -> pass, stale roadmap naming not found
+  - `test -f 'docs/ko/MASTER-PLAN.md' && echo '__KO_MASTER_PLAN_PRESENT__'` -> pass
+- Task checklist:
+  - complete
+
+## Hardening (branch)
+
+- Failure path tested:
+  - searched for unresolved placeholder section markers in the English and Korean master-plan docs
+  - searched for stale pre-replan phase and branch names after the roadmap rename pass
+- Observability signals checked:
+  - roadmap markers and translation-presence checks provide explicit doc-completion signals
+  - session artifacts remain present under the expected branch root
+- UX resilience checked:
+  - for this docs branch, the practical equivalent is readability and recoverability: the roadmap, verification rules, and replan triggers are explicit enough that the next thread can resume without guessing
+- Verify commands:
+  - `rg -n "This section will" 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md'`
+  - `rg -n "cell-detail-task-editing|app-shell-and-route-guard|board-domain-and-create-flow|boards-list-and-navigation|Auth, App Shell, and Profile|Board Domain Foundation and Boards Index|Board View and Editor Flow" 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md'`
+  - `test -f 'docs/ko/MASTER-PLAN.md' && echo '__KO_MASTER_PLAN_PRESENT__'`
+- Result summary:
+  - pass
+
+## Review
+
+- Findings:
+  - none
+- Open questions / assumptions:
+  - none blocking for this branch
+- Summary:
+  - the branch goal, scope, roadmap priority, and translation-sync requirements are reflected in the final master-plan docs without duplicating detailed ownership from `PRD`, `SCAFFOLD_STRUCTURE`, or `TECH_REFERENCE`
+
+## Refactor Pass
+
+- Findings addressed:
+  - finalized the closing sections of the English source
+  - synchronized the Korean translation
+  - kept roadmap naming consistent after the last slug cleanup
+- Refactor changes:
+  - no additional refactor beyond wording and translation alignment
+- Final verify command(s):
+  - `pnpm exec prettier --write 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan/log.md' '.agent/sessions/[#11]docs--define-project-master-plan/handoff.md'`
+  - `git diff --check -- 'docs/MASTER-PLAN.md' 'docs/ko/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan/log.md' '.agent/sessions/[#11]docs--define-project-master-plan/handoff.md'`
+  - `rg -n "MASTER-PLAN|Master Plan|마스터 플랜" docs docs/ko`
+  - `pnpm run lint`
+- Final verify result:
+  - document-specific verification passed
+  - `pnpm run lint` failed because of existing repository-wide Biome configuration and formatting issues in unaffected files, including `biome.json`, `src/app/globals.css`, `src/shared/lib/utils.ts`, `tests/e2e/example.spec.ts`, `playwright.config.ts`, and `src/shared/ui/ComponentExample.tsx`

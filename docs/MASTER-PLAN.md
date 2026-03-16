@@ -1,6 +1,6 @@
 # Mandalart Web - MASTER PLAN (v0.1)
 
-_Last updated: 2026-03-15 (KST)_
+_Last updated: 2026-03-17 (KST)_
 
 ---
 
@@ -386,10 +386,68 @@ The roadmap should optimize for two things at once:
 
 ## 9) Verification and Documentation Sync
 
-This section will define how document verification, branch verification, and English/Korean sync should happen as the roadmap advances.
+Verification should stay proportional to the branch type, but every phase should leave behind enough evidence that the next branch does not need to guess whether the baseline is trustworthy.
+
+### 9.1 Branch Verification Expectations
+
+- **Docs branches**
+  - verify document structure, paths, terminology, and cross-document ownership
+  - run formatting and diff-safety checks before completion
+- **UI branches**
+  - verify responsive behavior, accessibility basics, semantic-token compliance, and alignment with the approved design foundation
+- **Feature branches**
+  - verify happy path, at least one failure path, and data-boundary correctness
+  - add smoke or integration evidence for the new user-facing flow before the next phase depends on it
+- **Hardening branches**
+  - verify cross-flow regressions, release-readiness evidence, and the final MVP path set
+
+### 9.2 Documentation Sync Order
+
+- Finalize the English source document first.
+- Sync Korean documents only after the English source is accepted for the current branch.
+- When a roadmap change affects other project documents, update:
+  1. the owning English source document
+  2. the corresponding Korean document
+  3. the current branch handoff and verification notes when needed
+
+### 9.3 Branch-Cycle Evidence
+
+- Each non-trivial branch should leave behind:
+  - `spec.md`
+  - `research.md` when required
+  - `plan.md`
+  - `log.md`
+  - `handoff.md`
+- Future branches should treat those artifacts as execution evidence, not optional notes.
 
 ---
 
 ## 10) Risks and Decision Checkpoints
 
-This section will capture the main delivery risks, scope boundaries, and the decision points that should trigger a replan instead of ad-hoc drift.
+The roadmap should be updated intentionally when reality changes. The goal is not to freeze the project forever, but to prevent silent drift.
+
+### 10.1 Main Risks
+
+- **Design drift**
+  - landing, dashboard, and board surfaces can diverge if the shared design foundation is weak
+- **Oversized branches**
+  - roadmap phases can still become too large if multiple concerns are bundled into one branch
+- **Premature feature wiring**
+  - wiring dashboard metrics, export, or template flows too early can force rework before the board model and editing loop are stable
+- **Document duplication**
+  - `MASTER-PLAN`, `PRD`, `SCAFFOLD_STRUCTURE`, and `TECH_REFERENCE` can become redundant if section ownership is not enforced
+
+### 10.2 Replan Triggers
+
+Stop and replan instead of patching around the issue when:
+
+- a branch needs to cross the accepted phase order in a meaningful way
+- a branch grows beyond a single clear responsibility
+- the UI refresh requires changing the token contract or core visual identity
+- the board domain or editing model changes in a way that invalidates downstream roadmap assumptions
+- MVP suddenly requires a separate read-only board mode, sharing mode, or other new surface not accounted for here
+
+### 10.3 Decision Rule
+
+- If the change affects only one branch's local implementation details, update the branch-local plan.
+- If the change affects multiple future branches, update this master plan first, then continue execution from the corrected roadmap.
