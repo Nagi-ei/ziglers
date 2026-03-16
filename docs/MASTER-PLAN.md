@@ -159,6 +159,10 @@ Detailed requirements, field rules, and user-facing acceptance still belong in `
 - Keep the product legible and structured first; stylistic refresh work should strengthen clarity, hierarchy, and planning flow rather than add ornamental complexity.
 - Make the board flow the core experience and keep the dashboard as a summary and progress surface, not the product's primary editing surface.
 - Keep landing and dashboard refresh work visually aligned so the service identity reads as one system.
+- Treat the default board screen as both the overview state and the entry point into editing:
+  - the non-focused board state should already function as the normal board view
+  - selecting a cell should transition into a focused edit surface such as a drawer or side panel
+  - a separate read-only board mode is not required for MVP unless a later branch introduces a concrete sharing or presentation need
 
 ---
 
@@ -185,8 +189,198 @@ Detailed file-placement and technical implementation rules still belong in `docs
 
 ## 8) Branch Roadmap
 
-This section will define the recommended branch-by-branch sequence from the current baseline toward MVP completion.
-It should explain where the UI refresh happens, what each stage is responsible for, and what must be true before the next stage begins.
+The roadmap should optimize for two things at once:
+
+- preserve the current service identity while the UI gets refreshed
+- avoid widening feature implementation before the visual system and app/data foundations are stable
+
+### 8.1 Sequencing Logic
+
+- Complete the top-level planning document first so later branches inherit one baseline and one source-of-truth map.
+- Refresh the shared design foundation before expanding more screens or deeper feature flows.
+- Refresh the landing and dashboard surfaces early because they already exist and define the visible identity of the product.
+- Establish auth and application-shell behavior before user-owned board flows expand.
+- Establish the board domain and editing workflow before wiring real dashboard metrics and export output.
+- Finish with hardening and release-readiness work after the main MVP loop is in place.
+
+### 8.2 Phase Model
+
+- A phase is a delivery milestone, not a required one-branch boundary.
+- Most phases should be executed through `1-3` small branches, each with one main responsibility.
+- Split a phase into multiple branches when one branch would otherwise combine:
+  - shared UI foundation work plus page redesign
+  - auth/session work plus unrelated account surfaces
+  - domain modeling plus multiple pages plus interaction-heavy editing
+- The roadmap below names the recommended phase scope first and the likely branch splits second.
+
+### 8.3 Phase Breakdown
+
+#### Phase 0 - Completed Baseline
+
+- Completed branches:
+  - `feat/1--color`
+  - `ui/3--shadcn-components`
+  - `ui/5--landing-page`
+  - `ui/7--dashboard-page`
+  - `docs/9--update-agentic-docs`
+- Responsibility:
+  - establish the token foundation, shared UI primitives, initial landing/dashboard surfaces, and aligned project docs
+- Verification before moving on:
+  - treat the current repository state as the fixed baseline for future planning
+
+#### Phase 1 - Current Planning Branch
+
+- Current branch:
+  - `docs/11--define-project-master-plan`
+- Responsibility:
+  - finalize the master plan, freeze the delivery order, and keep source-of-truth ownership explicit
+- Verification before moving on:
+  - accepted `docs/MASTER-PLAN.md`
+  - verified session artifacts
+  - final document alignment
+
+#### Phase 2 - Design Foundation Refresh
+
+- Why this phase exists:
+  - landing and dashboard already exist, but the refreshed UI direction should be unified before more feature surfaces are added
+- Recommended branch:
+  - `ui/<n>--refresh-design-foundation`
+    - audit the current visual language
+    - lock the refreshed note/paper direction
+    - implement or refine the minimum reusable shared surfaces needed across pages
+    - examples: note-like cards, taped section treatments, shared page header patterns, stable spacing and typography rules
+- How to work with this phase:
+  - ask for a baseline audit first
+  - then ask for the minimum shared UI surface extraction needed before page redesign
+  - keep this branch focused on shared design foundations rather than rebuilding landing or dashboard inside the same branch
+- Verification before moving on:
+  - shared UI review
+  - token compliance
+  - responsive baseline
+  - design-review pass showing the refreshed direction is clear enough for page-level work
+
+#### Phase 3 - Surface Refresh
+
+- Recommended branch split:
+  - `ui/<n>--refresh-landing-page`
+  - `ui/<n>--refresh-dashboard-page`
+- Responsibility:
+  - rebuild the two existing visible surfaces on top of the refreshed design foundation
+  - landing should define the public-facing tone
+  - dashboard should translate that tone into the authenticated app surface
+- Dependency:
+  - Phase 2
+- Verification before moving on:
+  - landing responsive checks and accessibility review
+  - dashboard empty/loading-state review and app-surface consistency check
+  - visual alignment between landing and dashboard after both branches are complete
+  - preferred execution order: landing first, then dashboard
+  - parallel execution is possible only if the shared design foundation is already stable enough that both branches can follow the same visual rules without divergence
+
+#### Phase 4 - Account Foundation
+
+- Recommended branch split:
+  - `feature/<n>--auth-entry-flow`
+    - sign up, log in, auth UI, and session entry behavior
+  - `feature/<n>--app-shell-route-guard`
+    - protected routes, authenticated shell, and navigation framing
+  - `feature/<n>--profile-page`
+    - minimal account/profile surface for MVP
+    - example scope: account info, display name, logout entry, and profile-level navigation anchor
+- Dependency:
+  - Phase 3
+- Verification before moving on:
+  - login/logout smoke flow
+  - protected-route behavior
+  - app-shell navigation checks
+  - profile page basic account-flow coverage
+
+#### Phase 5 - Board Foundation
+
+- Recommended branch split:
+  - `feature/<n>--board-domain-foundation`
+    - server-side board, cell, task, and event foundations
+    - minimum persisted board creation flow
+    - route-level board detail shell that can load and render a created board
+  - `feature/<n>--boards-page`
+    - user-owned board list or "My Boards" surface
+    - navigation between boards list, board creation entry, and board detail shell
+- Notes:
+  - the boards list page is part of MVP and should not be treated as optional
+  - this phase should stop at create/list/detail shell behavior and should not absorb the full editing interaction model
+- Dependency:
+  - Phase 4
+- Verification before moving on:
+  - data-boundary verification
+  - schema or contract checks
+  - minimal integration coverage for board create/list/detail-shell flows
+
+#### Phase 6 - Board Editing
+
+- Recommended branch split:
+  - `feature/<n>--board-view-surface`
+    - the default board screen with its non-focused overview state
+  - `feature/<n>--cell-detail-flow`
+    - focused cell detail, task editing, and completion changes
+  - `feature/<n>--board-save-flow`
+    - autosave, failure handling, and any conflict/version behavior required by the MVP spec
+- Notes:
+  - the non-focused board state should already be the normal board view
+  - MVP does not require a separate read-only page or mode by default
+  - export preview or sharing-oriented presentation views can remain later concerns unless a branch proves they are necessary for MVP
+- Dependency:
+  - Phase 5
+- Verification before moving on:
+  - core board smoke flow
+  - failure-path handling
+  - mutation consistency checks
+
+#### Phase 7 - Dashboard Data Integration
+
+- Recommended branch split:
+  - `feature/<n>--dashboard-data-integration`
+- Responsibility:
+  - replace placeholder dashboard values with real progress, activity, and board data derived from the board workflow
+- Dependency:
+  - Phase 6
+- Verification before moving on:
+  - data-integrity checks for summary metrics
+  - chart correctness
+  - recent activity accuracy
+  - board-list accuracy where dashboard links or summaries depend on real board state
+
+#### Phase 8 - Export and Templates
+
+- Recommended branch split:
+  - `feature/<n>--board-export`
+  - `feature/<n>--template-entry-flow`
+- Dependency:
+  - Phases 6-7
+- Verification before moving on:
+  - export quality checks
+  - template creation flow checks
+  - regression checks on board creation
+
+#### Phase 9 - MVP Hardening
+
+- Recommended branch split:
+  - `chore/<n>--mvp-hardening-and-e2e`
+- Responsibility:
+  - close resilience gaps, add smoke coverage for critical journeys, and confirm the MVP is release-ready
+- Dependency:
+  - Phases 4-8
+- Verification before moving on:
+  - E2E smoke pass
+  - failure-path review
+  - doc sync
+  - final verification evidence
+
+### 8.4 Dependency Rules
+
+- Do not start deep feature branches before the design foundation and the two visible baseline surfaces are refreshed.
+- Do not wire real dashboard data before the board domain and board editor flows exist.
+- Do not treat export or templates as first-wave work; they depend on the board model and core editing loop being stable first.
+- If a future branch needs to break this order, update the branch-local spec and the master plan rather than silently drifting from the roadmap.
 
 ---
 

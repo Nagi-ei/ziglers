@@ -57,3 +57,36 @@
   - `git diff --check -- 'docs/MASTER-PLAN.md'` -> pass
 - Task checklist:
   - complete
+
+## 2026-03-16 - Slice 3 execution
+
+- Slice: `Slice 3`
+- Binding skill lens: `frontend-design`
+- Key enforced constraints:
+  - make the roadmap the primary output of `docs/MASTER-PLAN.md`
+  - place UI refresh work early enough to preserve and unify the visible service identity
+  - keep the roadmap at planning level with clear dependencies and verification gates
+- TDD cycle:
+  - RED: after Slice 2, the document still lacked the actual branch sequence, dependency logic, and verification expectations that justify the master plan's existence.
+  - GREEN: added the sequencing logic, roadmap phase table, and dependency rules covering completed baseline, current branch, UI refresh, app shell, board domain, board editor, dashboard data, export/templates, and MVP hardening.
+  - REFACTOR: trimmed the roadmap language to phase-level responsibilities and verification gates so it stays readable without turning into per-branch implementation specs.
+- Fix / rework:
+  - user review showed that the first roadmap draft still read too much like `one phase = one branch`
+  - revised the roadmap so phases are milestone groupings and each phase can contain multiple smaller branches
+  - reduced Phase 2 to one focused design-foundation branch
+  - merged the earlier landing/dashboard phases into one surface-refresh phase with two branches
+  - kept landing-first as the preferred order, while noting that parallel execution is only safe if the design foundation is already stable
+  - renamed later phase titles and branch slugs to make single-branch intent easier to scan
+  - split the account phase into auth entry, app shell, and profile concerns
+  - reshaped the board foundation phase into create/list/detail-shell work rather than editing UI
+  - recorded the MVP board-screen decision that the default board surface is the normal view and a separate read-only mode is not required by default
+- Verify:
+  - `pnpm exec prettier --write 'docs/MASTER-PLAN.md'` -> pass
+  - `rg -n "Roadmap|Phase|Dependency|Verification" docs/MASTER-PLAN.md` -> pass, roadmap markers found
+  - `git diff --check -- 'docs/MASTER-PLAN.md'` -> pass
+  - `rg -n "Phase Model|Phase 2 - Design Foundation Refresh|Phase 3 - Surface Refresh|Phase 4 - Account Foundation|Phase 5 - Board Foundation|Phase 6 - Board Editing|read-only|app-shell-route-guard|board-domain-foundation|boards-page|cell-detail-flow|board-save-flow" docs/MASTER-PLAN.md` -> pass, revised roadmap markers found
+- Task checklist:
+  - complete
+- Slice checkpoint:
+  - required
+  - approval state: approved by user on 2026-03-17 before commit

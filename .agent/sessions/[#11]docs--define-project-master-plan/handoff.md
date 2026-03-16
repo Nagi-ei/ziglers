@@ -4,7 +4,7 @@
 
 - Branch: `docs/11--define-project-master-plan`
 - Goal: write `docs/MASTER-PLAN.md` as the top-level delivery plan for the current Mandalart Web baseline.
-- Status: `Spec`, `Research`, and `Planner` are complete. `Execution` is in progress and Slice 1 is approved for commit.
+- Status: `Spec`, `Research`, and `Planner` are complete. `Execution` is in progress and Slice 3 is approved for commit.
 
 ## Completed
 
@@ -32,12 +32,23 @@
    - replaced placeholder prose with concise product and UX direction
    - added concise architecture and branch-delivery principles
    - kept the non-roadmap sections intentionally thin so the roadmap remains the main output
+7. Executed Slice 3 in `docs/MASTER-PLAN.md`:
+   - added the sequencing logic for the roadmap
+   - replaced the one-branch-per-phase reading with a phase model that can contain multiple smaller branches
+   - reduced Phase 2 to one focused design-foundation branch
+   - merged landing and dashboard into one surface-refresh phase with two branches
+   - renamed later phase titles and branch slugs to keep branch intent easier to scan
+   - expanded the roadmap to cover profile page, boards list page, board create/list/detail shell, and the MVP board-view/editing model
+   - kept the roadmap at planning level instead of expanding it into branch-local specs
 
 ## Decisions
 
 - `docs/MASTER-PLAN.md` should be a hybrid delivery master plan, not a duplicate PRD and not a pure architecture charter.
 - The document must sit above `docs/PRD.md`, `docs/SCAFFOLD_STRUCTURE.md`, `docs/TECH_REFERENCE.md`, and `AGENTS.md`, and explain how they connect.
 - The branch roadmap is the primary output of the document; surrounding sections should stay concise and only support roadmap readability.
+- Roadmap phases are milestone groupings, not mandatory one-branch units.
+- The current roadmap treats landing-first as the preferred refresh order; dashboard can follow once the design foundation is stable.
+- Branch slugs should stay as single-purpose as possible even when phase titles stay broader.
 - The document must explicitly preserve:
   - service name
   - color direction
@@ -48,9 +59,8 @@
 
 ## Pending
 
-1. Commit Slice 2 after the current execution step is recorded.
+1. Commit the approved Slice 3 roadmap changes.
 2. Continue with:
-   - Slice 3: branch roadmap and sequencing as the main deliverable
    - Slice 4: finalization, Korean sync, and minimal cross-reference touch-ups
 
 ## Risks / Notes
@@ -65,7 +75,12 @@
   - `pnpm exec prettier --write 'docs/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan/spec.md' '.agent/sessions/[#11]docs--define-project-master-plan/research.md' '.agent/sessions/[#11]docs--define-project-master-plan/plan.md' '.agent/sessions/[#11]docs--define-project-master-plan/plans/01-branch-baseline.md' '.agent/sessions/[#11]docs--define-project-master-plan/log.md' '.agent/sessions/[#11]docs--define-project-master-plan/handoff.md'` -> pass
   - `rg -n "Current Baseline|Fixed Constraints|Source-of-Truth Map|Branch Roadmap" docs/MASTER-PLAN.md` -> pass
   - `git diff --check -- 'docs/MASTER-PLAN.md' '.agent/sessions/[#11]docs--define-project-master-plan'` -> pass
+- Slice 3 verification completed:
+  - `pnpm exec prettier --write 'docs/MASTER-PLAN.md'` -> pass
+  - `rg -n "Roadmap|Phase|Dependency|Verification" docs/MASTER-PLAN.md` -> pass
+  - `git diff --check -- 'docs/MASTER-PLAN.md'` -> pass
+  - `rg -n "Phase Model|Phase 2 - Design Foundation Refresh|Phase 3 - Surface Refresh|Phase 4 - Account Foundation|Phase 5 - Board Foundation|Phase 6 - Board Editing|read-only|app-shell-route-guard|board-domain-foundation|boards-page|cell-detail-flow|board-save-flow" docs/MASTER-PLAN.md` -> pass
 
 ## Resume
 
-- Next prompt: "Review the Slice 1 draft in `docs/MASTER-PLAN.md` and either approve the planned commit or request changes before Slice 2 starts."
+- Next prompt: "Review the roadmap in `docs/MASTER-PLAN.md` and either approve the Slice 3 commit or request changes before finalization starts."
