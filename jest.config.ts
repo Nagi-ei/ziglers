@@ -109,6 +109,9 @@ const config: Config = {
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
 
+  // Treat the current absence of Jest-owned tests as non-fatal while the repo only carries Playwright specs.
+  passWithNoTests: true,
+
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
 
@@ -169,9 +172,7 @@ const config: Config = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  testPathIgnorePatterns: ["/node_modules/", "<rootDir>/tests/e2e/"],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

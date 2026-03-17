@@ -174,3 +174,12 @@
   - `pnpm run test:e2e` -> fail in the current environment:
     - Chromium launch fails with `bootstrap_check_in ... Permission denied (1100)` under the sandboxed desktop environment
     - Firefox and WebKit browser executables are not installed in the local Playwright cache
+
+## 2026-03-18 - Follow-up test-lane separation
+
+- User requested the minimal cleanup to stop Jest from owning Playwright e2e specs.
+- Updated `jest.config.ts` to:
+  - ignore `tests/e2e/` in the Jest lane
+  - treat the current absence of Jest-owned tests as non-fatal with `passWithNoTests`
+- Verify:
+  - `pnpm run test:unit` -> pass (`No tests found, exiting with code 0`)

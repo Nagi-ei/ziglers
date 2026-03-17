@@ -49,12 +49,11 @@
 ## Pending
 
 1. Optional follow-up only:
-   - if desired, open a separate maintenance branch for the pre-existing Jest/unit-test lane issue
    - if desired, set up Playwright browser installation and a less restricted environment for e2e verification
 
 ## Risks / Notes
 
-- `pnpm run test:unit` currently fails outside this branch scope because Jest includes `tests/e2e/*.spec.ts` and crashes on Playwright imports.
+- `pnpm run test:unit` no longer picks up Playwright e2e specs; the lane now passes with `No tests found` until Jest-owned tests are added.
 - `pnpm run test:e2e` currently fails in this environment because:
   - Chromium launch is blocked by sandbox permission errors
   - Firefox and WebKit browser executables are not installed locally
@@ -71,7 +70,7 @@
   - `pnpm run lint`
   - `pnpm exec tsc --noEmit`
 - Out-of-scope / environment-limited verification:
-  - `pnpm run test:unit` -> fail because Jest includes Playwright e2e specs
+  - `pnpm run test:unit` -> pass (`No tests found, exiting with code 0`)
   - `pnpm run test:e2e` -> fail because Chromium cannot launch under current sandbox permissions and Firefox/WebKit binaries are not installed
 
 ## Resume
