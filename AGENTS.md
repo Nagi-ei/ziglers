@@ -153,6 +153,17 @@ Use this workflow for non-trivial branch work:
 
 - Branches that explicitly create or redesign user-facing UI should use the design-oriented path during Execution and include UI-guideline review during Review.
 
+### E2E Closeout Communication
+
+- At branch closeout, explicitly classify the E2E expectation as one of:
+  - `required`
+  - `recommended`
+  - `not needed`
+- Prefer `required` when the branch changes real user flows, auth, routing, forms, create/edit/delete flows, or other critical UI behavior.
+- Prefer `recommended` for lower-risk UI or test-surface changes where additional browser validation is useful but not strictly blocking.
+- Prefer `not needed` for docs-only branches and non-executable maintenance work such as isolated lint/format cleanup.
+- If E2E is `required` or `recommended` and it was not completed in the current thread, explicitly tell the user to run `pnpm run test:e2e` from a normal local terminal.
+
 ---
 
 ## 6) Future Expansion
