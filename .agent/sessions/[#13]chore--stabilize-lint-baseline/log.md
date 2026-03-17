@@ -1,0 +1,238 @@
+# Log
+
+## 2026-03-17 - Cycle setup
+
+- Resolved the session artifact root for `chore/13--stabilize-lint-baseline` as `.agent/sessions/[#13]chore--stabilize-lint-baseline/`.
+- Confirmed the active branch is `chore/13--stabilize-lint-baseline`.
+- Read the required branch-cycle inputs:
+  - `docs/MASTER-PLAN.md`
+  - `docs/PRD.md`
+  - `docs/SCAFFOLD_STRUCTURE.md`
+  - `docs/TECH_REFERENCE.md`
+  - `frontend-architecture-rules`
+  - `next-best-practices`
+  - `branch-spec-gate`
+  - `branch-planner`
+  - `tdd`
+- Re-ran the current lint baseline:
+  - `pnpm run lint` -> failed on Biome schema mismatch, Tailwind directive parse errors, formatting/import issues, and `no-img-element`
+  - `pnpm run lint:eslint` -> failed because `next lint` is no longer a valid Next.js 16 CLI subcommand
+  - `pnpm exec eslint .` -> revealed the remaining actual ESLint findings:
+    - `@next/next/no-img-element` in `src/shared/ui/ComponentExample.tsx`
+    - `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
+    - deprecated `.eslintignore` warning under flat config
+- Wrote the accepted branch `spec.md`.
+- Wrote the accepted branch `plan.md` and archived the baseline snapshot in `plans/01-branch-baseline.md`.
+- Deferred execution to the first planned slice.
+
+## 2026-03-17 - Replan
+
+- User clarified that `src/shared/ui/ComponentExample.tsx` and `src/shared/ui/Example.tsx` are setup-only demo files and should be deleted at the start of the branch rather than brought into lint compliance.
+- Updated `spec.md` to:
+  - treat the two setup/demo files as deletion targets
+  - remove the previous `next/image`/`next.config.ts` maintenance path from accepted scope
+  - narrow the remaining shared-ui lint work to `src/shared/ui/ThemeToggle.tsx`
+- Updated `plan.md` and `plans/01-branch-baseline.md` to:
+  - add a new first slice for deleting the setup/demo files
+  - renumber later slices
+  - reduce the final shared-ui slice to the `ThemeToggle` fix
+
+## 2026-03-17 - Slice 1 execution
+
+- Slice: `Slice 1`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep the cleanup limited to the two setup/demo files only
+  - avoid widening the change into broader shared-ui deletion or restructuring
+  - confirm no active project imports would break before committing the removal
+- TDD cycle:
+  - RED: the current lint baseline still included findings from `src/shared/ui/ComponentExample.tsx`, a setup-only demo file, and that file depended only on the companion `src/shared/ui/Example.tsx`.
+  - GREEN: confirmed no external project imports referenced the two files, then deleted both setup/demo files.
+  - REFACTOR: re-checked the repository for stale imports and confirmed the remaining ESLint baseline narrowed to `.eslintignore` plus `src/shared/ui/ThemeToggle.tsx`.
+- Verify:
+  - `rg -n "ComponentExample|ExampleWrapper|from \"@/shared/ui/Example\"|from './Example'|from \"./Example\"|from \"@/shared/ui/ComponentExample\"" src tests` -> pass after deletion via no remaining matches
+  - `pnpm exec eslint .` -> fail as expected for later slices; remaining findings are the `.eslintignore` deprecation warning and `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
+- Task checklist:
+  - complete
+
+## 2026-03-17 - Slice 2 execution
+
+- Slice: `Slice 2`
+- Binding skill lens: `next-best-practices`
+- Key enforced constraints:
+  - use a supported ESLint CLI entrypoint for the current Next.js 16 toolchain
+  - keep ignore handling in flat config instead of relying on deprecated `.eslintignore`
+  - avoid adding ad-hoc CLI flags when the config can express the intended ignore scope directly
+- TDD cycle:
+  - RED: `pnpm run lint:eslint` failed immediately because `next lint` is no longer a valid Next.js 16 subcommand, and `pnpm exec eslint .` emitted the deprecated `.eslintignore` warning.
+  - GREEN: updated `package.json` to run `eslint .`, moved ignore rules into `eslint.config.mjs`, and removed `.eslintignore`.
+  - REFACTOR: kept the ignore list aligned with the existing build-artifact directories already present in the repository.
+- Verify:
+  - `pnpm exec eslint --print-config src/shared/ui/ThemeToggle.tsx` -> pass
+  - `pnpm run lint:eslint` -> fail as expected for later slices; command now executes correctly and reports only `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`
+- Task checklist:
+  - complete
+
+## 2026-03-17 - Slice 3 execution
+
+- Slice: `Slice 3`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep `src/app/globals.css` as the shared token source of truth
+  - solve the Tailwind parsing problem through supported Biome configuration rather than CSS rewrites
+  - keep the Biome config change minimal and version-aligned
+- TDD cycle:
+  - RED: `pnpm run lint:biome` failed because `biome.json` still used schema `2.2.0` and `src/app/globals.css` could not be parsed with Tailwind directives disabled.
+  - GREEN: ran `biome migrate --write` to align the schema to `2.3.9`, then enabled `css.parser.tailwindDirectives` in `biome.json`.
+  - REFACTOR: kept the configuration change limited to the schema update plus the single parser option required for Tailwind v4 directives.
+- Verify:
+  - `pnpm exec biome check biome.json src/app/globals.css` -> pass
+- Task checklist:
+  - complete
+
+## 2026-03-17 - Slice 4 execution
+
+- Slice: `Slice 4`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep this slice formatting-only with no behavioral changes
+  - limit the edits to the three known baseline files
+  - let Biome own import ordering and style normalization instead of hand-editing style drift
+- TDD cycle:
+  - RED: Biome still reported formatter/import-order failures in `playwright.config.ts`, `src/shared/lib/utils.ts`, and `tests/e2e/example.spec.ts`.
+  - GREEN: ran `pnpm exec biome check --write` on the three files to apply the formatter and organize imports.
+  - REFACTOR: confirmed the resulting diffs were style-only and did not alter runtime behavior.
+- Verify:
+  - `pnpm exec biome check playwright.config.ts src/shared/lib/utils.ts tests/e2e/example.spec.ts` -> pass
+- Task checklist:
+  - complete
+
+## 2026-03-17 - Slice 5 execution
+
+- Slice: `Slice 5`
+- Binding skill lens: `frontend-architecture-rules`
+- Key enforced constraints:
+  - keep the fix localized to `src/shared/ui/ThemeToggle.tsx`
+  - preserve user-visible toggle behavior while removing the effect-driven mounted flag
+  - solve the hook-rule failure without widening the client boundary or adding new abstractions
+- TDD cycle:
+  - RED: after the earlier slices, `pnpm run lint:eslint` still reported `react-hooks/set-state-in-effect` in `src/shared/ui/ThemeToggle.tsx`.
+  - GREEN: replaced the `useEffect` + `useState` mounted flag with `useSyncExternalStore` and an empty subscription to preserve the hydration guard without synchronous state-setting inside an effect.
+  - REFACTOR: kept the implementation to a single local helper and preserved the existing UI fallback and theme toggle behavior.
+- Verify:
+  - `pnpm exec eslint src/shared/ui/ThemeToggle.tsx` -> pass
+  - `pnpm run lint:eslint` -> pass
+- Task checklist:
+  - complete
+
+## Hardening (branch)
+
+- Failure path tested:
+  - searched for stale imports of the deleted setup/demo components with `rg` and confirmed no remaining references
+  - re-ran split lint commands after all execution slices to catch any hidden repository-wide failures
+- Observability signals checked:
+  - `pnpm run lint:biome` and `pnpm run lint:eslint` now emit actionable file/rule diagnostics and both exit cleanly after the final formatting fix
+  - when hardening first re-ran `pnpm run lint:biome`, the output isolated the remaining gap to a single formatter expectation in `src/shared/ui/ThemeToggle.tsx`
+- UX resilience checked:
+  - for this maintenance branch, the practical UX equivalent is developer ergonomics: lint output is now directly actionable and no longer blocked by invalid CLI usage or unrelated setup/demo files
+  - the `ThemeToggle` hydration guard remains in place after the hook-rule fix
+- Fix / re-verify:
+  - `pnpm run lint:biome` initially failed in hardening because `src/shared/ui/ThemeToggle.tsx` still needed Biome line wrapping for the `useSyncExternalStore` call
+  - formatted the call to match Biome expectations and re-ran the split lint commands
+- Verify commands:
+  - `rg -n "ComponentExample|ExampleWrapper|from \"@/shared/ui/Example\"|from './Example'|from \"./Example\"|from \"@/shared/ui/ComponentExample\"" src tests`
+  - `pnpm run lint:biome`
+  - `pnpm run lint:eslint`
+- Result summary:
+  - pass after the `ThemeToggle` formatting fix
+
+## Review
+
+- Findings:
+  - none
+- Open questions / assumptions:
+  - `pnpm run test:unit` is not currently a reliable unit-test lane because the repository-level Jest config also picks up `tests/e2e/*.spec.ts`
+  - Playwright execution in this environment is blocked by missing Firefox/WebKit browser binaries and Chromium launch permission failures under the sandboxed desktop environment
+- Summary:
+  - the branch goal and accepted scope were met without introducing scope creep; the remaining verification failures are outside the lint-baseline changes made here
+
+## Refactor Pass
+
+- Findings addressed:
+  - no additional review findings required code changes
+- Refactor changes:
+  - none beyond the earlier hardening-format fix already committed for `src/shared/ui/ThemeToggle.tsx`
+- Final verify command(s):
+  - `pnpm exec tsc --noEmit`
+  - `pnpm run lint`
+  - `pnpm run test:unit`
+  - `pnpm run test:e2e`
+- Final verify result:
+  - `pnpm exec tsc --noEmit` -> pass
+  - `pnpm run lint` -> pass
+  - `pnpm run test:unit` -> fail because Jest currently executes `tests/e2e/*.spec.ts` and crashes on Playwright imports (`TypeError: Class extends value undefined is not a constructor or null`)
+  - `pnpm run test:e2e` -> fail in the current environment:
+    - Chromium launch fails with `bootstrap_check_in ... Permission denied (1100)` under the sandboxed desktop environment
+    - Firefox and WebKit browser executables are not installed in the local Playwright cache
+
+## 2026-03-18 - Follow-up test-lane separation
+
+- User requested the minimal cleanup to stop Jest from owning Playwright e2e specs.
+- Updated `jest.config.ts` to:
+  - ignore `tests/e2e/` in the Jest lane
+  - keep Jest scoped to non-e2e tests only
+- Added a Jest-owned smoke test at `tests/integration/shared-lib-utils.test.ts` for `src/shared/lib/utils.ts`.
+- Removed the temporary `passWithNoTests` fallback now that the Jest lane has an owned test file again.
+- Verify:
+  - `pnpm exec biome check jest.config.ts tests/integration/shared-lib-utils.test.ts` -> pass
+  - `pnpm exec eslint jest.config.ts tests/integration/shared-lib-utils.test.ts` -> pass
+  - `pnpm run test:unit` -> pass
+  - `pnpm run lint` -> pass
+
+## 2026-03-18 - Follow-up Playwright browser install
+
+- User requested that Playwright browser installation be attempted from this branch.
+- Confirmed `npx` is available in the environment.
+- Ran `pnpm exec playwright install` with elevated permissions:
+  - Firefox downloaded to `/Users/nagi/Library/Caches/ms-playwright/firefox-1509`
+  - WebKit downloaded to `/Users/nagi/Library/Caches/ms-playwright/webkit-2248`
+- Re-ran `pnpm run test:e2e` after installation.
+- Result:
+  - browser-missing failures for Firefox/WebKit are resolved
+  - all e2e runs still fail in the current Codex desktop environment because browser processes cannot launch cleanly here:
+    - Chromium: `bootstrap_check_in ... Permission denied (1100)`
+    - Firefox: headless launch exits with `SIGABRT`
+    - WebKit: headless launch exits with `Abort trap: 6`
+
+## 2026-03-18 - Follow-up Playwright CI alignment
+
+- User asked whether `.github/workflows/playwright.yml` is a required workflow, template-only residue, or needs adjustment.
+- Reviewed the current workflow against the repository Playwright setup and confirmed the original file was useful but incomplete:
+  - it previously targeted `main/master` instead of the current `main/develop` branch shape
+  - it installed pnpm ad hoc and ran `playwright test` without any project-owned app-server startup path
+  - it still shipped with the default template spec at `tests/e2e/example.spec.ts`
+- Accepted the existing working-tree adjustments as the correct maintenance follow-up for this branch:
+  - updated `.github/workflows/playwright.yml` to use `pnpm/action-setup`, cached Node setup, `pnpm install --frozen-lockfile`, and `pnpm run test:e2e`
+  - updated `playwright.config.ts` to define a repository base URL and start `next dev` automatically when `PLAYWRIGHT_BASE_URL` is not supplied
+  - updated `tests/e2e/dashboard.spec.ts` to use route-relative navigation
+  - deleted `tests/e2e/example.spec.ts` as unrelated Playwright template/demo coverage
+- Verify:
+  - `pnpm exec playwright test --list` -> pass; only the dashboard smoke suite remains and expands correctly across Chromium, Firefox, and WebKit
+  - `pnpm run lint` -> pass
+  - `pnpm run test:unit` -> pass
+- Conclusion:
+  - `.github/workflows/playwright.yml` should be kept, but only in its adjusted form; without these changes it behaves more like leftover template scaffolding than a reliable project CI workflow
+
+## 2026-03-18 - Follow-up lockfile formatting guard
+
+- User asked why `pnpm-lock.yaml` remained dirty despite the branch being focused on lint and test-baseline cleanup.
+- Compared the current lockfile against `HEAD` and confirmed the change was formatter-driven noise, not a dependency graph update:
+  - the repository `prettier:docs` script includes `**/*.{md,mdx,yml,yaml}`
+  - `pnpm-lock.yaml` therefore gets picked up by the docs-format pass
+  - the observed diff was overwhelmingly YAML style churn, and reformatting the `HEAD` copy with Prettier reduced the remaining difference to a single empty-object serialization detail
+- Applied the repository-side prevention:
+  - added `pnpm-lock.yaml` to `.prettierignore`
+  - restored `pnpm-lock.yaml` to `HEAD` so the branch does not commit unnecessary lockfile churn
+- Verify:
+  - `git status --short` -> only `.prettierignore` and session docs remain dirty before commit
+  - `git diff --check` -> pass
