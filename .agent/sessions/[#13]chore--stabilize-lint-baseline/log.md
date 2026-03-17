@@ -203,3 +203,22 @@
     - Chromium: `bootstrap_check_in ... Permission denied (1100)`
     - Firefox: headless launch exits with `SIGABRT`
     - WebKit: headless launch exits with `Abort trap: 6`
+
+## 2026-03-18 - Follow-up Playwright CI alignment
+
+- User asked whether `.github/workflows/playwright.yml` is a required workflow, template-only residue, or needs adjustment.
+- Reviewed the current workflow against the repository Playwright setup and confirmed the original file was useful but incomplete:
+  - it previously targeted `main/master` instead of the current `main/develop` branch shape
+  - it installed pnpm ad hoc and ran `playwright test` without any project-owned app-server startup path
+  - it still shipped with the default template spec at `tests/e2e/example.spec.ts`
+- Accepted the existing working-tree adjustments as the correct maintenance follow-up for this branch:
+  - updated `.github/workflows/playwright.yml` to use `pnpm/action-setup`, cached Node setup, `pnpm install --frozen-lockfile`, and `pnpm run test:e2e`
+  - updated `playwright.config.ts` to define a repository base URL and start `next dev` automatically when `PLAYWRIGHT_BASE_URL` is not supplied
+  - updated `tests/e2e/dashboard.spec.ts` to use route-relative navigation
+  - deleted `tests/e2e/example.spec.ts` as unrelated Playwright template/demo coverage
+- Verify:
+  - `pnpm exec playwright test --list` -> pass; only the dashboard smoke suite remains and expands correctly across Chromium, Firefox, and WebKit
+  - `pnpm run lint` -> pass
+  - `pnpm run test:unit` -> pass
+- Conclusion:
+  - `.github/workflows/playwright.yml` should be kept, but only in its adjusted form; without these changes it behaves more like leftover template scaffolding than a reliable project CI workflow

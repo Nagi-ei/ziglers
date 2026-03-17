@@ -34,6 +34,11 @@
    - confirmed no stale imports remain for the deleted setup/demo files
    - confirmed `pnpm run lint:biome`, `pnpm run lint:eslint`, and `pnpm run lint` all pass
    - recorded no branch-specific review findings
+7. Completed the Playwright follow-up cleanup for repository-owned e2e coverage:
+   - removed the template `tests/e2e/example.spec.ts`
+   - switched `tests/e2e/dashboard.spec.ts` to use route-relative navigation
+   - updated `playwright.config.ts` with a concrete `baseURL` and an auto-starting local web server path
+   - aligned `.github/workflows/playwright.yml` with the repository's pnpm-based setup and current branch targets
 
 ## Decisions
 
@@ -59,13 +64,14 @@
   - Chromium launch is blocked by sandbox permission errors
   - Firefox now installs but aborts during headless launch in this environment
   - WebKit now installs but aborts during headless launch in this environment
-- Unrelated worktree changes in `.github/workflows/playwright.yml` and `pnpm-lock.yaml` were left untouched.
+- `.github/workflows/playwright.yml` is no longer an unrelated dirty file; it now belongs to the branch and should be committed with the Playwright cleanup set.
+- `pnpm-lock.yaml` remains an unrelated worktree change and was left untouched.
 
 ## Verification
 
 - Branch-scope verification passed:
   - `pnpm exec biome check biome.json src/app/globals.css`
-  - `pnpm exec biome check playwright.config.ts src/shared/lib/utils.ts tests/e2e/example.spec.ts`
+  - `pnpm exec biome check playwright.config.ts src/shared/lib/utils.ts tests/e2e/dashboard.spec.ts`
   - `pnpm exec biome check jest.config.ts tests/integration/shared-lib-utils.test.ts`
   - `pnpm exec eslint src/shared/ui/ThemeToggle.tsx`
   - `pnpm exec eslint jest.config.ts tests/integration/shared-lib-utils.test.ts`
@@ -74,6 +80,7 @@
   - `pnpm run lint`
   - `pnpm exec tsc --noEmit`
   - `pnpm run test:unit`
+  - `pnpm exec playwright test --list`
 - Out-of-scope / environment-limited verification:
   - after `pnpm exec playwright install`, `pnpm run test:e2e` still fails in this environment because browser processes cannot launch cleanly under the current desktop sandbox
 
