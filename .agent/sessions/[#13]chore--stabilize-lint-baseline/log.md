@@ -222,3 +222,17 @@
   - `pnpm run test:unit` -> pass
 - Conclusion:
   - `.github/workflows/playwright.yml` should be kept, but only in its adjusted form; without these changes it behaves more like leftover template scaffolding than a reliable project CI workflow
+
+## 2026-03-18 - Follow-up lockfile formatting guard
+
+- User asked why `pnpm-lock.yaml` remained dirty despite the branch being focused on lint and test-baseline cleanup.
+- Compared the current lockfile against `HEAD` and confirmed the change was formatter-driven noise, not a dependency graph update:
+  - the repository `prettier:docs` script includes `**/*.{md,mdx,yml,yaml}`
+  - `pnpm-lock.yaml` therefore gets picked up by the docs-format pass
+  - the observed diff was overwhelmingly YAML style churn, and reformatting the `HEAD` copy with Prettier reduced the remaining difference to a single empty-object serialization detail
+- Applied the repository-side prevention:
+  - added `pnpm-lock.yaml` to `.prettierignore`
+  - restored `pnpm-lock.yaml` to `HEAD` so the branch does not commit unnecessary lockfile churn
+- Verify:
+  - `git status --short` -> only `.prettierignore` and session docs remain dirty before commit
+  - `git diff --check` -> pass

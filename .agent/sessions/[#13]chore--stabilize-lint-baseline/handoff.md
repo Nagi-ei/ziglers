@@ -39,6 +39,9 @@
    - switched `tests/e2e/dashboard.spec.ts` to use route-relative navigation
    - updated `playwright.config.ts` with a concrete `baseURL` and an auto-starting local web server path
    - aligned `.github/workflows/playwright.yml` with the repository's pnpm-based setup and current branch targets
+8. Added a formatting guard for repository lockfiles:
+   - added `pnpm-lock.yaml` to `.prettierignore`
+   - restored the accidentally reformatted `pnpm-lock.yaml` so it does not ship as unrelated churn
 
 ## Decisions
 
@@ -65,7 +68,7 @@
   - Firefox now installs but aborts during headless launch in this environment
   - WebKit now installs but aborts during headless launch in this environment
 - `.github/workflows/playwright.yml` is no longer an unrelated dirty file; it now belongs to the branch and should be committed with the Playwright cleanup set.
-- `pnpm-lock.yaml` remains an unrelated worktree change and was left untouched.
+- `pnpm-lock.yaml` formatting churn was confirmed to be unrelated to dependency updates and was restored after adding a `.prettierignore` guard.
 
 ## Verification
 
