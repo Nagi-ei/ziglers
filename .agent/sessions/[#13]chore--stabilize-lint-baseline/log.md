@@ -180,6 +180,26 @@
 - User requested the minimal cleanup to stop Jest from owning Playwright e2e specs.
 - Updated `jest.config.ts` to:
   - ignore `tests/e2e/` in the Jest lane
-  - treat the current absence of Jest-owned tests as non-fatal with `passWithNoTests`
+  - keep Jest scoped to non-e2e tests only
+- Added a Jest-owned smoke test at `tests/integration/shared-lib-utils.test.ts` for `src/shared/lib/utils.ts`.
+- Removed the temporary `passWithNoTests` fallback now that the Jest lane has an owned test file again.
 - Verify:
-  - `pnpm run test:unit` -> pass (`No tests found, exiting with code 0`)
+  - `pnpm exec biome check jest.config.ts tests/integration/shared-lib-utils.test.ts` -> pass
+  - `pnpm exec eslint jest.config.ts tests/integration/shared-lib-utils.test.ts` -> pass
+  - `pnpm run test:unit` -> pass
+  - `pnpm run lint` -> pass
+
+## 2026-03-18 - Follow-up Playwright browser install
+
+- User requested that Playwright browser installation be attempted from this branch.
+- Confirmed `npx` is available in the environment.
+- Ran `pnpm exec playwright install` with elevated permissions:
+  - Firefox downloaded to `/Users/nagi/Library/Caches/ms-playwright/firefox-1509`
+  - WebKit downloaded to `/Users/nagi/Library/Caches/ms-playwright/webkit-2248`
+- Re-ran `pnpm run test:e2e` after installation.
+- Result:
+  - browser-missing failures for Firefox/WebKit are resolved
+  - all e2e runs still fail in the current Codex desktop environment because browser processes cannot launch cleanly here:
+    - Chromium: `bootstrap_check_in ... Permission denied (1100)`
+    - Firefox: headless launch exits with `SIGABRT`
+    - WebKit: headless launch exits with `Abort trap: 6`

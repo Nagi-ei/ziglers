@@ -109,9 +109,6 @@ const config: Config = {
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
 
-  // Treat the current absence of Jest-owned tests as non-fatal while the repo only carries Playwright specs.
-  passWithNoTests: true,
-
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
 

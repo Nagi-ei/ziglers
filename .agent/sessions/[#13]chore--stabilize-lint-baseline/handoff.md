@@ -49,14 +49,16 @@
 ## Pending
 
 1. Optional follow-up only:
-   - if desired, set up Playwright browser installation and a less restricted environment for e2e verification
+   - if desired, rerun Playwright from a normal local terminal outside the Codex desktop sandbox
 
 ## Risks / Notes
 
-- `pnpm run test:unit` no longer picks up Playwright e2e specs; the lane now passes with `No tests found` until Jest-owned tests are added.
+- `pnpm run test:unit` no longer picks up Playwright e2e specs; the lane now passes on a Jest-owned smoke test instead.
+- A Jest-owned smoke test now exists at `tests/integration/shared-lib-utils.test.ts`, so `passWithNoTests` has been removed again.
 - `pnpm run test:e2e` currently fails in this environment because:
   - Chromium launch is blocked by sandbox permission errors
-  - Firefox and WebKit browser executables are not installed locally
+  - Firefox now installs but aborts during headless launch in this environment
+  - WebKit now installs but aborts during headless launch in this environment
 - Unrelated worktree changes in `.github/workflows/playwright.yml` and `pnpm-lock.yaml` were left untouched.
 
 ## Verification
@@ -64,15 +66,17 @@
 - Branch-scope verification passed:
   - `pnpm exec biome check biome.json src/app/globals.css`
   - `pnpm exec biome check playwright.config.ts src/shared/lib/utils.ts tests/e2e/example.spec.ts`
+  - `pnpm exec biome check jest.config.ts tests/integration/shared-lib-utils.test.ts`
   - `pnpm exec eslint src/shared/ui/ThemeToggle.tsx`
+  - `pnpm exec eslint jest.config.ts tests/integration/shared-lib-utils.test.ts`
   - `pnpm run lint:biome`
   - `pnpm run lint:eslint`
   - `pnpm run lint`
   - `pnpm exec tsc --noEmit`
+  - `pnpm run test:unit`
 - Out-of-scope / environment-limited verification:
-  - `pnpm run test:unit` -> pass (`No tests found, exiting with code 0`)
-  - `pnpm run test:e2e` -> fail because Chromium cannot launch under current sandbox permissions and Firefox/WebKit binaries are not installed
+  - after `pnpm exec playwright install`, `pnpm run test:e2e` still fails in this environment because browser processes cannot launch cleanly under the current desktop sandbox
 
 ## Resume
 
-- Next prompt: "Start a follow-up branch for the Jest/Playwright test baseline."
+- Next prompt: "Re-run Playwright from a normal local terminal and compare browser-specific failures."
