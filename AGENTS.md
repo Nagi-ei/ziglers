@@ -1,6 +1,6 @@
 # AGENTS.md (for Mandalart Web)
 
-_Last updated: 2026-03-15 (KST)_
+_Last updated: 2026-03-19 (KST)_
 
 ---
 
@@ -70,6 +70,7 @@ Korean documents under `docs/ko/*.md` must be synchronized after the English sou
 - Prefer semantic utilities such as `bg-background`, `text-foreground`, `text-muted-foreground`, `bg-primary`, and related token-backed classes.
 - Do not introduce raw Tailwind color utilities or ad-hoc color values in component code when an approved token already exists.
 - If a new color/token is truly required, add it to the shared theme token system in `src/app/globals.css` rather than defining a one-off local workaround.
+- When the existing brand palette is directionally correct but insufficient for UI material roles, prefer adding a small number of semantic support roles for reusable surfaces such as paper, tape, line, or shadow behavior instead of inventing new brand hues casually.
 
 ### Data Access Rule
 
@@ -152,6 +153,11 @@ Use this workflow for non-trivial branch work:
 ### Notes For UI Branches
 
 - Branches that explicitly create or redesign user-facing UI should use the design-oriented path during Execution and include UI-guideline review during Review.
+- For design-led UI branches such as visual-system work, design-foundation work, landing/dashboard refreshes, or other user-facing art-direction changes:
+  - prefer `frontend-design` as the primary branch lens
+  - keep `frontend-architecture-rules` as a mandatory structural guardrail for shared/local boundaries, file placement, and token discipline
+  - treat `web-design-guidelines` as a required Review-stage lens, not an optional add-on
+  - if `frontend-design` is not the primary lens for a clearly design-led UI branch, record the reason in branch-local `research.md` or `plan.md`
 
 ### E2E Closeout Communication
 
