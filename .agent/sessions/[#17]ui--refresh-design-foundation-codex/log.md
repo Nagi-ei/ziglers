@@ -98,6 +98,10 @@
 - Started Slice 1 from `plan.md` with the accepted routing:
   - primary lens: `frontend-design`
   - structural guardrail: `frontend-architecture-rules`
+- TDD cycle:
+  - RED: the current codebase had no semantic note-material roles, so shared helpers still depended on copied brand-opacity recipes and direct brand-color references
+  - GREEN: added note-material support roles to `src/app/globals.css` and rewired `DecoTape` and `GridPatternBackground` to consume those shared roles
+  - REFACTOR: simplified helper props to low-level size/tone and density/tone controls so the slice stayed reusable without introducing page semantics
 - Kept the slice constrained to low-level material roles and accent helpers only:
   - no page-level composition changes
   - no section-level shared abstractions
@@ -119,4 +123,26 @@
   - `pnpm exec biome check src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx` -> pass
   - `pnpm exec eslint src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx` -> pass
   - `git diff --check -- src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx` -> pass
+- Task checklist: complete
 - Slice 1 is ready to commit as the note-material token and accent-helper foundation.
+
+## 2026-03-19 - Execution Slice 2
+
+- Started Slice 2 from `plan.md` after committing the low-level token/helper foundation.
+- Binding lens and guardrail:
+  - primary lens: `frontend-design`
+  - structural guardrail: `frontend-architecture-rules`
+- TDD cycle:
+  - RED: landing and dashboard surfaces still repeated paper-container recipes instead of having one shared square-corner note wrapper
+  - GREEN: added `src/shared/ui/common/NoteSurface.tsx` as a shared material wrapper that composes the existing shadcn `Card`
+  - REFACTOR: kept the API intentionally low-level with only `tone` and `depth` variants, preserving the existing `Card` prop surface and avoiding page-role props
+- Enforced the slice constraints explicitly:
+  - reused the existing `Card` primitive instead of introducing a parallel structure
+  - kept spacing and composition concerns local so the component remains a paper-material surface, not a page block
+  - added `data-tone` and `data-depth` only as low-level state markers
+- Verification for Slice 2:
+  - `pnpm exec biome check src/shared/ui/common/NoteSurface.tsx` -> pass
+  - `pnpm exec eslint src/shared/ui/common/NoteSurface.tsx` -> pass
+  - `git diff --check -- src/shared/ui/common/NoteSurface.tsx` -> pass
+- Task checklist: complete
+- Slice 2 is ready to commit as the shared note-surface primitive.

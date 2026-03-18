@@ -4,7 +4,7 @@
 
 - Branch: `ui/17--refresh-design-foundation-codex`
 - Goal: refresh the shared design foundation for the note/paper visual system before the landing and dashboard page-refresh branches begin.
-- Status: Slice 1 complete and ready to commit. Slice 2 is next.
+- Status: Slice 2 complete and ready to commit. Slice 3 is next and requires a user checkpoint before commit.
 
 ## Completed
 
@@ -50,6 +50,12 @@
     - added note-material semantic support roles in `src/app/globals.css`
     - refined `DecoTape` into a configurable shared accent helper
     - refined `GridPatternBackground` so tone/density are token-backed and reusable
+12. Committed Slice 1 as `05527ae` (`🎨 style: refine note material tokens and accents`).
+13. Committed the project workflow guidance update as `f692fff` (`📝 docs: tighten UI branch design workflow guidance`).
+14. Executed Slice 2:
+    - added `src/shared/ui/common/NoteSurface.tsx`
+    - implemented the note surface as a low-level wrapper over the existing shadcn `Card`
+    - kept the shared API limited to material concerns (`tone`, `depth`) so page composition still stays local
 
 ## Decisions
 
@@ -84,10 +90,9 @@
 
 ## Pending
 
-1. Commit Slice 1 from `plan.md`.
-2. Execute Slice 2 from `plan.md`.
-3. Execute Slice 3 and stop at the required user checkpoint after the landing-facing validation slice.
-4. Execute Slice 4 after the landing validation is accepted.
+1. Commit Slice 2 from `plan.md`.
+2. Execute Slice 3 and stop at the required user checkpoint after the landing-facing validation slice.
+3. Execute Slice 4 after the landing validation is accepted.
 
 ## Risks / Notes
 
@@ -110,7 +115,10 @@
 - `pnpm exec biome check src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx` -> pass
 - `pnpm exec eslint src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx` -> pass
 - `git diff --check -- src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx` -> pass
+- `pnpm exec biome check src/shared/ui/common/NoteSurface.tsx` -> pass
+- `pnpm exec eslint src/shared/ui/common/NoteSurface.tsx` -> pass
+- `git diff --check -- src/shared/ui/common/NoteSurface.tsx` -> pass
 
 ## Resume
 
-- Next prompt: "Commit Slice 1 and execute Slice 2 from `plan.md` for `ui/17--refresh-design-foundation-codex`."
+- Next prompt: "Commit Slice 2 and execute Slice 3 from `plan.md` for `ui/17--refresh-design-foundation-codex`."
