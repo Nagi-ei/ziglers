@@ -4,7 +4,7 @@
 
 - Branch: `ui/17--refresh-design-foundation-codex`
 - Goal: refresh the shared design foundation for the note/paper visual system before the landing and dashboard page-refresh branches begin.
-- Status: Slice 3 implemented and verified. Waiting at the required user checkpoint before commit.
+- Status: Slice 4 complete and ready to commit. Review and final verification are next.
 
 ## Completed
 
@@ -61,6 +61,12 @@
     - applied `NoteSurface` to the representative paper wrappers in `MethodSection` and `CtaSection`
     - switched those sections to the new `DecoTape` API
     - kept the current section structure and title treatment intact so Phase 3 concept work remains open
+17. Committed Slice 3 as `0186c7a` (`💄 style: apply note foundation to landing sections`).
+18. Executed Slice 4 for dashboard validation:
+    - applied `NoteSurface` to the representative stat and chart wrappers in `DashboardSummary` and `DashboardCharts`
+    - shifted dashboard tape usage to a quieter default treatment
+    - reduced app-side hover motion so the authenticated surface stays more restrained than landing
+    - visually checked `/dashboard` against the already running local dev server on port `3000`
 
 ## Decisions
 
@@ -95,9 +101,9 @@
 
 ## Pending
 
-1. Present the Slice 3 checkpoint and wait for user approval before commit.
-2. Commit Slice 3 from `plan.md` once approved.
-3. Execute Slice 4 after the landing validation is accepted.
+1. Commit Slice 4 from `plan.md`.
+2. Run Hardening, Review, and Final Verify from the accepted plan.
+3. Prepare the branch closeout summary.
 
 ## Risks / Notes
 
@@ -126,7 +132,11 @@
 - `pnpm exec biome check src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
 - `pnpm exec eslint src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
 - `git diff --check -- src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
+- `pnpm exec biome check src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+- `pnpm exec eslint src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+- `git diff --check -- src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+- Playwright visual spot-check -> pass (`http://127.0.0.1:3000/dashboard`)
 
 ## Resume
 
-- Next prompt: "Approve or request changes for the Slice 3 landing checkpoint in `ui/17--refresh-design-foundation-codex`."
+- Next prompt: "Commit Slice 4, then run review and final verification for `ui/17--refresh-design-foundation-codex`."

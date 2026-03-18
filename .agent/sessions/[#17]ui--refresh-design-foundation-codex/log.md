@@ -174,3 +174,27 @@
   - switched the `MethodSection` `NoteSurface` class merge to `cn(...)` instead of template-string concatenation
 - Task checklist: complete
 - Slice checkpoint: required, pending user approval before commit.
+
+## 2026-03-19 - Execution Slice 4
+
+- Started Slice 4 after the landing checkpoint was approved and committed.
+- Binding lens and guardrail:
+  - primary lens: `frontend-design`
+  - structural guardrail: `frontend-architecture-rules`
+- TDD cycle:
+  - RED: dashboard summary and chart widgets still depended on duplicated local paper-card border/shadow wrappers, so the app surface had not yet validated the shared note foundation
+  - GREEN: replaced the repeated outer `Card` shell styling in `DashboardSummary` and `DashboardCharts` with `NoteSurface` and updated tape usage to the quieter shared accent treatment
+  - REFACTOR: reduced app-side hover theatrics by removing the more ornamental rotation/tape-disappear behavior and kept the chart internals untouched
+- Applied the foundation conservatively on the authenticated app surface:
+  - `DashboardSummary` now uses `NoteSurface` for each stat card while preserving the existing header/content structure
+  - `DashboardCharts` now uses `NoteSurface` for both chart containers, with chart logic and internals left local
+  - tape remains present as an identity cue, but with quieter presentation than the landing surface
+- Verification for Slice 4:
+  - `pnpm exec biome check src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+  - `pnpm exec eslint src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+  - `git diff --check -- src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+- Visual check:
+  - reviewed `http://127.0.0.1:3000/dashboard` in Playwright against the already running local dev server
+  - confirmed the app-side cards read as the same note material system without inheriting the landing slice's more playful motion
+- Task checklist: complete
+- Slice 4 is ready to commit as the dashboard-surface validation slice.

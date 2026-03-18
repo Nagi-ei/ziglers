@@ -6,7 +6,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon as Icon } from "@hugeicons/react";
 import { DecoTape } from "@/shared/ui/common/DecoTape";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
+import { NoteSurface } from "@/shared/ui/common/NoteSurface";
+import { CardContent, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
 import { getSummaryStats } from "./model";
 
 export const DashboardSummary = () => {
@@ -41,13 +42,17 @@ export const DashboardSummary = () => {
 
   return (
     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat, index) => (
+      {stats.map((stat) => (
         <div
           key={stat.title}
-          className={`group relative transition-transform duration-300 ${index % 2 === 0 ? "hover:-rotate-1" : "hover:rotate-1"} hover:-translate-y-2`}
+          className="group relative transition-transform duration-300 hover:-translate-y-1"
         >
-          <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
-          <Card className="border-2 border-primary/10 bg-card shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
+          <DecoTape
+            size="sm"
+            tone="quiet"
+            className="absolute -top-3 left-1/2 z-10 -translate-x-1/2"
+          />
+          <NoteSurface depth="md" className="h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="font-medium text-sm">{stat.title}</CardTitle>
               <Icon icon={stat.icon} className="h-4 w-4 text-muted-foreground" />
@@ -56,7 +61,7 @@ export const DashboardSummary = () => {
               <div className="font-bold text-2xl">{stat.value}</div>
               <p className="text-muted-foreground text-xs">{stat.change}</p>
             </CardContent>
-          </Card>
+          </NoteSurface>
         </div>
       ))}
     </div>

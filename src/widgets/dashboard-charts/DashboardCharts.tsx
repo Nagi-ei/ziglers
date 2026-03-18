@@ -2,7 +2,8 @@
 
 import { Area, AreaChart, CartesianGrid, Pie, PieChart, XAxis } from "recharts";
 import { DecoTape } from "@/shared/ui/common/DecoTape";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
+import { NoteSurface } from "@/shared/ui/common/NoteSurface";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/shadcn/Card";
 import {
   type ChartConfig,
   ChartContainer,
@@ -34,9 +35,9 @@ export function DashboardCharts() {
       </h2>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <div className="group relative transition-transform duration-300 hover:-translate-y-2 hover:-rotate-1">
-          <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
-          <Card className="border-2 border-primary/10 shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
+        <div className="group relative transition-transform duration-300 hover:-translate-y-1">
+          <DecoTape tone="quiet" className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
+          <NoteSurface depth="md" className="h-full">
             <CardHeader>
               <CardTitle>Goal Progress</CardTitle>
             </CardHeader>
@@ -62,12 +63,12 @@ export function DashboardCharts() {
                 </AreaChart>
               </ChartContainer>
             </CardContent>
-          </Card>
+          </NoteSurface>
         </div>
 
-        <div className="group relative transition-transform duration-300 hover:-translate-y-2 hover:rotate-1">
-          <DecoTape className="absolute -top-3 left-1/2 z-10 origin-right -translate-x-1/2 transition-all duration-500 group-hover:rotate-[-8deg] group-hover:scale-x-0 group-hover:opacity-0" />
-          <Card className="border-2 border-primary/10 shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]">
+        <div className="group relative transition-transform duration-300 hover:-translate-y-1">
+          <DecoTape tone="quiet" className="absolute -top-3 left-1/2 z-10 -translate-x-1/2" />
+          <NoteSurface depth="md" className="h-full">
             <CardHeader className="flex justify-between">
               <CardTitle>Status Distribution</CardTitle>
               <CardDescription>2025 Goals</CardDescription>
@@ -90,7 +91,7 @@ export function DashboardCharts() {
                 </PieChart>
               </ChartContainer>
             </CardContent>
-          </Card>
+          </NoteSurface>
         </div>
       </div>
     </section>
