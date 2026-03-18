@@ -4,7 +4,7 @@
 
 - Branch: `ui/17--refresh-design-foundation-codex`
 - Goal: refresh the shared design foundation for the note/paper visual system before the landing and dashboard page-refresh branches begin.
-- Status: Slice 2 complete and ready to commit. Slice 3 is next and requires a user checkpoint before commit.
+- Status: Slice 3 implemented and verified. Waiting at the required user checkpoint before commit.
 
 ## Completed
 
@@ -56,6 +56,11 @@
     - added `src/shared/ui/common/NoteSurface.tsx`
     - implemented the note surface as a low-level wrapper over the existing shadcn `Card`
     - kept the shared API limited to material concerns (`tone`, `depth`) so page composition still stays local
+15. Committed Slice 2 as `35ff6a4` (`✨ feat: add shared note surface primitive`).
+16. Executed Slice 3 for landing validation:
+    - applied `NoteSurface` to the representative paper wrappers in `MethodSection` and `CtaSection`
+    - switched those sections to the new `DecoTape` API
+    - kept the current section structure and title treatment intact so Phase 3 concept work remains open
 
 ## Decisions
 
@@ -90,8 +95,8 @@
 
 ## Pending
 
-1. Commit Slice 2 from `plan.md`.
-2. Execute Slice 3 and stop at the required user checkpoint after the landing-facing validation slice.
+1. Present the Slice 3 checkpoint and wait for user approval before commit.
+2. Commit Slice 3 from `plan.md` once approved.
 3. Execute Slice 4 after the landing validation is accepted.
 
 ## Risks / Notes
@@ -118,7 +123,10 @@
 - `pnpm exec biome check src/shared/ui/common/NoteSurface.tsx` -> pass
 - `pnpm exec eslint src/shared/ui/common/NoteSurface.tsx` -> pass
 - `git diff --check -- src/shared/ui/common/NoteSurface.tsx` -> pass
+- `pnpm exec biome check src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
+- `pnpm exec eslint src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
+- `git diff --check -- src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
 
 ## Resume
 
-- Next prompt: "Commit Slice 2 and execute Slice 3 from `plan.md` for `ui/17--refresh-design-foundation-codex`."
+- Next prompt: "Approve or request changes for the Slice 3 landing checkpoint in `ui/17--refresh-design-foundation-codex`."

@@ -146,3 +146,31 @@
   - `git diff --check -- src/shared/ui/common/NoteSurface.tsx` -> pass
 - Task checklist: complete
 - Slice 2 is ready to commit as the shared note-surface primitive.
+
+## 2026-03-19 - Execution Slice 3
+
+- Started Slice 3 after committing the shared `NoteSurface` primitive.
+- Binding lens and guardrail:
+  - primary lens: `frontend-design`
+  - structural guardrail: `frontend-architecture-rules`
+- TDD cycle:
+  - RED: `MethodSection` and `CtaSection` still carried local paper-surface recipes, so the new foundation was unproven on a real landing page slice
+  - GREEN: replaced the repeated paper wrappers in both sections with `NoteSurface` and updated tape usage to the new shared helper API
+  - REFACTOR: kept the section-title treatment and content structure intact, and avoided broader layout or typography changes that would pre-empt the later concept-study pass
+- Applied the foundation conservatively:
+  - `MethodSection` step cards now use `NoteSurface` with local rotation retained as a page-local accent
+  - the icon chip inside each step now uses note-material tokens instead of local brand-opacity recipes
+  - `CtaSection` now uses `NoteSurface` for the main paper panel and a larger shared tape accent
+  - the CTA button shadow now uses `--note-shadow-color` so the section reads as part of the same material system
+- Explicitly did not change:
+  - section information architecture
+  - the current title underline system
+  - landing hero concept or page-level rhythm
+- Verification for Slice 3:
+  - `pnpm exec biome check src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
+  - `pnpm exec eslint src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
+  - `git diff --check -- src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx` -> pass
+- Checkpoint feedback update:
+  - switched the `MethodSection` `NoteSurface` class merge to `cn(...)` instead of template-string concatenation
+- Task checklist: complete
+- Slice checkpoint: required, pending user approval before commit.
