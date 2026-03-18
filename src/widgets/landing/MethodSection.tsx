@@ -53,7 +53,7 @@ export function MethodSection() {
           {STEPS.map((step, index) => (
             <div key={step.title} className="group relative">
               {index < STEPS.length - 1 && (
-                <div className="absolute top-1/2 -right-4 z-10 hidden -translate-y-1/2 transition-all duration-300 group-hover:z-100 group-hover:translate-x-5 md:block">
+                <div className="absolute top-1/2 -right-4 z-10 hidden -translate-y-1/2 transition-transform duration-300 group-hover:z-100 group-hover:translate-x-5 md:block">
                   <Icon icon={ArrowRight01Icon} className="size-8 text-primary/40" />
                 </div>
               )}

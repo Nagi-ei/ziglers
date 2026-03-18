@@ -198,3 +198,28 @@
   - confirmed the app-side cards read as the same note material system without inheriting the landing slice's more playful motion
 - Task checklist: complete
 - Slice 4 is ready to commit as the dashboard-surface validation slice.
+
+## 2026-03-19 - Hardening / Review / Final Verify
+
+- Hardening audit on the touched design files checked:
+  - remaining ad-hoc opacity/shadow recipes that should have moved into the shared note foundation
+  - whether any page-local composition leaked into `src/shared/ui/common`
+  - whether theme additions stayed within semantic support roles rather than expanding the brand hue set
+  - responsive hierarchy, readability, focus affordances, and motion restraint on the landing and dashboard validation slices
+- Hardening fix applied:
+  - replaced the remaining `transition-all` usage in the touched landing sections with explicit transition properties to align with the UI guideline review lens
+- `pr-review-check` findings:
+  - no blocking correctness, regression, or shared/local-boundary findings remained after the hardening fix
+  - no additional test gap was treated as blocking because this branch changes shared visual surfaces rather than data or interaction logic
+- `web-design-guidelines` findings:
+  - no blocking accessibility or UI-guideline issues remained in the touched files after tightening the transition scopes
+  - landing keeps the more playful page-local accents while dashboard now reads as the restrained app-side translation of the same material system
+- Final verification:
+  - `pnpm exec biome check src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+  - `pnpm exec eslint src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+  - `git diff --check -- src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx '.agent/sessions/[#17]ui--refresh-design-foundation-codex'` -> pass
+  - Playwright manual visual review -> pass on desktop and mobile-width spot checks for:
+    - `http://127.0.0.1:3000/`
+    - `http://127.0.0.1:3000/dashboard`
+- Branch closeout classification:
+  - E2E expectation: `recommended`

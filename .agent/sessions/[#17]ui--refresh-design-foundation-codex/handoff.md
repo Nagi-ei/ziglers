@@ -4,7 +4,7 @@
 
 - Branch: `ui/17--refresh-design-foundation-codex`
 - Goal: refresh the shared design foundation for the note/paper visual system before the landing and dashboard page-refresh branches begin.
-- Status: Slice 4 complete and ready to commit. Review and final verification are next.
+- Status: Branch implementation complete. Final hardening/review passed; one small hardening/refactor commit is pending.
 
 ## Completed
 
@@ -67,6 +67,13 @@
     - shifted dashboard tape usage to a quieter default treatment
     - reduced app-side hover motion so the authenticated surface stays more restrained than landing
     - visually checked `/dashboard` against the already running local dev server on port `3000`
+19. Committed Slice 4 as `da53cd0` (`💄 style: apply note foundation to dashboard surfaces`).
+20. Ran hardening, review, and final verification:
+    - tightened the remaining `transition-all` usage in the touched landing files
+    - no blocking findings remained under `pr-review-check`
+    - no blocking findings remained under `web-design-guidelines`
+    - final lint/diff verification passed
+    - desktop and mobile-width visual spot-checks passed on landing and dashboard
 
 ## Decisions
 
@@ -101,9 +108,8 @@
 
 ## Pending
 
-1. Commit Slice 4 from `plan.md`.
-2. Run Hardening, Review, and Final Verify from the accepted plan.
-3. Prepare the branch closeout summary.
+1. Commit the final hardening/refactor follow-up.
+2. Prepare the branch closeout summary.
 
 ## Risks / Notes
 
@@ -136,7 +142,11 @@
 - `pnpm exec eslint src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
 - `git diff --check -- src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
 - Playwright visual spot-check -> pass (`http://127.0.0.1:3000/dashboard`)
+- `pnpm exec biome check src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+- `pnpm exec eslint src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
+- `git diff --check -- src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx '.agent/sessions/[#17]ui--refresh-design-foundation-codex'` -> pass
+- Playwright mobile-width spot-check -> pass (`http://127.0.0.1:3000/`, `http://127.0.0.1:3000/dashboard`)
 
 ## Resume
 
-- Next prompt: "Commit Slice 4, then run review and final verification for `ui/17--refresh-design-foundation-codex`."
+- Next prompt: "Commit the hardening/refactor follow-up and summarize branch closeout for `ui/17--refresh-design-foundation-codex`."
