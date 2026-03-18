@@ -4,7 +4,7 @@
 
 - Branch: `ui/17--refresh-design-foundation-codex`
 - Goal: refresh the shared design foundation for the note/paper visual system before the landing and dashboard page-refresh branches begin.
-- Status: Branch implementation complete. Final hardening/review passed; one small hardening/refactor commit is pending.
+- Status: Branch implementation, hardening, review, and final verification are complete.
 
 ## Completed
 
@@ -74,6 +74,7 @@
     - no blocking findings remained under `web-design-guidelines`
     - final lint/diff verification passed
     - desktop and mobile-width visual spot-checks passed on landing and dashboard
+21. Committed the hardening/refactor follow-up as `d7a01a9` (`♻️ refactor: tighten note section motion transitions`).
 
 ## Decisions
 
@@ -108,8 +109,7 @@
 
 ## Pending
 
-1. Commit the final hardening/refactor follow-up.
-2. Prepare the branch closeout summary.
+1. Prepare the branch closeout summary.
 
 ## Risks / Notes
 
@@ -149,4 +149,4 @@
 
 ## Resume
 
-- Next prompt: "Commit the hardening/refactor follow-up and summarize branch closeout for `ui/17--refresh-design-foundation-codex`."
+- Next prompt: "Summarize branch closeout for `ui/17--refresh-design-foundation-codex`."

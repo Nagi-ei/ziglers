@@ -223,3 +223,5 @@
     - `http://127.0.0.1:3000/dashboard`
 - Branch closeout classification:
   - E2E expectation: `recommended`
+- Follow-up commit:
+  - committed the hardening/refactor cleanup as `d7a01a9` (`♻️ refactor: tighten note section motion transitions`)
