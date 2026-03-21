@@ -104,7 +104,7 @@
     var(--color-brand-primary) 16%,
     var(--color-brand-bg-lighter) 84%
   );
-  --note-grid: color-mix(in oklab, var(--color-brand-primary) 12%, transparent);
+  --note-grid: var(--color-brand-primary);
   --note-shadow-color: color-mix(in oklab, var(--color-brand-fg) 14%, transparent);
 }
 
@@ -149,7 +149,7 @@
   );
   --note-stroke: var(--border);
   --note-tape: color-mix(in oklab, var(--color-brand-bg) 14%, var(--color-brand-fg-lighter) 86%);
-  --note-grid: color-mix(in oklab, var(--color-brand-bg) 16%, transparent);
+  --note-grid: var(--color-brand-bg);
   --note-shadow-color: color-mix(in oklab, var(--color-brand-bg) 16%, transparent);
 }
 

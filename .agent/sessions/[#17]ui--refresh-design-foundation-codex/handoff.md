@@ -4,7 +4,7 @@
 
 - Branch: `ui/17--refresh-design-foundation-codex`
 - Goal: refresh the shared design foundation for the note/paper visual system before the landing and dashboard page-refresh branches begin.
-- Status: Branch implementation, hardening, review, and final verification are complete.
+- Status: Post-review grid-visibility fix applied and ready to commit.
 
 ## Completed
 
@@ -75,6 +75,9 @@
     - final lint/diff verification passed
     - desktop and mobile-width visual spot-checks passed on landing and dashboard
 21. Committed the hardening/refactor follow-up as `d7a01a9` (`♻️ refactor: tighten note section motion transitions`).
+22. Applied a post-review shared-foundation fix for `GridPatternBackground` visibility:
+    - removed the double attenuation between `--note-grid` and the component-level `tone` opacity
+    - kept the fix in `src/app/globals.css` so all current call sites inherit the corrected grid visibility
 
 ## Decisions
 
@@ -109,7 +112,8 @@
 
 ## Pending
 
-1. Prepare the branch closeout summary.
+1. Commit the grid-visibility follow-up.
+2. Prepare the branch closeout summary.
 
 ## Risks / Notes
 
@@ -146,7 +150,10 @@
 - `pnpm exec eslint src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx` -> pass
 - `git diff --check -- src/app/globals.css src/shared/ui/common/DecoTape.tsx src/shared/ui/common/GridPatternBackground.tsx src/shared/ui/common/NoteSurface.tsx src/widgets/landing/MethodSection.tsx src/widgets/landing/CtaSection.tsx src/widgets/dashboard-summary/DashboardSummary.tsx src/widgets/dashboard-charts/DashboardCharts.tsx '.agent/sessions/[#17]ui--refresh-design-foundation-codex'` -> pass
 - Playwright mobile-width spot-check -> pass (`http://127.0.0.1:3000/`, `http://127.0.0.1:3000/dashboard`)
+- `pnpm exec biome check src/app/globals.css src/shared/ui/common/GridPatternBackground.tsx` -> pass
+- `pnpm exec eslint src/shared/ui/common/GridPatternBackground.tsx` -> pass
+- `git diff --check -- src/app/globals.css src/shared/ui/common/GridPatternBackground.tsx` -> pass
 
 ## Resume
 
-- Next prompt: "Summarize branch closeout for `ui/17--refresh-design-foundation-codex`."
+- Next prompt: "Commit the grid-visibility follow-up and summarize closeout for `ui/17--refresh-design-foundation-codex`."

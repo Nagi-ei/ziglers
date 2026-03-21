@@ -225,3 +225,18 @@
   - E2E expectation: `recommended`
 - Follow-up commit:
   - committed the hardening/refactor cleanup as `d7a01a9` (`♻️ refactor: tighten note section motion transitions`)
+
+## 2026-03-22 - Review follow-up: grid visibility
+
+- Addressed post-review feedback on `GridPatternBackground` visibility.
+- TDD cycle:
+  - RED: `--note-grid` was defined with `color-mix(..., transparent)` while `GridPatternBackground` also applied element opacity, causing the grid lines to become effectively invisible at default call sites
+  - GREEN: moved opacity responsibility fully back to `GridPatternBackground` by redefining `--note-grid` as an opaque hue token in light and dark themes
+  - REFACTOR: kept the fix inside `src/app/globals.css` so existing landing, dashboard, and not-found call sites inherit the corrected visibility without page-local overrides
+- Verification:
+  - `pnpm exec biome check src/app/globals.css src/shared/ui/common/GridPatternBackground.tsx` -> pass
+  - `pnpm exec eslint src/shared/ui/common/GridPatternBackground.tsx` -> pass
+  - `git diff --check -- src/app/globals.css src/shared/ui/common/GridPatternBackground.tsx` -> pass
+- Visual verification note:
+  - attempted browser-based recheck after the patch, but Playwright browser launch failed in the current environment
+  - the fix is constrained to the shared token/source-of-truth layer and does not require call-site changes
