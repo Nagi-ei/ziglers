@@ -240,3 +240,5 @@
 - Visual verification note:
   - attempted browser-based recheck after the patch, but Playwright browser launch failed in the current environment
   - the fix is constrained to the shared token/source-of-truth layer and does not require call-site changes
+- Follow-up commit:
+  - committed the review fix as `9b98f0a` (`🐛 fix: restore note grid visibility`)

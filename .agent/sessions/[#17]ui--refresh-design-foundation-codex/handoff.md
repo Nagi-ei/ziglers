@@ -4,7 +4,7 @@
 
 - Branch: `ui/17--refresh-design-foundation-codex`
 - Goal: refresh the shared design foundation for the note/paper visual system before the landing and dashboard page-refresh branches begin.
-- Status: Post-review grid-visibility fix applied and ready to commit.
+- Status: Post-review grid-visibility fix committed. Branch is complete again.
 
 ## Completed
 
@@ -78,6 +78,7 @@
 22. Applied a post-review shared-foundation fix for `GridPatternBackground` visibility:
     - removed the double attenuation between `--note-grid` and the component-level `tone` opacity
     - kept the fix in `src/app/globals.css` so all current call sites inherit the corrected grid visibility
+23. Committed the grid-visibility follow-up as `9b98f0a` (`🐛 fix: restore note grid visibility`).
 
 ## Decisions
 
@@ -112,8 +113,7 @@
 
 ## Pending
 
-1. Commit the grid-visibility follow-up.
-2. Prepare the branch closeout summary.
+1. Prepare the branch closeout summary.
 
 ## Risks / Notes
 
@@ -156,4 +156,4 @@
 
 ## Resume
 
-- Next prompt: "Commit the grid-visibility follow-up and summarize closeout for `ui/17--refresh-design-foundation-codex`."
+- Next prompt: "Summarize closeout for `ui/17--refresh-design-foundation-codex` including the grid-visibility follow-up."
