@@ -5,8 +5,10 @@ import {
   Target02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon as Icon } from "@hugeicons/react";
+import { cn } from "@/shared/lib/utils";
 import { DecoTape } from "@/shared/ui/common/DecoTape";
 import { GridPatternBackground } from "@/shared/ui/common/GridPatternBackground";
+import { NoteSurface } from "@/shared/ui/common/NoteSurface";
 
 const STEPS = [
   {
@@ -51,17 +53,26 @@ export function MethodSection() {
           {STEPS.map((step, index) => (
             <div key={step.title} className="group relative">
               {index < STEPS.length - 1 && (
-                <div className="absolute top-1/2 -right-4 z-10 hidden -translate-y-1/2 transition-all duration-300 group-hover:z-100 group-hover:translate-x-5 md:block">
+                <div className="absolute top-1/2 -right-4 z-10 hidden -translate-y-1/2 transition-transform duration-300 group-hover:z-100 group-hover:translate-x-5 md:block">
                   <Icon icon={ArrowRight01Icon} className="size-8 text-primary/40" />
                 </div>
               )}
 
-              <div
-                className={`relative h-full border-2 border-primary/10 bg-background p-6 transition-transform duration-300 group-hover:z-10 group-hover:-translate-y-2 ${step.rotate} shadow-[4px_4px_0px_0px_rgba(45,45,45,0.1)]`}
+              <NoteSurface
+                tone="raised"
+                depth="md"
+                className={cn(
+                  "h-full p-6 transition-transform duration-300 group-hover:-translate-y-2",
+                  step.rotate,
+                )}
               >
-                <DecoTape className="absolute -top-3 left-1/2 -translate-x-1/2 rotate-1" />
+                <DecoTape
+                  size="sm"
+                  tone="quiet"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 rotate-1"
+                />
 
-                <div className="mb-4 inline-flex size-12 items-center justify-center border-2 border-primary/20 bg-card shadow-[2px_2px_0px_0px_rgba(45,45,45,0.1)]">
+                <div className="mb-4 inline-flex size-12 items-center justify-center border-2 border-note-stroke bg-note-surface shadow-[2px_2px_0_0_var(--note-shadow-color)]">
                   <Icon icon={step.icon} className="size-6 text-primary" />
                 </div>
 
@@ -71,7 +82,7 @@ export function MethodSection() {
                 <div className="absolute -right-2 -bottom-2 font-bold font-handwriting text-4xl text-primary/5">
                   {index + 1}
                 </div>
-              </div>
+              </NoteSurface>
             </div>
           ))}
         </div>
